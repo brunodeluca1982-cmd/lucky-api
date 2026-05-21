@@ -1,0 +1,50 @@
+MODO CIRÚRGICO. NÃO TOQUE EM ROTEIRO, STRIPE UI, PAYWALL VISUAL OU OUTRAS ÁREAS. FOQUE APENAS NA INCONSISTÊNCIA DE PREMIUM ENTRE PERFIL E CHAT LUCKY.
+
+Problema real observado:
+	•	A tela de perfil mostra “Lucky Pro ativo”
+	•	Mas o chat Lucky continua tratando o usuário como não premium e bloqueia com “você chegou ao limite de perguntas gratuitas”
+
+Conclusão:
+O app está usando fontes diferentes de verdade para entitlement premium.
+
+Objetivo:
+Descobrir qual fonte o perfil usa para mostrar premium, qual fonte o lucky-concierge usa para validar premium, e unificar isso para que perfil e chat reconheçam o mesmo estado.
+
+Contexto importante:
+No backend atual, a function lucky-concierge usa:
+	•	tabela access_levels
+	•	filtro .eq("user_id", deviceId)
+
+Isso é suspeito e provavelmente está divergindo da fonte real usada pelo perfil.
+
+O que você deve fazer:
+	1.	Encontrar exatamente como a tela de perfil decide mostrar “Lucky Pro ativo”.
+	2.	Identificar a fonte real:
+	•	access_levels
+	•	subscriptions
+	•	purchases
+	•	user_subscriptions
+	•	estado local
+	•	qualquer outro lugar
+	3.	Confirmar qual identificador essa tela usa:
+	•	deviceId
+	•	auth user id
+	•	email
+	•	outro
+	4.	Comparar isso com o backend do chat (lucky-concierge).
+	5.	Corrigir a inconsistência para que o chat e o perfil usem a mesma fonte de verdade.
+	6.	Se o usuário autenticado já é premium, o chat não pode bloquear por limite gratuito.
+	7.	Não invente nova arquitetura. Reaproveite a fonte correta já existente no app/produto.
+	8.	Se a melhor correção for no backend, explique exatamente qual linha muda.
+	9.	Se a melhor correção for no frontend, explique exatamente qual fonte estava errada.
+	10.	No final, me diga:
+
+	•	qual fonte o perfil usava
+	•	qual fonte o chat usava
+	•	por que divergiam
+	•	qual arquivo foi alterado
+	•	qual identificador agora é usado para premium
+	•	se o usuário logado premium agora consegue perguntar sem bloqueio
+
+Condição de sucesso:
+Se o perfil mostrar “Lucky Pro ativo”, o chat Lucky deve tratar o usuário como premium e permitir perguntas sem cair no limite gratuito.

@@ -1,0 +1,70 @@
+We are still seeing a black frame before the hero background appears.
+
+This is NOT solved yet.
+
+Important: the current screenshots prove that the screen UI (logo, avatar, title, chips, segmented control) renders first on a black canvas, and only after that the background image appears.
+
+So the remaining issue is NOT just root background anymore.
+It is the screen reveal strategy.
+
+Implement the fix using the correct Expo + React Navigation approach:
+
+GOAL
+No screen with a hero background should ever reveal on black.
+The user must either:
+1. stay on splash until the first hero background is ready, or
+2. see a warm placeholder immediately with smooth image transition.
+
+MANDATORY FIXES
+
+1. HOLD THE SPLASH SCREEN UNTIL THE FIRST HOME HERO IS READY
+- Use expo-splash-screen properly
+- call preventAutoHideAsync() at module scope
+- do NOT hide splash until the first critical home hero background is loaded and ready for first paint
+- once ready, call hideAsync()
+
+2. REPLACE HERO BACKGROUNDS WITH expo-image
+For all hero/fullscreen backgrounds:
+- app/(tabs)/index.tsx
+- app/(tabs)/viagem.tsx
+- app/friend/guide/[slug].tsx
+- app/(tabs)/roteiro/[id].tsx
+
+Use expo-image instead of React Native Image/ImageBackground where applicable.
+
+Requirements:
+- use placeholder
+- use transition
+- use onLoad / onDisplay
+- use a warm placeholder, not black
+- image must cross-dissolve in smoothly
+
+3. REMOVE NAVIGATION-LEVEL DARK FLASH SOURCES
+Audit and fix:
+- NavigationContainer theme.colors.background
+- Stack screenOptions cardStyle/contentStyle
+- any cardOverlayEnabled behavior adding dark overlay during transitions
+- Tabs sceneStyle / tab backgrounds
+
+Requirements:
+- no navigation scene should default to black
+- no dark overlay should appear before the screen background image is visible
+
+4. SCREEN COMPOSITION RULE
+For hero screens:
+- base layer = warm placeholder
+- image layer = expo-image with placeholder + transition
+- dark overlay = only above the image, never above an empty black canvas
+- content layer on top
+
+5. DO NOT USE THIS WRONG PATTERN
+Do not let the screen mount visible while waiting for hero image on a black background.
+If the first hero is not ready, keep splash visible longer.
+
+DELIVERABLES
+At the end, tell me:
+- which files were changed
+- where splash timing was fixed
+- which screens now use expo-image
+- whether cardOverlayEnabled / cardStyle / contentStyle / theme background were changed
+- confirmation that the app no longer shows a black frame before hero backgrounds

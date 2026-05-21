@@ -1,0 +1,117 @@
+Implement the itinerary engine properly using the real Supabase metadata.
+
+IMPORTANT:
+Do not redesign anything.
+Do not change UI.
+Do not change navigation.
+Do not touch branding, spacing, colors or typography.
+Only implement the itinerary data pipeline and generation logic.
+
+FILES TO UPDATE:
+1. supabase/functions/generate-itinerary/index.ts
+2. roteiro/index.tsx only if needed to call the correct function
+
+GOAL:
+Build a real itinerary engine using Supabase metadata as the source of truth, and Gemini only as a refinement layer.
+
+DATA RULE:
+Do NOT send only name/type/area to Gemini.
+The edge function must enrich each place with all useful metadata available from Supabase before prompting the model.
+
+The enriched payload for each place should include, when available:
+- id
+- name
+- category
+- area / neighborhood
+- lat
+- lng
+- tags
+- vibe
+- best_time / ideal moment
+- profile fit
+- safety / solo female safety
+- neighborhood context such as:
+  - better_for
+  - best_for_1
+  - best_for_2
+  - best_for_3
+  - walkability
+  - my_view
+  - how_to_live
+
+SUPABASE SCOPE:
+Only inspect the itinerary-related data path.
+Do NOT inspect the whole database.
+
+Use only:
+- the saved places source
+- the place catalog source used by itinerary generation
+- the neighborhood metadata source
+- any existing helper related to distance, clustering or ranking
+
+TASKS:
+
+1. In generate-itinerary/index.ts:
+- fetch the saved places and enrich them with all useful metadata from Supabase
+- include neighborhood metadata when the place belongs to a known neighborhood
+- build an enriched places array before calling Gemini
+
+2. Implement deterministic pre-processing BEFORE Gemini:
+- exact trip length comes from the user selection
+- build a fixed skeleton with exactly trip_length days
+- cluster places by lat/lng if available
+- otherwise cluster by neighborhood/area
+- distribute places across all days before refinement
+- do not let Gemini decide the number of days
+
+3. Use time logic BEFORE or DURING refinement:
+- morning → landmarks, museums, views, outdoor
+- lunch → gastronomy
+- afternoon → light exploration, beach, park, neighborhoods
+- night → restaurants, bars, nightlife
+
+4. Use metadata as hard signals:
+- if best_time says evening, do not place in morning
+- if tags say gastronomy, prioritize lunch/dinner
+- if profile or vibe is mismatched, lower ranking
+- if solo female safety exists and the user profile requires it, respect it
+- if walkability is high, places in that neighborhood can be grouped more easily
+
+5. Gemini role:
+Gemini must NOT invent the itinerary from scratch.
+Gemini must ONLY refine a pre-built structured itinerary draft.
+
+6. Validation before return:
+- exact number of days must equal selected trip length
+- no empty days
+- no “everything in day 1”
+- no unrealistic cross-city jumps in the same day
+- use saved places as priority
+- if not enough places exist, optionally fill gaps with relevant complementary places from Supabase
+
+7. Output:
+Return clean JSON only, ready for the existing result UI.
+
+EXPECTED JSON SHAPE:
+{
+  "destination": "Rio de Janeiro",
+  "days": [
+    {
+      "day": 1,
+      "area": "Leblon",
+      "items": [
+        {
+          "time": "morning",
+          "place_id": "1",
+          "name": "Some place",
+          "area": "Leblon"
+        }
+      ]
+    }
+  ]
+}
+
+IMPORTANT FINAL RULE:
+Do not continue generic prompt tweaking.
+The real fix is:
+Supabase metadata → deterministic clustering/distribution → Gemini refinement → validation → JSON output.

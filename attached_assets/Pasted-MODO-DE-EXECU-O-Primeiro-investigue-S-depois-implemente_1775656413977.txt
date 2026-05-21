@@ -1,0 +1,152 @@
+MODO DE EXECUÇÃO
+Primeiro investigue. Só depois implemente.
+Não redesenhe o app.
+Não mexa em Stripe, checkout, webhook, products, prices, auth, sessão, navegação da barra inferior, Lucky, Viagem, geração de roteiro, paywall ou qualquer outra área fora do escopo abaixo.
+REGRA ABSOLUTA: esta task é apenas um refinamento visual e técnico do topo da tela de Perfil já implementada.
+
+CONTEXTO ATUAL
+A tela de Perfil já ficou boa e aprovada na estrutura geral.
+O problema agora é apenas este:
+o topo está funcional, mas visualmente seco demais.
+Quero adicionar uma hero visual premium atrás da área de avatar/nome/e-mail/plano para dar mais profundidade, desejo e percepção de produto premium.
+
+OBJETIVO
+Adicionar uma hero visual no topo da tela de Perfil, atrás do bloco com:
+- avatar
+- nome
+- e-mail
+- badge/status do plano
+
+Essa hero deve:
+- exibir 3 a 5 imagens premium de cidade/viagem
+- trocar automaticamente a cada 10 segundos
+- usar transição suave tipo crossfade
+- manter legibilidade perfeita do conteúdo por cima
+- parecer sofisticada, editorial e premium
+- não parecer slideshow cafona
+- não parecer feed
+- não poluir o Perfil
+
+ESCOPO EXATO
+Alterar apenas o topo visual da tela de Perfil já existente.
+O restante da tela deve permanecer como está:
+- cards
+- blocos de conta
+- diário de viagem
+- divisão de contas
+- CTA Lucky Pro
+- navegação inferior
+- comportamento de auth/sessão
+- lógica de plano
+Não mexer nisso.
+
+FONTE DAS IMAGENS — REGRA OBRIGATÓRIA
+Siga exatamente esta ordem:
+
+1. Verifique se já existe no projeto alguma fonte boa e reaproveitável para alimentar essa hero do Perfil, por exemplo:
+- Supabase Storage
+- tabela home_hero_items
+- tabela place_photos
+- imagens de destinos já usadas no app
+- qualquer helper já existente de imagem/fallback externo
+- qualquer asset interno já usado em hero/carrossel
+
+2. Confirme no código e na estrutura real do projeto o que realmente existe e pode ser reaproveitado sem retrabalho e sem inventar arquitetura nova.
+
+3. Se houver uma fonte boa e confiável no Supabase ou no app, use essa fonte.
+
+4. Se não houver uma fonte realmente boa e estável para esse uso específico, use fallback local fixo de MVP ou o helper externo já existente no app.
+
+5. Não criar nova arquitetura, nova integração, nova tabela, nova migration ou novo sistema de mídia para esta task.
+
+PRINCÍPIO DE DECISÃO
+- Se houver fonte boa no Supabase, usa.
+- Se não houver, usa fallback local fixo de MVP ou o helper externo já existente.
+- Sem inventar nova arquitetura.
+- Priorizar estabilidade, baixo risco e reaproveitamento do que já existe.
+
+REGRAS TÉCNICAS
+- Não fazer busca externa nova toda vez que a tela renderizar.
+- Não disparar chamadas repetidas desnecessárias.
+- Se a fonte for remota, cachear/preloadar o resultado.
+- Se já existir helper de fallback externo no app, reutilizar exatamente esse helper, sem duplicar infraestrutura.
+- Se não existir helper confiável, preferir array local fixo temporário de MVP.
+- A solução deve ser estável no mobile/Expo.
+- Evitar flicker, layout shift ou travadinhas.
+- A troca de imagem deve ser suave.
+- Se uma imagem falhar, a rotação deve continuar com as demais.
+- Garantir que o componente degrade bem caso nenhuma imagem carregue.
+
+REGRAS VISUAIS
+- Hero apenas no topo do Perfil.
+- Atrás do bloco com avatar/nome/e-mail/plano.
+- Overlay escuro elegante para manter contraste.
+- Se necessário, usar gradiente/blur leve para dar profundidade.
+- As imagens devem parecer premium, aspiracionais e limpas.
+- Evitar imagens saturadas demais.
+- Evitar imagens com muita informação visual atrás do texto.
+- Evitar aparência de banner promocional.
+- O Perfil precisa continuar parecendo área pessoal premium, não feed de destinos.
+
+COMPORTAMENTO DA HERO
+- Rotação automática a cada 10 segundos.
+- Crossfade suave entre imagens.
+- Sem carrossel manual.
+- Sem dots.
+- Sem CTA dentro da hero.
+- Sem interferir nos toques dos elementos da tela.
+- Sem mexer na altura geral do Perfil além do necessário para encaixar bem a hero.
+
+IMPORTANTE SOBRE A ESTRUTURA ATUAL
+A área com avatar, nome, e-mail e plano já existe.
+Não quero reconstrução da tela inteira.
+Quero apenas elevar a qualidade visual do topo mantendo a estrutura aprovada.
+
+O QUE NÃO FAZER
+- Não mexer em Stripe.
+- Não mexer em login/sessão.
+- Não mexer em Perfil Free vs Pro.
+- Não mexer em Diário de Viagem.
+- Não mexer em Divisão de Contas.
+- Não mexer em Lucky.
+- Não mexer em Viagem.
+- Não criar CMS improvisado.
+- Não criar tabela nova para isso.
+- Não fazer gambiarra cara chamando Google a cada abertura da tela.
+- Não trocar a linguagem visual atual do app.
+
+SE PRECISAR ESCOLHER ENTRE DUAS OPÇÕES
+Prefira sempre:
+1. a mais estável
+2. a que reaproveita o que já existe
+3. a que tem menor risco de quebrar o MVP
+4. a que pode ser facilmente migrada depois para Supabase definitivo
+
+RESULTADO ESPERADO
+Quando eu abrir a aba Perfil:
+- continuo vendo a mesma tela aprovada
+- mas agora com um topo muito mais premium
+- com hero image bonita atrás do header pessoal
+- rodando suavemente em loop
+- sem ruído
+- sem perda de legibilidade
+- sem sensação de improviso
+
+DEFINITION OF DONE
+A task só está concluída se:
+1. a hero estiver visível no topo do Perfil
+2. a rotação automática estiver funcionando
+3. a transição estiver suave
+4. a leitura do nome/e-mail/plano continuar perfeita
+5. a solução estiver estável no mobile
+6. nenhuma outra área do app tiver sido alterada indevidamente
+
+NO FINAL, RESPONDA DE FORMA OBJETIVA
+1. Qual fonte de imagens você encontrou no projeto
+2. Se o Supabase já estava ou não preparado para isso
+3. O que foi reaproveitado
+4. Se você usou fonte Supabase, helper existente ou fallback local de MVP
+5. Como ficou a rotação
+6. Como ficou o cache/preload/fallback
+7. Quais arquivos foram alterados
+8. O que você deliberadamente NÃO mexeu

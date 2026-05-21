@@ -1,0 +1,158 @@
+Vou ser muito direto contigo porque aqui é onde você pode economizar dinheiro de verdade:
+
+👉 esse prompt ainda NÃO é 10/10
+👉 ele tem risco de erro e de gasto desnecessário
+
+⸻
+
+⚠️ PROBLEMA DO PROMPT QUE EU TE DEI
+
+Esse trecho aqui:
+
+const { data: rio } = await supabase
+
+👉 pode dar problema porque:
+	•	nem todo lugar desse hook aceita await
+	•	pode quebrar o fluxo async existente
+	•	pode fazer o agent reestruturar o hook (e gastar mais)
+
+👉 ou seja: não é o mais seguro
+
+⸻
+
+🎯 O QUE É 10/10 DE VERDADE (BARATO E SEGURO)
+
+Você NÃO precisa buscar nada novo no Supabase.
+
+👉 O Rio já está sendo buscado antes
+👉 Só está falhando em entrar no array
+
+⸻
+
+💣 SOLUÇÃO PERFEITA (SEM RISCO)
+
+👉 A gente NÃO busca
+👉 A gente NÃO usa await
+👉 A gente NÃO mexe em nada estrutural
+
+👉 Só garante:
+
+se rioItem existe → joga pra frente
+
+
+⸻
+
+🚀 PROMPT 10/10 (AGORA SIM)
+
+Copia exatamente isso:
+
+⸻
+
+CRITICAL: FINAL SAFE FIX — ENSURE RIO IS FIRST WITHOUT FETCHING
+
+Do NOT refactor anything.
+
+Do NOT add new Supabase queries.
+
+Do NOT use async/await.
+
+⸻
+
+GOAL
+
+Ensure Rio appears and is always first IF it already exists.
+
+⸻
+
+IMPLEMENT
+
+Inside useHeroComposed.ts
+
+Find where items array is built:
+
+const items: HeroComposedItem[] = [];
+
+
+⸻
+
+AFTER all items.push(…) lines
+
+Add this block:
+
+const rioIndex = items.findIndex(
+  item =>
+    item.source_table === "destinos" &&
+    (item.slug === "rio-de-janeiro" || item.titulo === "Rio de Janeiro")
+);
+
+if (rioIndex > -1) {
+  const [rioItem] = items.splice(rioIndex, 1);
+  items.unshift(rioItem);
+}
+
+
+⸻
+
+IMPORTANT
+	•	DO NOT fetch anything
+	•	DO NOT modify how rioItem is created
+	•	DO NOT modify HeroCarousel
+	•	DO NOT touch image pipeline
+
+⸻
+
+EXPECTED RESULT
+	•	If Rio exists → it becomes first
+	•	If Rio is missing → do nothing (no risk)
+	•	Zero regressions
+	•	Minimal cost execution
+
+⸻
+
+🧠 POR QUE ESSE É O CERTO
+
+👉 não depende de Supabase
+👉 não depende de async
+👉 não quebra o hook
+👉 não mexe em nada sensível
+
+👉 custo mínimo pro agent executar
+
+⸻
+
+⚠️ VERDADE IMPORTANTE
+
+👉 Se depois disso o Rio NÃO aparecer:
+
+Então o problema é antes disso (rioItem nunca é criado)
+
+E aí sim a gente faz um passo 2 — mas sem risco
+
+⸻
+
+🎯 RESUMO HONESTO
+
+Você já gastou dinheiro porque:
+
+❌ prompts muito grandes
+❌ mudanças estruturais
+❌ mexendo em várias partes ao mesmo tempo
+
+⸻
+
+👉 Agora estamos fazendo:
+
+✔ micro-ajuste
+✔ custo mínimo
+✔ risco zero
+
+⸻
+
+👉 FAZ ISSO
+
+E me fala:
+	•	“rodou”
+	•	“entrou o Rio”
+	•	ou “não entrou”
+
+Se não entrar, eu te levo pro plano B definitivo (sem gastar mais).

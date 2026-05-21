@@ -1,0 +1,238 @@
+
+eu estou desenvolvendo um sistema e anotei algumas coisas que precisam ser ajustadas. IRei informar aqui minhas anotações e você transforme em um prompt técnico para eu usar no replit. 
+
+Anotações: 
+Solicitei um e-mail de confirmação para acessar a ferramenta porém o link que chega no e-mail não direciona para nenhum lugar. Eu tentei cadastrar um novo e-mail e também cliquei em "Esqueci minha senha" para criar uma nova e mesmo assim não consegui pois o link não direciona para lugar algum. 
+
+Depois de usar a IA do the Lucky e fazer alguams perguntas ele solicita que eu adquira um plano PRO para continuar conversando, quando eu tento selecionar um plano e prosseguir ele não direciona. Ele deveria direcionar para o meu link de checkout na stripe, os links estão todos no supabase. Se você verificar verá que estão lá os links ekeys e secret keys. 
+
+
+Aqui está um prompt técnico, direto e bem estruturado para você colar no Replit (ou usar com seu agente de código 👇):
+
+PROMPT TÉCNICO
+
+Estou enfrentando dois problemas críticos no meu sistema e preciso que você identifique a causa raiz e corrija de forma completa.
+
+1. Problema: Links de e-mail não funcionam (confirmação e reset de senha)
+Cenário:
+
+Solicitei confirmação de e-mail ao criar conta
+
+Recebo o e-mail normalmente
+
+Porém, ao clicar no link, ele não redireciona para nenhuma página válida
+
+O mesmo acontece no fluxo de "Esqueci minha senha"
+
+Possíveis causas a investigar:
+
+URLs de redirect não configuradas corretamente no Supabase Auth
+
+SITE_URL ou REDIRECT_URL incorretos ou ausentes
+
+Problema no handler de rota (ex: /auth/callback, /reset-password)
+
+Token não sendo processado corretamente após o clique
+
+Falta de parsing do hash (#access_token=...) na aplicação frontend
+
+Middleware ou rota inexistente para lidar com o retorno do Supabase
+
+O que precisa ser feito:
+
+Verificar e corrigir configuração de redirect URLs no Supabase
+
+Garantir que o link do e-mail aponte para uma rota válida do frontend
+
+Implementar ou corrigir a página de callback de autenticação
+
+Garantir que o token seja capturado e a sessão do usuário seja criada corretamente
+
+Testar fluxo completo:
+
+Cadastro → confirmação de e-mail
+
+Reset de senha → redefinição funcionando
+
+2. Problema: Redirecionamento para pagamento (Stripe) não funciona
+Cenário:
+
+Após algumas interações com a IA, o sistema bloqueia e solicita upgrade para plano PRO
+
+Ao clicar para selecionar o plano, nada acontece (sem redirecionamento)
+
+Os links de checkout estão armazenados no Supabase (junto com keys e configs)
+
+Possíveis causas a investigar:
+
+Função de clique não está sendo chamada corretamente (evento frontend)
+
+URL do checkout não está sendo recuperada corretamente do Supabase
+
+Problema de permissão (RLS) impedindo leitura dos dados
+
+Variáveis de ambiente (Stripe keys) não estão sendo usadas corretamente
+
+Falta de window.location.href ou erro silencioso no redirect
+
+Promise não resolvida ou erro não tratado no fluxo
+
+O que precisa ser feito:
+
+Verificar se os links de checkout estão sendo buscados corretamente do Supabase
+
+Garantir que o botão de upgrade dispara o evento corretamente
+
+Implementar redirecionamento explícito para o Stripe Checkout
+
+Adicionar logs para debug (console ou backend)
+
+Validar permissões de leitura no Supabase (RLS policies)
+
+Testar fluxo completo:
+
+Bloqueio da IA → clique em upgrade → redirecionamento para checkout
+
+Requisitos adicionais:
+Adicionar logs claros para facilitar debug futuro
+
+Tratar erros silenciosos (try/catch + console.error)
+
+Garantir UX fluida (feedback visual ao clicar)
+
+Código limpo e organizado
+
+Se quiser, posso agora:
+
+adaptar esse prompt direto pro seu stack (React, Next.js, etc.)
+
+ou já te dar o código corrigido dessas partes (principalmente Supabase + Stripe)
+
+Só me fala qual tecnologia você está usando 👍
+
+
+Agora eu preciso vincular o meu produto da stripe no Replit, para que quando o usuário for efetuará assinatura efetuar usando o checkout de pagamento da stripe. Eu já criei as chaves mas preciso saber o que ele precisa que eu envie para que ele configure no app. Escreve o prompt em inglês 
+
+Here’s a clear, technical prompt in English for configuring Stripe subscriptions in your Replit app:
+
+TECHNICAL PROMPT – STRIPE SUBSCRIPTION INTEGRATION
+
+I need to integrate Stripe subscriptions into my application so that when a user selects a plan, they are redirected to Stripe Checkout and can complete a recurring subscription.
+
+Context:
+I already created my Stripe account and generated API keys
+
+I have products and pricing configured inside Stripe
+
+My app is hosted on Replit
+
+I want to use Stripe Checkout for subscriptions (not custom payment forms)
+
+What you need to configure:
+1. Required Stripe Data
+Make sure to use the following from my Stripe dashboard:
+
+Publishable Key
+
+Secret Key
+
+Price ID(s) (for subscription plans)
+
+Webhook Signing Secret (for handling events)
+
+2. Backend – Create Checkout Session
+Implement a backend endpoint that:
+
+Receives the selected plan (price_id)
+
+Creates a Stripe Checkout Session in subscription mode
+
+Returns the session URL
+
+Example requirements:
+
+Mode: subscription
+
+Include success_url and cancel_url
+
+Attach customer email (if available)
+
+3. Frontend – Redirect to Checkout
+When user clicks “Upgrade” or selects a plan:
+
+Call the backend endpoint
+
+Receive the checkout URL
+
+Redirect using window.location.href
+
+4. Webhooks (IMPORTANT)
+Implement a webhook endpoint to listen to Stripe events:
+
+checkout.session.completed
+
+invoice.paid
+
+customer.subscription.created
+
+customer.subscription.updated
+
+customer.subscription.deleted
+
+Use this to:
+
+Activate user subscription in database (Supabase)
+
+Store subscription status (active, canceled, etc.)
+
+Link Stripe customer ID with user ID
+
+5. Database (Supabase)
+Ensure the following fields exist:
+
+user_id
+
+stripe_customer_id
+
+subscription_id
+
+subscription_status
+
+plan_type
+
+6. Environment Variables
+Make sure these are properly configured in Replit:
+
+STRIPE_SECRET_KEY
+
+STRIPE_PUBLISHABLE_KEY
+
+STRIPE_WEBHOOK_SECRET
+
+7. Expected Flow:
+User clicks upgrade
+
+Frontend requests checkout session
+
+Backend creates session via Stripe
+
+User is redirected to Stripe Checkout
+
+Payment is completed
+
+Stripe sends webhook
+
+Backend updates user subscription in Supabase
+
+User gains PRO access
+
+Additional Requirements:
+Add proper error handling (try/catch)
+
+Log errors for debugging
+
+Ensure secure handling of keys (never expose secret key on frontend)
+
+Validate all inputs before creating session
+
+If possible, implement this using clean, modular code and make sure everything is production-ready.

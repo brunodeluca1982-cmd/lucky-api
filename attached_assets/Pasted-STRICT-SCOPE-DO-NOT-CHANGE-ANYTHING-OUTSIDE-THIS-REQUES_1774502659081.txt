@@ -1,0 +1,87 @@
+STRICT SCOPE — DO NOT CHANGE ANYTHING OUTSIDE THIS REQUEST
+
+Fix brand consistency issues across the app, focusing ONLY on logo usage and visual consistency in Lucky and Profile.
+
+Do NOT redesign flows.
+Do NOT change layout structure.
+Do NOT modify working logic.
+
+--------------------------------------------------
+1. LOGO CONSISTENCY (CRITICAL)
+--------------------------------------------------
+
+Current issue:
+Different logo versions are appearing across the app.
+
+Fix:
+
+- Ensure ONLY ONE official logo is used everywhere
+- Remove any fallback, placeholder, or outdated logo assets
+
+Check ALL screens:
+- Home (top and bottom sections)
+- Destination pages
+- Itinerary
+- Lucky
+- Profile
+
+Ensure:
+- same logo file
+- same proportions
+- same visual identity
+
+--------------------------------------------------
+2. REMOVE DUPLICATE OR FALLBACK ASSETS
+--------------------------------------------------
+
+- search for all logo files in the project
+- remove or replace inconsistent ones
+- ensure no component loads an alternative logo
+
+--------------------------------------------------
+3. LUCKY SCREEN POLISH (NO REDESIGN)
+--------------------------------------------------
+
+Keep structure, but improve consistency:
+
+- spacing must match the rest of the app
+- typography hierarchy must be clean and premium
+- no visual noise
+- align with the app’s editorial tone
+
+Do NOT redesign the screen.
+Only refine visual consistency.
+
+--------------------------------------------------
+4. PROFILE SCREEN ALIGNMENT
+--------------------------------------------------
+
+Ensure Profile follows the same visual system:
+
+- same spacing rules
+- same typography
+- same card style
+- same tone as the rest of the app
+
+Do NOT add new features.
+Do NOT change logic.
+Only align visuals.
+
+--------------------------------------------------
+5. DO NOT CHANGE ANYTHING ELSE
+--------------------------------------------------
+
+Do NOT:
+- change navigation
+- modify flows
+- add new components
+- touch working systems
+
+--------------------------------------------------
+CONFIRMATION REQUIRED:
+
+1. which logo file is now used globally
+2. where inconsistent logos were found and removed
+3. confirmation that all screens now use the same logo
+4. what was adjusted in Lucky (visual only)
+5. what was aligned in Profile

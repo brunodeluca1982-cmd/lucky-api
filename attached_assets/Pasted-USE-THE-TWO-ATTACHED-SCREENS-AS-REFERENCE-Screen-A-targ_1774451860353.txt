@@ -1,0 +1,129 @@
+USE THE TWO ATTACHED SCREENS AS REFERENCE:
+
+- Screen A = target visual direction / source of truth
+- Screen B = current implementation that needs to be upgraded
+
+IMPORTANT:
+Do NOT change the itinerary engine logic.
+Do NOT redesign the setup flow.
+Do NOT change navigation.
+Do NOT change unrelated screens.
+
+This task is ONLY about upgrading the itinerary result screen UI so it matches the premium visual language of the attached design.
+
+GOAL:
+Transform the current "Seu Roteiro" / itinerary result screen into a premium editorial iOS-style glassmorphism experience, visually aligned with the attached designer reference.
+
+VISUAL RULES:
+1. Use a blurred hero background image behind the whole result screen
+2. Background should feel cinematic, soft, premium, and semi-opaque
+3. Use glass / frosted cards with subtle transparency and depth
+4. Keep text highly legible on top of the image
+5. Maintain the Lucky Trip visual identity and premium editorial tone
+
+BACKGROUND BEHAVIOR:
+- The screen background should use a hero image related to the itinerary
+- Prefer using the hero image of the strongest / most iconic selected card in the itinerary
+- If possible, rotate or crossfade background images based on selected itinerary highlights
+- Keep the image blurred and darkened enough for readability
+- The effect should feel like iOS premium glass, not noisy or busy
+
+RESULT SCREEN REQUIREMENTS:
+The final itinerary screen should visually include:
+
+1. TOP HEADER
+- back button
+- title like “Roteiro automático” / “Seu roteiro”
+- share button
+- premium translucent top bar
+
+2. HOTEL / STAY RECOMMENDATION BLOCK
+- show recommended hotel card at top
+- hotel image
+- hotel name
+- neighborhood
+- short editorial description
+- price category badge if available
+
+3. SUMMARY BLOCK
+- total items
+- total days
+- short summary line
+- optional “Ir para: Dia 1 • Dia 2 ...”
+- should feel premium and light
+
+4. ACTION BUTTONS
+- Refinar no WhatsApp
+- Editar roteiro
+- Ver no mapa
+These should visually follow the attached target design, with strong hierarchy and elegant buttons.
+
+5. DAY CARDS
+Each day must become a premium glass card with:
+- Day title (Dia 1, Dia 2...)
+- region / neighborhood badge
+- weather icon for that day:
+  - ☀️ sunny
+  - 🌤️ partly cloudy
+  - 🌧️ rainy
+- optional total travel time / daily duration chip
+- subtle divider line
+- itinerary items as elegant subcards
+
+6. EACH ITINERARY ITEM SHOULD SHOW:
+- time (09:00, 12:30, etc. when available)
+- period label if needed (manhã / tarde / noite)
+- item image
+- item name
+- neighborhood
+- short supporting subtitle / editorial line when available
+- travel mode + travel time + distance when available
+- external/open icon where relevant
+
+7. VISUAL HIERARCHY
+- background image = emotional layer
+- day cards = functional layer
+- item cards = action layer
+The result should feel immersive but still structured and highly scannable.
+
+8. GLASSMORPHISM DETAILS
+- translucent backgrounds
+- light blur
+- thin borders
+- soft shadows
+- rounded corners
+- premium spacing
+- avoid flat white blocks like the current version
+
+9. WEATHER + REGION DETAILS
+Each day should clearly show:
+- weather icon
+- region label (for example: Zona Sul, Centro, Barra, etc. or neighborhood cluster)
+- these details should feel elegant, small, and useful
+
+10. KEEP CONTENT STRUCTURE RICH
+Do not simplify the result screen.
+It should feel more detailed, not less.
+The user should immediately understand:
+- what happens that day
+- where they are
+- what the mood is
+- how movement happens
+- what the weather is
+
+STRICT SCOPE:
+- UI upgrade only for the itinerary result screen
+- preserve current itinerary data structure
+- no new architecture changes
+- no engine rewrite
+- no setup-screen redesign
+
+FINAL TEST:
+The new result screen should feel close to the attached premium designer screen:
+- cinematic
+- premium
+- detailed
+- transparent / glass
+- iOS-like
+- emotionally desirable
+- not generic

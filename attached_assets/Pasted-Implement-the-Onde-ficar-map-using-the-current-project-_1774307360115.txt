@@ -1,0 +1,87 @@
+Implement the “Onde ficar” map using the current project architecture and connect it to Supabase only for real lodging neighborhood data.
+
+IMPORTANT:
+- The project already has Supabase and Google-related integrations configured
+- Use the existing Supabase client and environment variables already configured in the project
+- Do NOT create a new Supabase client
+- Do NOT request or hardcode API keys
+- Do NOT create a parallel architecture
+- Do NOT touch Gemini / ChatGPT / AI integrations
+- Do NOT redesign unrelated parts of the screen
+
+GOAL:
+Replace the current static/fake map interaction with a real interactive lodging map flow for Rio.
+
+MAP LAYER:
+- Use Google Maps as the temporary interactive map layer
+- Allow normal pan and zoom
+- Keep the surrounding UI premium, minimal, and iOS-like
+
+CLICKABLE LODGING NEIGHBORHOODS:
+Only these neighborhoods should be clickable for lodging decisions:
+- Ipanema
+- Recreio dos Bandeirantes
+- Barra da Tijuca
+- Arpoador
+- Copacabana
+- Leblon
+- Leme
+- Santa Teresa
+- Botafogo
+- São Conrado
+- Centro
+
+These are the ONLY clickable lodging neighborhoods.
+
+VISUAL CONTEXT ONLY (NOT CLICKABLE):
+- Cristo Redentor
+- Maracanã
+- Lagoa Rodrigo de Freitas
+
+Do NOT make landmarks clickable for hotel filtering.
+
+SUPABASE CONNECTION:
+Connect this flow to Supabase now, but ONLY for the lodging map experience.
+
+Use Supabase to load:
+- neighborhood name
+- neighborhood slug or id
+- neighborhood description (if available)
+- lodging items associated with each neighborhood
+
+Do NOT use mock neighborhood data if real Supabase data already exists.
+Do NOT connect unrelated tables or features.
+
+BEHAVIOR:
+1. User can pan and zoom the map normally.
+2. Clicking a clickable neighborhood opens a floating card over the map.
+3. The floating card must contain:
+   - neighborhood name
+   - short description
+   - button: "Ver hotéis"
+   - button: "Por dentro do bairro"
+4. Clicking "Ver hotéis" filters the lodging list below using real Supabase data.
+5. Clicking "Por dentro do bairro" navigates to the neighborhood detail flow (placeholder is acceptable if final route is not ready yet).
+6. Clicking outside the card closes it.
+
+STYLE:
+- premium
+- minimal
+- iOS-like
+- no clutter
+- floating card should be elegant, light, glass-like
+- avoid heavy default Google Maps styling if customization is possible
+
+IMPLEMENTATION NOTES:
+- Use only the 11 neighborhoods above as interactive lodging areas
+- Do not create extra clickable areas
+- If using markers or overlays, keep them subtle or invisible until interaction
+- Preserve the premium visual language already established in the app
+- Keep the implementation maintainable and simple
+
+OUTPUT:
+At the end, show exactly:
+1. which files were changed
+2. where Supabase was connected in this flow
+3. which table(s) were used
+4. how the selected neighborhood filters the lodging list

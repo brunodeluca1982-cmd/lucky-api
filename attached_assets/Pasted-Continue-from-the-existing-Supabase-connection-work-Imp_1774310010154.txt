@@ -1,0 +1,68 @@
+Continue from the existing Supabase connection work.
+
+Important corrections before proceeding:
+- This feature must NOT be called ficarBem
+- The correct product name is OndeFicar / onde-fikar? No — use exactly: OndeFicar / onde-ficar only if route naming requires kebab-case
+- Do NOT keep creating new code under the wrong naming
+- Preserve the Supabase implementation already completed
+
+Now proceed with the real “Onde ficar” flow only.
+
+GOAL:
+Build the lodging neighborhood map flow for Rio using the existing Supabase connection and the current screen as the starting point.
+
+SCOPE:
+- Do NOT redesign unrelated parts of the screen
+- Do NOT touch AI integrations
+- Do NOT use Replit PostgreSQL / Drizzle
+- Do NOT re-run Supabase setup
+- Do NOT create mock data if Supabase data already exists
+
+MAP EXPERIENCE:
+- Use Google Maps as the temporary interactive map layer
+- Allow normal pan and zoom
+
+CLICKABLE LODGING NEIGHBORHOODS ONLY:
+- Ipanema
+- Recreio dos Bandeirantes
+- Barra da Tijuca
+- Arpoador
+- Copacabana
+- Leblon
+- Leme
+- Santa Teresa
+- Botafogo
+- São Conrado
+- Centro
+
+VISUAL CONTEXT ONLY (NOT CLICKABLE):
+- Cristo Redentor
+- Maracanã
+- Lagoa Rodrigo de Freitas
+
+CARD BEHAVIOR:
+When clicking a clickable neighborhood, open a floating card over the map containing:
+- neighborhood name
+- short description from Supabase if available
+- button: "Ver hotéis"
+- button: "Por dentro do bairro"
+
+INTERACTION:
+- Clicking "Ver hotéis" must filter the lodging list below using real Supabase data
+- Clicking "Por dentro do bairro" can navigate to a placeholder flow for now
+- Clicking outside closes the card
+
+SUPABASE SOURCES:
+Prioritize in this order:
+1. v_stay_neighborhoods_with_hotels
+2. v_stay_hotels_full
+3. stay_neighborhoods
+4. stay_hotels
+
+OUTPUT:
+At the end, show exactly:
+1. which files were changed
+2. which files/identifiers were renamed from ficarBem to OndeFicar
+3. which Supabase tables/views were used
+4. how neighborhood click filters the hotel list
+5. whether any wrong old naming still remains

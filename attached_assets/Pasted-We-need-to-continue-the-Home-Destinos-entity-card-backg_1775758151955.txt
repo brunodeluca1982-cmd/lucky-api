@@ -1,0 +1,147 @@
+We need to continue the Home / Destinos / entity-card background system work.
+
+CRITICAL PRODUCT CORRECTIONS
+
+1. Do NOT use any map asset as background ever again
+2. Backgrounds must use real editorial/entity photos only
+3. All background photos must be selected and safe for MOBILE FULL-SCREEN VERTICAL use
+4. Prefer portrait (vertical) images whenever possible for mobile hero usage
+5. Do NOT allow automatic bad crops such as:
+   - Cristo showing only an arm
+   - landmarks cut awkwardly
+   - important subjects outside the visible mobile safe area
+
+This is critical:
+A card/entity image is NOT automatically a valid mobile hero background.
+
+We need a MOBILE-SAFE HERO IMAGE RULE.
+
+========================================
+CORE IMAGE OWNERSHIP MODEL
+========================================
+
+Each entity/card must support:
+
+- card_image (used in cards/lists)
+- mobile_hero_image (used as full-screen background)
+
+These are RELATED but NOT always the same file.
+
+RULE:
+
+mobile_hero_image must represent the SAME visual identity as card_image,
+but must be SAFE for vertical full-screen mobile display.
+
+If no dedicated mobile_hero_image exists:
+→ fallback must be carefully controlled (NOT blind cover crop)
+
+========================================
+STRICT PROHIBITION
+========================================
+
+Do NOT rely on:
+- automatic "cover" cropping
+- random center cropping
+- uncontrolled resizing
+
+If an image is not mobile-safe:
+→ it must NOT be used as background
+
+========================================
+HOME — FINAL BEHAVIOR
+========================================
+
+1. Home has:
+   - main featured hero card
+   - secondary cards
+
+2. ONLY the main featured hero card controls the background
+
+3. Background rule:
+
+background = activeFeaturedHeroCard.mobile_hero_image
+
+NOT:
+- not a destination pool
+- not another image of the same destination
+
+BUT:
+It must remain visually consistent with the card identity
+
+4. Secondary cards:
+- remain visible
+- remain scrollable
+- remain clickable
+- do NOT affect the background
+
+========================================
+ENTITY PAGE BEHAVIOR
+========================================
+
+For:
+- destinos
+- hotéis
+- restaurantes
+- o que fazer
+- lucky items
+
+When a user clicks a card:
+
+1. Open entity page
+2. Background MUST be:
+
+mobile_hero_image of that entity
+
+3. MVP state may show:
+"Falta pouco pra gente organizar sua viagem"
+
+4. Future:
+Optional background rotation allowed ONLY if:
+- a controlled pool of mobile-safe images exists
+
+========================================
+DESTINOS SCREEN
+========================================
+
+- Must keep multiple cards visible
+- Do NOT remove cards
+- Each card is independent
+- Each card click leads to its own entity page
+
+========================================
+MAP RULE (HARD RULE)
+========================================
+
+Map assets are permanently forbidden as:
+- background
+- hero image
+- fallback image
+
+Maps are ONLY allowed inside map components.
+
+========================================
+TASK
+========================================
+
+Show the corrected final architecture including:
+
+1. image ownership per entity:
+   - card_image
+   - mobile_hero_image
+   - optional future pool
+
+2. how to enforce mobile-safe images
+3. fallback strategy when mobile_hero_image is missing
+4. how Home uses activeFeaturedHeroCard + mobile hero image
+5. how entity pages open with correct background
+6. how to prevent bad crops at rendering level
+7. exact files/components to update
+8. minimal implementation roadmap
+
+IMPORTANT
+
+Do NOT implement yet.
+Show architecture only.
+
+Focus ONLY on product logic and mobile-safe background behavior.
+Do NOT drift into infrastructure or backend audits.

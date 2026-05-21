@@ -1,0 +1,119 @@
+We need to improve the app-wide HERO / BACKGROUND IMAGE SYSTEM.
+
+This is now a product-priority visual fix because the current static sunset image is making the whole app feel flat, repetitive, and overly tinted in one single color mood.
+
+PROBLEM
+
+Right now, the same warm Rio sunset background stays static for too long and appears across too many screens.
+This creates three problems:
+
+1. the app feels visually repetitive
+2. screens lose their own identity
+3. the whole product feels covered by the same orange/brown atmosphere
+
+I do NOT want that.
+
+OBJECTIVE
+
+Create a rotating, premium, smooth background hero system that makes the app feel alive, calmer, more editorial, and more sophisticated.
+
+CRITICAL RULES
+
+1. Do NOT touch engine logic
+2. Do NOT touch itinerary logic
+3. Do NOT touch map logic
+4. Do NOT redesign unrelated screens
+5. Focus ONLY on background / hero image behavior
+6. Prefer existing Supabase image sources if already available
+7. If a screen has no good Supabase source yet, use a safe local fallback pool
+8. Keep the implementation lightweight and stable
+9. Do NOT make the motion distracting or cheap
+10. Respect readability and contrast at all times
+
+UX REQUIREMENTS
+
+I do NOT want the image to stay static.
+I want it to rotate smoothly.
+
+But I also do NOT want it to change too fast and feel nervous.
+
+Recommended behavior:
+- background image rotates every 10 to 12 seconds
+- crossfade transition around 1.2 to 1.8 seconds
+- no aggressive zoom
+- no excessive parallax
+- no slideshow feeling
+- calm, premium, editorial motion
+
+VISUAL GOALS
+
+The app should no longer feel like it is all covered by the same Rio sunset.
+
+Different screens should feel related, but not identical.
+
+We need better visual identity separation between:
+- Home
+- Destinos
+- Roteiro
+- Perfil
+- other key app areas
+
+The "Viagem" area already feels better differentiated.
+Use that principle.
+
+DESIGN PRINCIPLES
+
+1. Each screen should use a background image pool, not a single fixed image
+2. Each screen or context should have its own family of images
+3. Images must stay subtle behind content
+4. Overlay / gradient / blur must preserve readability
+5. The app should feel dynamic but calm
+
+TASK
+
+Audit the current hero/background implementation and propose the minimal safe implementation plan to achieve this rotating premium background system.
+
+I need you to show:
+
+1. where the current static background is defined
+2. which screens currently share the same background logic
+3. the best minimal architecture for rotating background pools
+4. whether each major screen should have:
+   - its own pool
+   - destination-based pool
+   - neighborhood/context-based pool
+5. how the fade transition should be implemented
+6. what timing you recommend and why
+7. how to keep readability stable during transitions
+8. exact files/components that need to change
+9. minimal implementation roadmap
+
+IMPORTANT PRODUCT REQUIREMENTS
+
+For the itinerary/roteiro area:
+- the background should not always be the same Rio sunset
+- it should feel more contextual
+- ideally the pool should eventually reflect the destination or dominant area of the day
+- but for now, start with a safe premium rotating pool if needed
+
+For the home:
+- background should feel more editorial and aspirational
+- not identical to roteiro
+
+For profile / utility areas:
+- background may be calmer or more neutral
+- still premium, but less dramatic
+
+OUTPUT FORMAT
+
+1. current background/hero audit
+2. visual problems caused by the current static system
+3. recommended timing + transition behavior
+4. recommended pool strategy per screen
+5. readability / overlay strategy
+6. exact files/components to change
+7. minimal implementation roadmap
+8. what must NOT change
+
+Do NOT implement yet.
+Show the full plan first.

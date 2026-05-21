@@ -1,0 +1,92 @@
+CRITICAL UX FIX — BOTTOM NAV + INTEREST CARDS + FLOW AUTO-ADVANCE
+
+Do not redesign the app.
+Do not change navigation structure.
+Do not refactor unrelated systems.
+
+Fix these issues together. They are all part of core UX.
+
+--------------------------------------------------
+1. BOTTOM NAVIGATION (CRITICAL)
+--------------------------------------------------
+
+The bottom navigation is broken (transparent / only visible on press).
+
+Fix immediately:
+
+- must ALWAYS be visible
+- no transparency
+- no glass / blur effect
+- use solid background (white or light neutral, iOS style)
+- no brown tones
+
+Layering:
+- ensure tab bar is above all content (z-index fix)
+- must never disappear behind screens or images
+
+Colors:
+- active tab = brand gold
+- inactive = neutral gray/black
+
+Apply consistently across ALL screens.
+
+--------------------------------------------------
+2. INTEREST OPTIONS (AVENTURA / CULTURA / FESTA)
+--------------------------------------------------
+
+The layout is incorrect.
+
+Fix:
+- restore card/chip style from reference screens
+- do NOT use fallback stacked layout
+- keep premium, clean, Apple-like feel
+- no emojis
+- proper spacing and hierarchy
+
+--------------------------------------------------
+3. AUTO-ADVANCE FLOW (VERY IMPORTANT)
+--------------------------------------------------
+
+The flow is not smooth.
+
+Fix:
+- automatically move to next step when user selects an option
+
+Examples:
+- after selecting travel company → go next
+- after selecting travel style → go next
+- after selecting interests → continue when enough is selected
+
+Remove unnecessary confirmation steps.
+
+Goal:
+- fast
+- fluid
+- intelligent
+- low friction
+
+--------------------------------------------------
+4. KEEP EXISTING LOGIC
+--------------------------------------------------
+
+Do NOT break:
+
+- Home entry = full flow (destination first)
+- Viagem with saved places = start at date
+- Viagem without saved places = full flow
+
+Keep:
+- bottom navigation structure
+- itinerary engine
+- overall UI direction
+
+--------------------------------------------------
+CONFIRMATION REQUIRED
+--------------------------------------------------
+
+After fixing, confirm:
+
+1. bottom nav background + z-index fix
+2. interest cards visual format
+3. which steps now auto-advance
+4. confirmation that entry logic was preserved

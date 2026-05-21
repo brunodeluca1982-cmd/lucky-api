@@ -1,0 +1,109 @@
+Fix the neighborhood flow in the Rio map.
+
+IMPORTANT:
+Do NOT redesign the app.
+Do NOT change bottom navigation.
+Do NOT change global styles.
+This is a flow + visual correction only.
+
+-----------------------------------
+PROBLEM
+-----------------------------------
+
+When I tap a neighborhood on the map, the current result is confusing:
+
+- the floating map card stays visible
+- the neighborhood page opens underneath it
+- the floating card still uses wrong orange/brown tones
+- the neighborhood page does not clearly open as a proper editorial detail page with hero image
+
+This must be corrected.
+
+-----------------------------------
+CORRECT BEHAVIOR
+-----------------------------------
+
+When a neighborhood is tapped on the map:
+
+1. Show a floating neighborhood card over the map
+2. That floating card must be clean, light, premium, and aligned with The Lucky Trip style
+3. The floating card must contain:
+   - neighborhood name
+   - short editorial summary
+   - button: "Por dentro do bairro"
+   - button: "Ver hotéis"
+
+Then:
+
+- If user taps "Por dentro do bairro":
+  open the neighborhood detail page
+
+- If user taps "Ver hotéis":
+  open the same neighborhood detail page, but already focused on the hotels section/list
+
+-----------------------------------
+VERY IMPORTANT
+-----------------------------------
+
+Before navigating to the neighborhood detail page:
+
+- fully dismiss the floating map card
+- no overlay must remain visible on top of the new page
+
+The detail page must open cleanly.
+
+-----------------------------------
+NEIGHBORHOOD DETAIL PAGE
+-----------------------------------
+
+The neighborhood detail page must follow the same editorial structure already established in the app:
+
+- visible hero image at the top
+- hero image must not be missing
+- use carousel if multiple media exist
+- title
+- richer editorial text from Supabase
+- action buttons / section focus
+
+The neighborhood is a real content page, not just a filter.
+
+-----------------------------------
+VISUAL CORRECTION
+-----------------------------------
+
+The floating map card is still using wrong orange/brown tones.
+
+Fix this:
+
+- remove the current orange/brown look
+- match The Lucky Trip visual language
+- use transparent / glass / neutral editorial tones
+- keep it elegant, light, premium
+
+Do NOT use:
+- orange buttons
+- brown blocks
+- heavy dark overlays
+
+-----------------------------------
+SCOPE
+-----------------------------------
+
+Fix ONLY:
+- neighborhood floating card behavior
+- neighborhood navigation flow
+- neighborhood hero/detail opening
+- neighborhood card color/style
+
+Do NOT modify unrelated screens.
+
+-----------------------------------
+OUTPUT
+-----------------------------------
+
+At the end, show exactly:
+1. which files were changed
+2. how the floating card is now dismissed before navigation
+3. how "Por dentro do bairro" and "Ver hotéis" now differ
+4. where the neighborhood hero image is sourced from
+5. confirmation that the orange/brown tones were removed

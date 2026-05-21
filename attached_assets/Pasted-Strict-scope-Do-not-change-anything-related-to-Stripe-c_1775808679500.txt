@@ -1,0 +1,57 @@
+Strict scope. Do not change anything related to Stripe, checkout, billing, pricing, webhooks, auth, deploy, secrets, env vars, maps, or any flow outside this task. Stripe is frozen and must remain untouched.
+
+Important:
+Do not create any new tables, new media architecture, new Supabase schema, or parallel DB structure.
+Do not create destination_hero_media.
+Do not redesign the data model.
+Use the existing Supabase source of truth only.
+
+Goal:
+Phase 1 only.
+Replace hardcoded local Rio decorative background pools with Supabase-driven image media, in a reversible way, with minimum code changes.
+
+For this phase:
+- images only
+- no video implementation yet
+- do not modify video players or add new video architecture
+- do not touch RotatingBackground unless absolutely necessary for loading remote images, and explain first
+
+Rules:
+- Maps must never be used as decorative backgrounds.
+- Do not use map or aerial-map assets as decorative hero media.
+- Keep local editorial fallback only if Supabase returns nothing.
+- Do not hardcode new media.
+- No refactor.
+- No opportunistic improvements.
+- No unrelated edits.
+
+Allowed files only:
+- artifacts/mobile/app/(tabs)/index.tsx
+- artifacts/mobile/app/(tabs)/perfil.tsx
+- artifacts/mobile/app/(tabs)/lucky.tsx
+- artifacts/mobile/app/(tabs)/destinos.tsx
+- artifacts/mobile/app/(tabs)/roteiro/index.tsx
+
+What I want:
+1. Audit only these 5 files.
+2. Reuse the existing Supabase hero media source already prepared in this project.
+3. Replace the hardcoded local Rio image pools with Supabase-driven image media.
+4. Keep local fallback only if Supabase returns empty.
+5. Do not change any other file unless absolutely unavoidable, and if so, stop and ask for approval first.
+
+Process:
+1. Show me exactly which of the 5 files you would edit.
+2. Briefly explain how the app will read the existing Supabase hero media.
+3. Stop and wait for my approval.
+4. Only after approval, implement the minimum necessary changes.
+
+Success criteria:
+- Decorative Rio backgrounds no longer depend on hardcoded local pools.
+- The app reads hero image media from Supabase.
+- I can later change the media source from the database without rewriting those screens.
+- Zero impact on Stripe, checkout, auth, deploy, maps, or payment logic.
+
+After this is stable, we will do Phase 2:
+- optional video support
+- separate task
+- separate approval

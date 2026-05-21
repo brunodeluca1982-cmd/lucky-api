@@ -1,0 +1,129 @@
+We will now IMPLEMENT the minimum required fixes to make Stripe subscriptions work correctly.
+
+CRITICAL RULES:
+- DO NOT change any UI
+- DO NOT change any design
+- DO NOT change navigation
+- DO NOT change copy or layout
+- ONLY implement backend + auth + premium logic fixes
+
+FOCUS ONLY ON FUNCTIONALITY.
+
+IMPLEMENT IN THIS EXACT ORDER:
+
+-----------------------------------
+STEP 1 — FIX STRIPE WEBHOOK
+-----------------------------------
+
+File:
+supabase/functions/stripe-webhook/index.ts
+
+Tasks:
+- Replace any legacy "serve" import with Deno.serve
+- Ensure compatibility with Supabase Edge runtime
+- Read Stripe event using STRIPE_WEBHOOK_SECRET
+- Extract user_id from:
+  1. client_reference_id (priority)
+  2. metadata.user_id (fallback)
+
+Handle events:
+
+1. checkout.session.completed
+→ create or update subscriptions
+→ set access_levels.plan_type = "premium"
+→ set access_levels.access_until
+
+2. customer.subscription.updated
+→ update status and period
+
+3. customer.subscription.deleted
+→ set plan_type = "free"
+
+4. invoice.paid
+→ extend access_until
+
+5. invoice.payment_failed
+→ set status = past_due
+
+IMPORTANT:
+- Use user_id (NOT device_id)
+- No UI changes
+
+-----------------------------------
+STEP 2 — FIX CHECKOUT FUNCTION
+-----------------------------------
+
+File:
+supabase/functions/create-checkout/index.ts
+
+Tasks:
+- Accept userId from request body
+- Validate userId exists
+- Pass to Stripe:
+
+client_reference_id: userId
+metadata: { user_id: userId }
+
+- Keep plan mapping logic
+- Do not use device_id anywhere
+
+-----------------------------------
+STEP 3 — ADD BASIC AUTH (MINIMAL)
+-----------------------------------
+
+Create:
+hooks/useAuth.ts
+
+Tasks:
+- Get session from supabase.auth.getSession()
+- Listen to auth changes
+- Expose:
+  { user, signInWithOtp, signOut }
+
+No UI changes yet.
+
+-----------------------------------
+STEP 4 — CONNECT CHECKOUT TO USER
+-----------------------------------
+
+File:
+subscription.tsx
+
+Tasks:
+- Get user from useAuth()
+- If user exists:
+  send { plan, userId: user.id }
+- If no user:
+  block checkout and show simple alert:
+  "Faça login para continuar"
+
+-----------------------------------
+STEP 5 — UPDATE PREMIUM SOURCE
+-----------------------------------
+
+File:
+GuiaContext.tsx
+
+Tasks:
+- Replace device_id premium check
+- Use:
+
+supabase
+.from("access_levels")
+.eq("user_id", user.id)
+
+- Keep AsyncStorage only as cache fallback
+
+-----------------------------------
+
+RETURN:
+1. files changed
+2. exact code blocks updated
+3. confirmation webhook is working
+4. confirmation checkout includes user_id
+5. confirmation premium is now tied to Supabase user
+
+DO NOT TOUCH ANY DESIGN.
+DO NOT TOUCH NAVIGATION.
+DO NOT ADD FEATURES.
+ONLY FIX THE CORE SYSTEM.

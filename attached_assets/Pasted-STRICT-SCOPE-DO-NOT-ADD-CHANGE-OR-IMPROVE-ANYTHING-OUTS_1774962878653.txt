@@ -1,0 +1,105 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Fix ONLY the logic of the base itineraries shown on Home.
+Do NOT redesign UI.
+Do NOT change layout.
+Do NOT modify navigation.
+Do NOT touch unrelated screens.
+
+PROBLEM:
+The base itineraries suggested on Home are not intelligent enough.
+Some of them repeat the same place in the same day or create low-quality sequences.
+
+GOAL:
+Make every base itinerary feel truly curated, coherent, and non-redundant.
+
+--------------------------------------------------
+1. NO DUPLICATE PLACES IN THE SAME ITINERARY
+--------------------------------------------------
+
+Rules:
+- the same place must never appear twice in the same itinerary
+- especially never on the same day
+- if a duplicate is detected, replace it with another valid place
+
+--------------------------------------------------
+2. NO DUPLICATE PLACES IN THE SAME DAY
+--------------------------------------------------
+
+Each day must contain unique places only.
+
+Examples of what must NOT happen:
+- same attraction in morning and afternoon
+- same restaurant repeated
+- same shopping/place repeated in two slots
+
+--------------------------------------------------
+3. DAY STRUCTURE MUST BE COHERENT
+--------------------------------------------------
+
+Each day should follow a smart structure such as:
+- manhã
+- almoço
+- tarde
+- noite / jantar
+
+Do NOT stack random places without logic.
+
+--------------------------------------------------
+4. VARIETY RULE
+--------------------------------------------------
+
+Within the same itinerary:
+- avoid excessive repetition of the same category
+- balance when possible:
+  - passeio
+  - gastronomia
+  - contemplação
+  - cultura
+  - compras
+  - descanso
+
+The result must feel curated, not mechanically assembled.
+
+--------------------------------------------------
+5. GEO / FLOW COHERENCE
+--------------------------------------------------
+
+Within each day:
+- avoid unnecessary back-and-forth
+- keep places reasonably coherent by area / flow
+- do not optimize only by distance if the experience becomes repetitive
+
+--------------------------------------------------
+6. FIX EXISTING BASE ITINERARIES
+--------------------------------------------------
+
+Audit and correct the current Home base itineraries already being shown.
+
+This includes checking all currently visible itineraries and removing:
+- duplicates
+- repeated places
+- low-quality sequences
+
+--------------------------------------------------
+7. DO NOT CHANGE ANYTHING ELSE
+--------------------------------------------------
+
+Do NOT:
+- redesign the cards
+- change the home layout
+- modify unrelated itinerary generation
+- change visual style
+
+Only fix the logic/content quality of the base itineraries.
+
+--------------------------------------------------
+REQUIRED CONFIRMATION
+--------------------------------------------------
+
+After fixing, confirm ONLY:
+
+1. how duplicate places are prevented
+2. how same-day repetition is prevented
+3. how variety is enforced
+4. which existing Home itineraries were corrected

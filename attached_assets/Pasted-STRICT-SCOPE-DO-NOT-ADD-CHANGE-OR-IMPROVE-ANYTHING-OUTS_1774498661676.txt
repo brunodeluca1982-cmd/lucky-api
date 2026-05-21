@@ -1,0 +1,90 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Fix ONLY the copy and visual tone listed below.
+Do NOT redesign layout.
+Do NOT change navigation.
+Do NOT change flows.
+Do NOT change working logic.
+Do NOT modify components that are already working correctly.
+
+--------------------------------------------------
+1. WORDING / BRAND VOICE
+--------------------------------------------------
+
+Across the app, replace wording that sounds mechanical or generic.
+
+Main rule:
+- replace "automático" with "inteligente"
+
+Examples:
+- "Roteiro automático" -> "Roteiro inteligente"
+- "Criar roteiro com IA" -> "Criar roteiro inteligente"
+- any similar wording should be rewritten to feel more human, curated, and aligned with The Lucky Trip identity
+
+Tone rules:
+- never sound robotic
+- never sound like blind automation
+- prefer words that suggest inteligência, curadoria, critério, olhar humano
+
+Do not rewrite everything.
+Only adjust labels/microcopy that weaken the brand voice.
+
+--------------------------------------------------
+2. VISUAL TONE — REMOVE DARK MODE FEEL
+--------------------------------------------------
+
+The app currently feels too dark.
+This is NOT the intended direction.
+
+Target direction:
+- calm
+- clean
+- flat
+- light editorial
+- premium
+- soft and opaque
+- not bright/glowing
+- not dark mode
+
+Fix the visual tone without redesigning the app.
+
+Rules:
+- reduce heavy black/dark backgrounds
+- reduce excessive dark overlays
+- remove dark-mode feeling
+- keep readability, but shift toward light neutral surfaces
+- use soft light neutrals instead of black-heavy UI
+- keep the app elegant and calm, not loud
+
+Important:
+- do NOT make it flashy
+- do NOT make it high-saturation
+- do NOT make it overly white/glossy
+- do NOT turn it into “bright mode”
+- the result should feel soft, premium, and restful
+
+--------------------------------------------------
+3. WHAT TO KEEP
+--------------------------------------------------
+
+Keep:
+- current layout structure
+- current navigation
+- current working interactions
+- current premium direction
+- current image-led approach
+
+Do NOT:
+- redesign screens
+- change spacing unless required for visual consistency
+- alter working components unnecessarily
+
+--------------------------------------------------
+4. REQUIRED CONFIRMATION
+--------------------------------------------------
+
+After applying, confirm ONLY:
+1. which labels using "automático" were changed
+2. how the dark-mode feel was reduced
+3. which surfaces/backgrounds were lightened
+4. that no layout or flow was changed

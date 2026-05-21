@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "The Lucky Trip",
+    "slug": "mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "theluckytrip",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash-branded.jpeg",
+      "resizeMode": "cover",
+      "backgroundColor": "#F5F0E8"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.theluckytrip.app",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "theluckytrip"
+            ]
+          }
+        ]
+      }
+    },
+    "android": {
+      "navigationBarColor": "#1A0E04"
+    },
+    "web": {
+      "favicon": "./assets/images/icon.png",
+      "backgroundColor": "#1A0E04",
+      "bundler": "metro",
+      "output": "spa"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "origin": "https://theluckytrip.com"
+        }
+      ],
+      "expo-font",
+      "expo-web-browser",
+      "expo-dev-client"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": "https://theluckytrip.com"
+      },
+      "eas": {
+        "projectId": "c472a823-fe3e-41f8-a0dd-4cf5d904af43"
+      }
+    },
+    "owner": "theluckytrip"
+  }
+}

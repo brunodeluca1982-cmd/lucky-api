@@ -1,0 +1,100 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Fix ONLY the issues listed below.
+Do NOT redesign.
+Do NOT create new features.
+Do NOT modify working UI.
+Do NOT change styles unless required to fix the bugs.
+
+--------------------------------------------------
+1. BOTTOM NAV IS CUT (SAFE AREA BUG)
+--------------------------------------------------
+
+The bottom navigation is being cut off on iOS.
+
+Fix:
+
+- respect safe area insets (bottom)
+- ensure full visibility of labels and icons
+- add proper bottom padding where needed
+- verify on all screens:
+  - home
+  - viagem
+  - roteiro
+  - lucky
+  - perfil
+
+This must behave like native iOS tab bars.
+
+--------------------------------------------------
+2. ITINERARY ITEM CLICK IS INCONSISTENT (CRITICAL)
+--------------------------------------------------
+
+Problem:
+- some items open correct place card
+- others do nothing or open wrong page
+
+Fix:
+
+- EVERY item in the itinerary must open its correct place card
+- no fallback to generic "local" screen
+
+Required logic:
+
+IF item has:
+- place_id → open place details screen using place_id
+
+ELSE IF item has:
+- lat/lng → open map-based place view
+
+ELSE:
+- open fallback card using:
+  name + neighborhood + google_maps_url
+
+There must be NO dead click.
+
+--------------------------------------------------
+3. EXPORT AND SHARE NOT WORKING (CRITICAL)
+--------------------------------------------------
+
+Problem:
+- Export button does nothing
+- Share button does nothing or is inconsistent
+
+Fix:
+
+Export must:
+- generate a persistent itinerary URL
+- store or reuse existing itinerary ID
+- return a shareable link
+
+Share must:
+- open native share sheet
+- include:
+  itinerary title
+  destination
+  link
+
+Do NOT leave buttons without action.
+
+--------------------------------------------------
+4. DO NOT BREAK EXISTING FEATURES
+--------------------------------------------------
+
+Keep working:
+- itinerary UI
+- bottom navigation style
+- map links
+- flow
+
+--------------------------------------------------
+VALIDATION REQUIRED
+--------------------------------------------------
+
+After fixing, confirm:
+
+1. safe area fix applied (which component)
+2. how item click routing works now
+3. how export generates the URL
+4. how share is triggered (native sheet)
+5. confirm no dead clicks remain

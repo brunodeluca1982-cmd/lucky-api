@@ -1,0 +1,152 @@
+PROMPT BOM PRA PRODUTO — EVOLUÇÃO DA TELA “VIAGEM” (MEU GUIA)
+
+CONTEXTO ATUAL
+A tela “Viagem” hoje está como um empty state elegante:
+- título “Meu Guia”
+- mensagem explicando salvar lugares
+- visual limpo e premium
+
+Isso está correto como base.
+
+PROBLEMA:
+A tela está passiva.
+Ela não incentiva ação.
+Ela não oferece caminho claro.
+Ela não escala quando o usuário começa a usar.
+
+---
+
+OBJETIVO
+Transformar essa tela em:
+
+→ um ponto de partida ativo  
+→ um hub de organização  
+→ sem perder a elegância atual  
+
+---
+
+ESTRUTURA FINAL (OBRIGATÓRIA)
+
+1. HEADER (manter)
+- “Meu Guia” ou “Viagem”
+- subtítulo leve
+- manter estética editorial
+
+---
+
+2. HERO / EMPTY STATE (AJUSTAR, NÃO REMOVER)
+
+Manter:
+- ícone
+- frase principal
+
+Mas reduzir altura (não ocupar metade da tela)
+
+Adicionar logo abaixo:
+
+👉 AÇÕES IMEDIATAS
+
+---
+
+3. BLOCO DE AÇÕES (CRÍTICO — INSERIR AQUI)
+
+Adicionar logo abaixo do texto principal:
+
+Botões (estilo glass, leves):
+
+- Colar link do Instagram
+- Colar link do TikTok
+- Colar link
+- ✨ Criar roteiro com IA (botão principal)
+
+REGRAS:
+- botão de IA é o destaque visual
+- todos os botões devem caber sem scroll
+- ação rápida, sem fricção
+
+---
+
+4. ESTADO COM LUGARES SALVOS (TRANSIÇÃO AUTOMÁTICA)
+
+Quando o usuário salvar o primeiro lugar:
+
+REMOVER o empty state central grande
+
+E substituir por:
+
+👉 BLOCO “SEUS LUGARES”
+
+Formato obrigatório:
+- mini cards (não usar cards grandes)
+- grid ou carrossel horizontal
+- imagem pequena
+- nome do lugar + tipo
+
+Interações:
+- tocar → abre detalhe
+- botão → adicionar ao roteiro
+- botão → remover
+
+---
+
+5. FUNDO DINÂMICO (IMPORTANTE)
+
+- fundo da tela deve usar imagem do destino
+- aplicar blur + overlay glass
+
+Se houver múltiplos destinos:
+→ alternar automaticamente (fade suave)
+
+---
+
+6. COMPORTAMENTO
+
+Estado 1 (vazio):
+- elegante
+- instrutivo
+- com ações claras
+
+Estado 2 (com dados):
+- vira painel visual
+- escaneável
+- rápido
+
+---
+
+7. O QUE NÃO FAZER
+
+- não transformar isso em feed
+- não adicionar blocos editoriais
+- não usar cards grandes
+- não esconder ações
+- não manter empty state gigante após uso
+
+---
+
+8. SENSAÇÃO FINAL
+
+Antes de usar:
+→ “ok, entendi o que fazer”
+
+Depois de usar:
+→ “minha viagem está tomando forma”
+
+---
+
+9. REGRA DE PRODUTO
+
+Essa tela não é sobre inspiração  
+Essa tela é sobre construção  
+
+Se parecer Pinterest → errado  
+Se parecer painel de controle → certo  
+
+---
+
+ANTES DE IMPLEMENTAR
+
+Pergunta obrigatória:
+
+"Essa tela ajuda o usuário a agir em 3 segundos?"
+
+Se não → simplifique mais

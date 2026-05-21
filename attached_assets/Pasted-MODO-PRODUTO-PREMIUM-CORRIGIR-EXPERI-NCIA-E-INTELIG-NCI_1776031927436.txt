@@ -1,0 +1,103 @@
+MODO PRODUTO PREMIUM — CORRIGIR EXPERIÊNCIA E INTELIGÊNCIA DO ROTEIRO
+
+Situação atual:
+- O roteiro está sendo gerado (generate-itinerary OK)
+- Mas a experiência está errada e pouco inteligente
+
+Problemas identificados:
+
+1) UI / VISUAL
+- Fundo não está usando o background cinematográfico com transparência
+- Tela de resultado parece “flat”, sem profundidade premium
+
+2) LÓGICA DO ROTEIRO (CRÍTICO)
+- Sequência de lugares sem inteligência (ex: 3 restaurantes seguidos)
+- Repetição de locais (Arpoador duplicado)
+- Falta de distribuição por momento do dia (manhã/tarde/noite)
+- Não respeita experiência real de viagem
+
+OBJETIVO:
+Transformar o roteiro em nível concierge premium (estilo Apple / Airbnb)
+
+---
+
+PARTE 1 — FUNDO PREMIUM (RESULT PHASE)
+
+No ResultPhase:
+
+1. Garantir que o fundo use RotatingBackground
+2. Aplicar overlay com transparência (glass effect)
+3. Cards devem ter:
+   - background: rgba(255,255,255,0.08)
+   - backdrop blur
+   - borda leve branca translúcida
+
+4. NÃO usar fundo sólido escuro
+
+Resultado esperado:
+- sensação de profundidade
+- visual cinematográfico
+- consistência com o resto do app
+
+---
+
+PARTE 2 — CORREÇÃO DO MOTOR (generate-itinerary)
+
+ANTES de retornar o roteiro:
+
+1. PROIBIR sequências inválidas:
+- mais de 1 restaurante seguido
+- mais de 2 itens iguais de categoria
+
+2. GARANTIR diversidade por período:
+
+MANHÃ:
+- atividade leve ou experiência
+
+ALMOÇO:
+- 1 restaurante
+
+TARDE:
+- experiência + passeio
+
+NOITE:
+- jantar OU bar OU evento
+
+3. REMOVER duplicações:
+- mesmo lugar não pode aparecer 2x no mesmo dia
+
+4. ORGANIZAÇÃO GEOGRÁFICA:
+- evitar deslocamento burro
+- agrupar por bairro
+
+5. ORDEM LÓGICA:
+- não colocar praia depois de jantar
+- não colocar almoço às 15h
+
+---
+
+PARTE 3 — REGRA CRÍTICA
+
+NÃO usar LLM para decidir tudo.
+
+Fluxo correto:
+1. Filtrar via banco (Supabase)
+2. Aplicar regras (determinístico)
+3. LLM apenas organiza ordem
+
+---
+
+PARTE 4 — NÃO QUEBRAR
+
+NÃO alterar:
+- fetch do generate-itinerary
+- estrutura de dados
+- navegação
+
+---
+
+RESULTADO FINAL ESPERADO:
+
+- roteiro com lógica real de viagem
+- visual premium
+- experiência comparável a concierge humano

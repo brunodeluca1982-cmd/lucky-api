@@ -1,0 +1,126 @@
+STRICT SCOPE — DO NOT CHANGE ANYTHING OUTSIDE THIS REQUEST
+
+Fix 4 critical MVP issues in the app.
+
+Do NOT redesign UI.
+Do NOT change layout structure.
+Do NOT modify working logic outside these fixes.
+
+--------------------------------------------------
+1. HERO READABILITY (CRITICAL)
+--------------------------------------------------
+
+Problem:
+Text is hard to read due to background image transparency.
+
+Fix:
+- apply a darker overlay on hero background images (40–60% opacity)
+- ensure text contrast is always high
+- add subtle text shadow to titles and subtitles
+
+Goal:
+Text must be readable instantly in all conditions.
+
+--------------------------------------------------
+2. ENTITY ROUTING / ITEM CLICK CONSISTENCY (CRITICAL)
+--------------------------------------------------
+
+Problem:
+Clicking itinerary items or featured items sometimes opens the wrong screen, a generic list, or nothing.
+
+MANDATORY SYSTEM RULE:
+Every curated item from Supabase is its own navigable entity with its own detail page.
+
+This applies to ALL rows from:
+- restaurantes
+- stay_hotels
+- o_que_fazer_rio
+- lucky_list_rio
+
+If an item appears anywhere in the app (home, highlights, hero, itinerary, search, saved items, suggestions, destination page, etc.), clicking it must always open its exact corresponding detail page.
+
+Required behavior:
+- never route by loose name match
+- never open generic category pages if the exact entity exists
+- never open a generic "local" page
+- never leave a dead click
+
+Routing must resolve by exact mapping:
+- source_table + reference_id
+or equivalent exact entity identifiers already stored in the app
+
+Mapping rule:
+- restaurantes → restaurant detail page
+- stay_hotels → hotel detail page
+- o_que_fazer_rio → activity detail page
+- lucky_list_rio → experience detail page
+
+If the clicked item exists in Supabase:
+→ ALWAYS open its specific detail page
+
+If the clicked item does NOT exist yet:
+→ show fallback screen:
+"Em breve disponível"
+
+This must become a system rule across the app, not a one-off fix.
+
+--------------------------------------------------
+3. EXPORT FUNCTION (CRITICAL)
+--------------------------------------------------
+
+Problem:
+Export button behaves like share and does not generate a real output.
+
+Fix:
+- create a real export feature:
+  generate a shareable URL for the itinerary
+
+Requirements:
+- URL must represent the full itinerary
+- must be accessible via browser
+- must include:
+  - days
+  - places
+  - sequence
+
+Export button:
+→ generates link
+→ shows preview or copy/share option
+
+Do NOT duplicate share behavior.
+
+--------------------------------------------------
+4. ADD EXTERNAL PLACES (GOOGLE)
+--------------------------------------------------
+
+Problem:
+User cannot add places outside the database.
+
+Fix:
+- allow adding external places via search input
+
+Flow:
+- user types name
+- fetch suggestions using Google Places or existing place functions
+- allow selection
+
+When selected:
+- store as external place with:
+  - name
+  - lat/lng
+  - place_id (if available)
+  - address if available
+  - external = true
+
+Display:
+- treat like normal itinerary item
+
+--------------------------------------------------
+CONFIRMATION REQUIRED:
+
+1. how hero readability was fixed
+2. how entity routing now works
+3. which identifiers are used to open the correct detail page
+4. confirmation that ALL Rio Supabase items now open their own pages everywhere in the app
+5. how export URL is generated
+6. how external places are stored and rendered

@@ -1,0 +1,17 @@
+import { getStripeSync } from "./stripeClient.js";
+
+export class WebhookHandlers {
+  static async processWebhook(payload: Buffer, signature: string): Promise<void> {
+    if (!Buffer.isBuffer(payload)) {
+      throw new Error(
+        "STRIPE WEBHOOK ERROR: Payload must be a Buffer. " +
+        "Received type: " + typeof payload + ". " +
+        "This means express.json() parsed the body before this handler. " +
+        "FIX: Ensure the webhook route is registered BEFORE app.use(express.json())."
+      );
+    }
+
+    const sync = await getStripeSync();
+    await sync.processWebhook(payload, signature);
+  }
+}

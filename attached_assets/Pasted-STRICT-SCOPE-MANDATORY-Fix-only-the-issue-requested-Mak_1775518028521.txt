@@ -1,0 +1,73 @@
+STRICT SCOPE (MANDATORY):
+- Fix only the issue requested
+- Make the smallest possible code change
+- Do not modify unrelated components, screens, queries, styles, navigation, or loading flows
+- Do not introduce new UI changes unless absolutely required for this exact feature
+- If another change seems necessary, explain it first instead of silently changing extra things
+- Preserve all currently working behavior
+
+FEATURE: Splash screen behavior (session-based display)
+
+GOAL
+Display the splash screen ONLY:
+- the first time the user opens the app in a session (per app launch)
+- do NOT show it again while the app remains open
+- show it again only after the app is fully closed and reopened
+
+IMPORTANT
+This is NOT a loading spinner.
+This is a controlled entry experience.
+
+ASSET (MANDATORY)
+- The official splash image is attached in this prompt
+- You MUST use this exact image
+- Store it as a local asset inside the project (do NOT use remote URLs or Supabase)
+- Do NOT replace it with placeholders or existing images
+
+REQUIREMENTS
+
+1. Splash as entry gate
+- Splash must appear immediately on app launch
+- It should block the UI until it finishes
+- No screen (home or others) should be visible before or behind it
+
+2. Session-based logic
+- Show splash once per app launch session
+- Do NOT show again on:
+  - tab navigation
+  - screen navigation
+  - returning to foreground (if app was not killed)
+
+- Show again ONLY when:
+  - app is fully closed (process killed)
+  - and reopened
+
+3. Implementation approach
+- Use expo-splash-screen OR a minimal custom controlled splash component
+- Control visibility with an in-memory session flag (NOT AsyncStorage)
+
+4. Timing
+- Splash should stay visible for a smooth premium feel (~1–2 seconds if needed)
+- Then transition cleanly into the home screen
+- No black frame before or after
+
+5. Integration
+- Do NOT break navigation
+- Do NOT change screen structure
+- Do NOT modify Supabase or data logic
+- Keep all existing flows intact
+
+6. Visual
+- Use the attached splash image centered and stable
+- No layout shifts
+- No flicker
+- No dark flash
+
+DELIVERABLE
+Explain:
+- where the splash asset is stored in the project
+- where the splash logic lives
+- how the “once per session” logic works
+- how a fresh app launch is detected
+- when the splash is shown and hidden
+- confirm it does NOT reappear during navigation

@@ -1,0 +1,69 @@
+This itinerary screen/result is still not acceptable.
+
+Use the attached screenshot as BUG EVIDENCE.
+
+CRITICAL RULES
+
+1. Do NOT defend the current result
+2. Do NOT give generic UX opinions only
+3. Audit both:
+   - itinerary correctness
+   - itinerary product-layer / presentation
+4. Do NOT implement yet
+5. Do NOT touch map logic yet
+6. Do NOT redesign the whole app yet
+7. Focus only on why this current itinerary result is still bad
+
+SCREENSHOT EVIDENCE TO EXPLAIN
+
+From the current result:
+- Oro Restaurant appears in the morning
+- Oro Restaurant is tagged as "O Que Fazer" instead of restaurant
+- the day still feels artificial and not like a real trip
+- the visual layer is hard to read and far from the intended product standard
+- the screen is missing the richer itinerary structure inspired by the Roterin references:
+  - tabs
+  - better timeline logic
+  - details mode
+  - tickets mode
+  - gastronomy mode
+  - stronger card hierarchy
+  - more operable itinerary experience
+
+TASK
+
+I want a precise diagnosis of the current state in two layers:
+
+LAYER 1 — ITINERARY CORRECTNESS
+Explain exactly why this result is still incoherent:
+1. why a restaurant can still appear like this
+2. why the category/tag output is wrong
+3. whether this is:
+   - engine bug
+   - output mapping bug
+   - UI rendering bug
+   - bad source-table/category conversion
+4. what exact part of the current pipeline is still failing in this screenshot case
+
+LAYER 2 — PRODUCT-LAYER FAILURE
+Explain exactly why this current itinerary screen still feels weak compared to the intended Lucky Trip 2.4 experience:
+1. readability
+2. hierarchy
+3. information architecture
+4. lack of tabs/product modes
+5. lack of itinerary control/edit affordances
+6. why the current visual structure is not yet a premium travel control center
+
+Then propose the MINIMUM SAFE NEXT ACTIONS in the correct order.
+
+OUTPUT FORMAT
+
+1. exact bug diagnosis from this screenshot
+2. whether Oro Restaurant classification is engine, mapping, or UI failure
+3. exact missing product-layer capabilities
+4. minimal prioritized fix order
+5. what must be fixed before any further visual polish
+6. what the final itinerary product should contain to match Lucky Trip 2.4
+
+Do NOT implement yet.
+Show the full diagnosis first.

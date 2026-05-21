@@ -1,0 +1,90 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Fix ONLY the Home behavior described below.
+Do NOT redesign UI.
+Do NOT change layout structure.
+Do NOT modify working logic outside these exact fixes.
+
+--------------------------------------------------
+1. “O QUE FAZER AGORA” MUST BE TIME-DRIVEN
+--------------------------------------------------
+
+Current issue:
+The user can manually select:
+- manhã
+- tarde
+- noite
+
+This is wrong.
+
+Required behavior:
+The app must automatically determine the correct period based on the user's current local time when they enter the app.
+
+Use this exact rule:
+
+- 05:00 to 11:59 -> manhã
+- 12:00 to 17:59 -> tarde
+- 18:00 to 04:59 -> noite
+
+Implementation rules:
+- do NOT let the user manually switch these tabs
+- the UI may still display the current period label, but it must not behave like a manual selector
+- highlight only the active period based on current time
+- show only the suggestions for that current period
+
+Goal:
+“O que fazer agora” must feel intelligent, automatic, calm, and relevant.
+
+--------------------------------------------------
+2. HOME HERO / NETFLIX HIGHLIGHTS
+--------------------------------------------------
+
+The Home hero can continue showing multiple destinations and themes, including:
+- Rio de Janeiro
+- Santorini
+- Kyoto
+- etc
+
+This is allowed as editorial inspiration.
+
+--------------------------------------------------
+3. NON-RIO DESTINATIONS IN THIS MVP
+--------------------------------------------------
+
+IMPORTANT:
+In this first MVP, only Rio de Janeiro is fully implemented.
+
+So:
+- if the user clicks Rio content -> open normal real flow
+- if the user clicks any non-Rio destination/content -> open “Em breve disponível”
+
+Do NOT try to open partial pages or broken flows for non-Rio destinations.
+
+Use a clean fallback screen/message:
+“Em breve disponível”
+
+Optional subtitle:
+“Estamos preparando esse destino com o cuidado do The Lucky Trip”
+
+--------------------------------------------------
+4. KEEP EVERYTHING ELSE
+--------------------------------------------------
+
+Do NOT:
+- change bottom navigation
+- redesign Home
+- change card styles
+- change current Rio flow
+- modify unrelated screens
+
+--------------------------------------------------
+5. REQUIRED CONFIRMATION
+--------------------------------------------------
+
+After implementing, confirm ONLY:
+
+1. how the current period is determined
+2. which exact time ranges are being used
+3. that manhã/tarde/noite are no longer manually selectable
+4. that non-Rio hero clicks now always go to “Em breve disponível”
+5. that Rio remains fully functional

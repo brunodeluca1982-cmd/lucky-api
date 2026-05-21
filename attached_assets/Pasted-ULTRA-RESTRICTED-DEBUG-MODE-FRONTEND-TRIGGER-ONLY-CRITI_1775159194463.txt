@@ -1,0 +1,106 @@
+ULTRA RESTRICTED DEBUG MODE — FRONTEND TRIGGER ONLY
+
+CRITICAL FACT:
+Stripe integration, webhook and Supabase are already working.
+A real subscription has already happened before.
+
+Therefore:
+DO NOT touch backend logic.
+DO NOT touch Stripe configuration.
+DO NOT touch Supabase.
+
+The ONLY problem to fix is:
+The "Começar agora" button does nothing when clicked.
+
+--------------------------------------------------
+STRICT RULES
+--------------------------------------------------
+
+- DO NOT refactor anything
+- DO NOT create new Stripe logic
+- DO NOT change endpoints
+- DO NOT modify plans or price IDs
+- DO NOT change UI or styles
+- DO NOT change navigation
+
+ONLY fix the click → trigger issue
+
+--------------------------------------------------
+STEP 1 — VERIFY BUTTON CLICK
+--------------------------------------------------
+
+Add log:
+
+console.log("BUTTON CLICKED")
+
+If this does not appear → fix the button binding
+
+--------------------------------------------------
+STEP 2 — FIND EXISTING CHECKOUT FLOW
+--------------------------------------------------
+
+Locate the function already used in the app for Stripe checkout.
+
+DO NOT create a new one.
+
+Identify:
+- function name
+- where it is defined
+
+--------------------------------------------------
+STEP 3 — CONNECT BUTTON TO EXISTING FLOW
+--------------------------------------------------
+
+Make the button call EXACTLY that function.
+
+Example:
+
+onClick={() => existingCheckoutFunction(selectedPlan)}
+
+--------------------------------------------------
+STEP 4 — VERIFY PLAN STATE
+--------------------------------------------------
+
+Ensure selected plan is available when clicking.
+
+Log:
+
+console.log("PLAN:", selectedPlan)
+
+--------------------------------------------------
+STEP 5 — ENSURE FUNCTION EXECUTES
+--------------------------------------------------
+
+Inside the checkout function, log:
+
+console.log("CHECKOUT STARTED")
+
+If this does not run → fix call chain
+
+--------------------------------------------------
+STEP 6 — DO NOT SILENCE ERRORS
+--------------------------------------------------
+
+If any error occurs:
+
+console.error(error)
+
+--------------------------------------------------
+SUCCESS CRITERIA
+--------------------------------------------------
+
+Clicking "Começar agora" MUST:
+
+1. log "BUTTON CLICKED"
+2. call existing checkout function
+3. start checkout flow
+
+--------------------------------------------------
+FINAL CONFIRMATION
+--------------------------------------------------
+
+Report ONLY:
+
+1. was the button disconnected?
+2. what function is now called?
+3. what was preventing execution?

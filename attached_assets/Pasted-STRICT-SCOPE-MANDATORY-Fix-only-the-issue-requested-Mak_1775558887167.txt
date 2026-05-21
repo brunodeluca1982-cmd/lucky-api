@@ -1,0 +1,110 @@
+STRICT SCOPE (MANDATORY):
+- Fix only the issue requested
+- Make the smallest possible code change
+- Do not modify unrelated components, screens, queries, styles, navigation, or loading flows
+- Do not introduce new UI changes unless absolutely required for this exact feature
+- If another change seems necessary, explain it first instead of silently changing extra things
+- Preserve all currently working behavior
+
+FEATURE: Carolina itinerary items must open the real place entity page
+
+GOAL
+The 7-day Carolina Dieckmann itinerary is already rendering correctly from Supabase.
+Now each clickable itinerary item must open its corresponding real place entity page, not a generic placeholder screen.
+
+CURRENT BUG
+- itinerary items are clickable
+- but they do not open the real matching entity
+- they fall into a generic “Em breve disponível” / placeholder page
+
+MANDATORY DATA SOURCE
+Use only:
+1. public.friend_guides
+2. public.friend_guide_days
+3. public.friend_guide_itinerary_items
+4. public.friend_guide_places
+
+ENTITY RULE (MANDATORY)
+Each itinerary row must resolve the entity strictly via:
+- friend_guide_itinerary_items.place_id -> friend_guide_places.id
+
+DO NOT use:
+- title matching
+- place name matching
+- normalized_name matching
+- fallback placeholder logic for valid entities
+- generic destination placeholder pages for existing itinerary places
+
+ROUTING REQUIREMENT
+Implement a true dynamic entity route for the place detail screen.
+Use the real place_id in navigation.
+
+EXPECTED FLOW
+1. User opens the Carolina Dieckmann guide
+2. User taps one itinerary item
+3. App navigates using that item’s real place_id
+4. The entity page loads the matching row from public.friend_guide_places
+5. The real place detail page is rendered
+
+IMPLEMENTATION REQUIREMENTS
+
+1. Keep the Carolina itinerary screen visually as it is
+- do not redesign the itinerary structure
+- only fix entity navigation and real detail rendering
+
+2. Change the itinerary item click handler
+- pass place_id
+- navigate to the real dynamic entity route
+- do not navigate to the placeholder page if place_id exists
+
+3. Build or reuse a real place detail route powered by friend_guide_places
+- fetch the entity by id
+- use Expo Router dynamic params
+- no generic placeholder screen for valid place_id rows
+
+4. Real place detail page requirements
+Use the attached place-detail reference as visual direction.
+Ignore the bottom navigation shown in that reference.
+
+The entity page must:
+- use the app’s current premium / glass / editorial language
+- show a strong hero image at the top
+- show a translucent / glass content layer
+- render:
+  - place name
+  - categoria / subcategoria when available
+  - bairro
+  - meu_olhar (or best editorial description available)
+  - CTA buttons when available:
+    - Google Maps
+    - Instagram
+    - Website
+    - Booking / Reserve
+
+5. Image behavior
+- if photo_url exists, use it
+- if photo_url is missing, use only the existing safe same-entity fallback logic
+- never show the wrong image
+- never redirect to placeholder because of missing photo only
+
+6. Placeholder rule
+- if place_id is valid and a matching friend_guide_places row exists, the placeholder page must never appear
+- placeholder is allowed only for truly invalid / missing entities
+
+ATTACHED REFERENCES
+- 1 screenshot shows the current Carolina itinerary screen
+- 1 screenshot shows the incorrect placeholder screen
+- 1 screenshot shows the desired itinerary feel / behavior
+- 1 screenshot shows the desired place entity page style
+Use these screenshots as implementation references.
+Do not copy blindly; match the behavior and visual direction.
+
+DEBUG / VERIFICATION
+At the end:
+- list the files changed
+- list the route/file that now handles the real entity page
+- list the click handler/file that was changed
+- show the Supabase query used to load friend_guide_places by place_id
+- confirm that Carolina itinerary items now open the correct entity page
+- confirm that the placeholder no longer appears for valid place_id items
+- mention any itinerary rows that still fail because of missing data, if any

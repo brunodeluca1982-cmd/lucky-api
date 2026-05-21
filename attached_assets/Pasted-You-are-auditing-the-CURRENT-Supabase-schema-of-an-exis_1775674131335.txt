@@ -1,0 +1,85 @@
+You are auditing the CURRENT Supabase schema of an existing production app called The Lucky Trip.
+
+CRITICAL RULES:
+1. Do NOT invent a new database architecture from scratch
+2. Do NOT ignore existing tables, views, columns, relations, or indexes
+3. Do NOT duplicate concepts that already exist in the current schema
+4. Do NOT propose replacements when extensions are enough
+5. Work with a delta-only approach: preserve first, extend only if strictly necessary
+6. Do NOT execute destructive changes
+7. Do NOT write migrations yet until the audit is complete
+
+PRODUCT MODEL TO COMPARE AGAINST
+
+The Lucky Trip is not a search app.
+It is a system that transforms:
+
+inspiration → understanding → planning → execution → memory → intelligence
+
+Core product concepts that the schema may need to support:
+- User
+- Destination
+- Place
+- SavedPlace / memory layer
+- Trip
+- TripDay
+- TripItem
+- AIInteraction
+- UserPreference / behavior-derived layer
+
+IMPORTANT:
+Do NOT create these blindly.
+First check whether they already exist under different names or are partially covered by current tables.
+
+TASK
+
+Step 1 — Read and inventory the real current Supabase schema
+
+Map all existing:
+- tables
+- views
+- columns
+- primary keys
+- foreign keys
+- indexes
+- auth-related tables
+- subscription / access tables
+- trip / itinerary / saved content tables if any
+
+Step 2 — Compare the current schema against the required product model
+
+For each required concept, answer:
+- already exists
+- partially exists
+- missing
+- wrongly modeled
+
+Step 3 — Map current real tables to product concepts
+
+Example:
+- which current table(s) represent Destination
+- which current table(s) represent Place
+- whether SavedPlace already exists under another name
+- whether Trip/TripDay/TripItem already exist under another name
+
+Step 4 — Identify gaps only
+
+Focus on what is missing to support the official Lucky Trip loop:
+inspiration → understanding → planning → execution → memory → intelligence
+
+OUTPUT FORMAT
+
+1. Current schema inventory
+2. Mapping from current tables to product concepts
+3. Missing concepts
+4. Partially modeled concepts
+5. Incorrectly modeled concepts
+6. Minimal schema delta recommendations
+7. What must NOT be changed
+
+IMPORTANT FINAL RULES
+
+- Preserve all current functioning features
+- Prefer adding columns, bridge tables, or small new tables over replacing existing structures
+- Do not propose destructive refactors
+- Do not generate SQL migrations yet unless explicitly asked after the audit

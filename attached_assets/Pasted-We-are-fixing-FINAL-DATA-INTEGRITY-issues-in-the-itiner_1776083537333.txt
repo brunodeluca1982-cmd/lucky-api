@@ -1,0 +1,206 @@
+We are fixing FINAL DATA INTEGRITY issues in the itinerary system.
+
+This is NOT a UI redesign.
+This is a DATA PIPELINE + RENDER STABILITY FIX.
+
+---
+
+CRITICAL RULE:
+
+The app MUST NEVER crash because of missing or invalid data.
+
+---
+
+CURRENT PROBLEMS:
+
+1. Missing images
+2. Blank UI blocks
+3. Inconsistent Supabase → mobile mapping
+4. Runtime errors (including concurrency)
+5. Unstable rendering
+
+---
+
+GOAL:
+
+Make rendering 100% stable, deterministic, and crash-proof.
+
+---
+
+PART 1 — IMAGE SOURCE (STRICT & SAFE)
+
+Image priority:
+
+1. item.photo_url (Supabase)
+2. If null → render placeholder
+3. NEVER fetch external images at runtime
+
+IMPORTANT:
+- photo_url MUST always exist in response (string OR null)
+- NEVER undefined
+
+---
+
+PART 2 — EDGE FUNCTION SAFETY (NO CRASHES)
+
+Inside generate-itinerary:
+
+For EVERY item:
+
+Ensure:
+
+photo_url: string | null
+
+If DB row exists:
+→ use photo_url
+
+If DB row has no photo:
+→ set photo_url = null
+
+If photo_url missing:
+→ DO NOT throw
+→ instead:
+
+console.warn("Missing photo_url", item.id)
+
+AND force:
+
+item.photo_url = null
+
+---
+
+PART 3 — HARD DATA FILTER (KEEP)
+
+Inside enrichPlaces:
+
+Reject ANY item that:
+
+- isExternal === true
+- OR has no matching DB row
+
+ONLY allow:
+
+- restaurantes
+- o_que_fazer_rio
+- lucky_list_rio
+- stay_hotels
+
+---
+
+PART 4 — MOBILE RENDER (SINGLE SOURCE OF TRUTH)
+
+Replace ALL image logic with:
+
+const imageSource = item.photo_url
+  ? { uri: item.photo_url }
+  : null;
+
+Render:
+
+IF imageSource:
+→ render image
+
+ELSE:
+→ render placeholder
+
+DO NOT:
+- use getItemFallbackImage
+- use image?.uri fallback chains
+- use multiple conditions
+
+---
+
+PART 5 — PLACEHOLDER (CONSISTENT)
+
+Create ONE reusable component:
+
+<PlaceholderImage />
+
+Rules:
+
+- same size as real image
+- dark background
+- subtle icon
+- no randomness
+- always visible
+
+---
+
+PART 6 — CONCURRENCY FIX (CRITICAL)
+
+Fix "Lock was stolen":
+
+Inside generate-itinerary:
+
+- remove ANY shared/global variables
+- ensure ALL arrays/objects are created inside the request
+- no mutation across requests
+
+Example rule:
+
+NEVER do:
+let sharedArray = []
+
+ALWAYS:
+const localArray = []
+
+---
+
+PART 7 — DEFENSIVE UI (MANDATORY)
+
+Before rendering:
+
+if (!item || !item.id):
+  return null
+
+if (!item.photo_url):
+  render placeholder (NOT blank)
+
+---
+
+PART 8 — LOGGING (SAFE DEBUG)
+
+Add logs (NO throw):
+
+console.log({
+  id: item.id,
+  source: item.source_table,
+  photo: item.photo_url
+})
+
+---
+
+FINAL RULE:
+
+The system must degrade gracefully.
+
+Allowed:
+- missing image → placeholder
+
+NOT allowed:
+- blank UI
+- crashes
+- undefined values
+
+---
+
+DO NOT:
+
+- change API structure
+- change itinerary logic
+- redesign UI
+
+ONLY FIX:
+
+- stability
+- data integrity
+- rendering consistency
+
+---
+
+SUCCESS CRITERIA:
+
+- zero crashes
+- zero blank image blocks
+- 100% consistent rendering
+- no invented images

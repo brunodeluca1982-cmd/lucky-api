@@ -1,0 +1,104 @@
+STRICT SCOPE — DO NOT CHANGE ANYTHING OUTSIDE THIS REQUEST
+
+Fix ONLY the detail-page image source-of-truth issue.
+
+IMPORTANT:
+- Do NOT redesign UI
+- Do NOT change layout
+- Do NOT change navigation
+- Do NOT change copy
+- Do NOT modify working flows
+- Do NOT touch anything unrelated
+
+PROBLEM:
+Some detail pages are opening the correct entity text/content,
+but the main image/hero image is wrong.
+
+Example:
+- correct place name/text loads
+- wrong photo is shown
+
+This means the entity is being resolved correctly,
+but the detail image is still coming from the wrong source or fallback layer.
+
+GOAL:
+For every Rio entity detail page, the photo/hero must come from the SAME entity source as the text.
+
+--------------------------------------------------
+1. SOURCE-OF-TRUTH RULE
+--------------------------------------------------
+
+If the detail page resolves a valid Rio entity from Supabase, then:
+
+- title
+- text
+- metadata
+- hero/main image
+
+must all come from the SAME resolved entity row.
+
+Do NOT mix:
+- entity text from one source
+- image from another source
+- generic city/bairro/category fallback when entity photo exists
+
+--------------------------------------------------
+2. IMAGE PRIORITY FOR DETAIL PAGE
+--------------------------------------------------
+
+For detail pages, use this strict image priority:
+
+1. entity-specific photo_url from the resolved Supabase row
+2. entity-specific mapped image already associated with that same entity
+3. Google place photo only if it belongs to that same resolved entity
+4. fallback image ONLY if no entity image exists at all
+
+Fallback must never override a valid entity image.
+
+--------------------------------------------------
+3. NO CROSS-ENTITY IMAGE LEAK
+--------------------------------------------------
+
+Ensure no detail page can accidentally inherit:
+- previous screen image
+- city hero image
+- bairro image
+- category image
+- another entity’s thumbnail
+
+The detail hero must reset and resolve fresh from the current entity only.
+
+--------------------------------------------------
+4. RIO TABLES TO VERIFY
+--------------------------------------------------
+
+Verify detail-page image behavior for all Rio entity types:
+- restaurantes
+- stay_hotels
+- o_que_fazer_rio
+- lucky_list_rio
+
+If the row exists in Supabase and has a photo, that photo must be shown.
+
+--------------------------------------------------
+5. DEBUG THE ROOT CAUSE
+--------------------------------------------------
+
+Identify exactly why the wrong photo is appearing:
+- wrong fallback order?
+- stale image state?
+- previous entity image being reused?
+- detail page using generic image source instead of resolved entity?
+
+Fix at the root.
+
+--------------------------------------------------
+6. REQUIRED CONFIRMATION
+--------------------------------------------------
+
+After fixing, confirm ONLY:
+
+1. where the wrong image source was coming from
+2. what the correct detail-page image priority is now
+3. confirmation that text + image now come from the same resolved entity
+4. which Rio entity types were verified

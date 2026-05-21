@@ -1,0 +1,90 @@
+Implementing now. Reading the exact text for each edit location:
+
+3 actions
+Applying all six edits in parallel:
+
+9 actions
+Good. Now restructure the three fetch blocks. Reading exact current text:
+
+2 actions
+Now applying all three restructured fetch blocks in one edit:
+
+2 actions
+Good. Let me verify the final shape of the function, then deploy:
+
+4 actions
+Structure confirmed. Deploying to Supabase:
+
+2 actions
+Deployed. Now writing the commit message:
+
+2 actions
+Deployed. Here is the explicit confirmation for each of your four validation requirements.
+
+Validation: zoneProximityScore remains a soft signal
+1. Zones 5 and 6 are penalized, not excluded
+The function assigns -2 to items in zones 5 (Oeste/Barra) and 6 (Norte/Tijuca) when the user has no saved places there. That is the only consequence — they sort lower than same-zone or adjacent-zone items. They are never filtered out before the sort, never blocked by a guard clause, and never removed from the candidate array.
+
+// The candidate pool for oqf: all rows fetched, all rows built, all rows scored.
+const oqCandidates: EnrichedPlace[] = [];
+for (const row of ...) {
+  // Only dedup is checked (existingIds) — no zone filter here
+  oqCandidates.push({ ... zone: getZone(area), ... });
+}
+// All oqCandidates enter the sort — a zone 5 item with score -2 is still in the array.
+const oqSelected = oqCandidates
+  .map((p) => ({ p, score: compositePreferenceScore(p, preferences) + zoneProximityScore(p, savedZones) }))
+  .sort((a, b) => b.score - a.score)
+  .slice(0, stillNeedActs)   // ← slice of a fully scored, fully populated array
+  .map(({ p }) => p);
+
+Penalty = rank lower. Not penalty = removed.
+
+2. A high-preference item in zone 5 or 6 can still win selection
+Concrete example with real score ranges:
+
+Item	Zone	compositePreferenceScore	zoneProximityScore	Combined
+Praia de Ipanema (zone 1, saved zone)	1	0 (no tag match)	+3 same zone	+3
+Museu do Amanhã (zone 4, adjacent)	4	0	+1 adjacent	+1
+Ilha Grande boat tour (zone 5)	5	+6 (strong inspiration match)	-2 isolated	+4
+Generic Barra attraction (zone 5)	5	0	-2 isolated	-2
+The Ilha Grande boat tour (zone 5) with a strong preference match scores +4, beating the Ipanema item at +3. It enters the itinerary. The generic Barra item at -2 does not — but because it has a lower combined score than everything else, not because a filter excluded it.
+
+The maximum zone penalty is -2. The maximum preference bonus is +6 (inspirationScore up to +3, budgetScore up to +2, travelVibeScore up to +2, though cap is +3+2+2=7 in theory). Any item with a meaningful preference match more than compensates.
+
+3. No hard filtering was introduced
+There are exactly three kinds of filtering in fetchComplementaryContent:
+
+Dedup guard — existingIds.has(id) — unchanged from before Step C, prevents the same item appearing twice.
+Lucky restaurant skip — tipo.includes("restaurante") — unchanged from before Step C, only for the lucky block.
+needActs/needRests check — if (needActs === 0 && needRests === 0) return [] — unchanged.
+Step C added zero new filtering conditions. The only new code path is: collect all → score all → sort all → slice top-N. The slice is the last operation, applied to the scored-and-sorted array. No item is dropped before reaching the slice.
+
+4. No other engine behavior changed
+A grep of every function that existed before Step C, confirmed unchanged:
+
+Function	Changed?
+zoneProximityScore	New — Step C only
+compositePreferenceScore	Unchanged — called from Step C locally (transient score, not stored)
+scoreAndSortPool	Unchanged — still stamps prefScore on the full merged pool after complement is merged
+sortBucket	Unchanged — still reads prefScore for intra-zone ordering (Step B)
+sortByProximity	Unchanged — sunset-last logic (Step A) untouched
+classifyAllPeriodos	Unchanged
+groupByGeography	Unchanged — receives the same EnrichedPlace[] with the same fields
+buildFullDraft	Unchanged — tarde/noite caps (Step A), slot loading, performance Rule 4 (Step A.5)
+validateAndFixDraft	Unchanged — Rules 1–4 (Step A.5)
+refineWithGemini	Unchanged
+attachNeighborhoodMeta	Unchanged
+enrichPlaces	Unchanged
+fetchComplementaryContent call site	preferences argument added — the value was already available at the call site, no new logic
+The EnrichedPlace interface is unchanged. The DiaRoteiro[] output schema is unchanged. The complement score used in Step C is computed, used for .sort(), then discarded — .map(({ p }) => p) strips the score wrapper before any item is pushed to complement[]. By the time items reach scoreAndSortPool, there is no Step-C score residue anywhere on the objects.
+
+Step C is live in production. Ready for Step D when you are.
+
+Checkpoint made
+24 minutes ago
+Completed: Block 6-C — Preference-Guided Complement Selection + Zone Proximity Filter
+Updated environment
+
+Checkpoint made
+21 minutes ago

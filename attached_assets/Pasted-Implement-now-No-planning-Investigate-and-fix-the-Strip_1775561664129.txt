@@ -1,0 +1,82 @@
+Implement now. No planning.
+
+Investigate and fix the Stripe subscription flow end-to-end for The Lucky Trip premium.
+
+Product rule:
+Premium must unlock advanced organization features only after Stripe confirms an active subscription.
+
+Audit and fix ALL of this:
+
+1. Stripe config
+- confirm correct Stripe account/mode is being used (test vs live)
+- confirm correct env vars exist and are actually loaded:
+  STRIPE_SECRET_KEY
+  STRIPE_WEBHOOK_SECRET
+  EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY
+- confirm frontend and backend are using the same Stripe mode
+
+2. Checkout session creation
+- inspect the server code that creates checkout sessions
+- confirm it uses:
+  mode: "subscription"
+  a valid recurring price
+  valid success_url
+  valid cancel_url
+- confirm the price ID exists in Stripe and is recurring
+- confirm customer email / customer id is passed correctly if needed
+- confirm no hardcoded dead URL exists anywhere
+
+3. Redirect/result handling
+- confirm success_url returns to a live app URL
+- confirm cancel_url returns to a live app URL
+- confirm the app correctly handles return from Checkout
+- remove any dependency on dead preview URLs
+
+4. Webhook (CRITICAL)
+- inspect the webhook endpoint actually used by Stripe
+- verify Stripe signature correctly with raw request body
+- verify the code uses the correct webhook secret (whsec_)
+- confirm the endpoint returns 2xx fast
+- confirm these events are handled:
+  checkout.session.completed
+  customer.subscription.updated
+  customer.subscription.deleted
+  invoice.paid
+  invoice.payment_failed
+
+5. Premium provisioning
+- after successful checkout, update the user/app access level correctly
+- make sure premium is not granted from redirect alone
+- premium must come from webhook-confirmed subscription state
+- confirm downgrade/cancel also removes premium correctly
+
+6. App state sync
+- confirm the app re-reads premium status after checkout return
+- confirm no manual refresh is required
+- confirm the paywall closes and premium UI unlocks after successful payment
+
+7. Stripe dashboard dependencies
+- if anything must be changed manually in Stripe dashboard, list exact steps:
+  products
+  prices
+  webhook endpoint URL
+  subscribed events
+  customer portal config
+
+DO NOT:
+- do not redesign UI
+- do not touch auth unless Stripe flow depends on authenticated user id
+- do not touch unrelated tabs
+- do not change map/data logic
+
+Return only:
+1. files changed
+2. exact root cause(s)
+3. exact code fixes applied
+4. exact Stripe dashboard changes still required
+5. exact test steps to validate:
+   - successful checkout
+   - webhook delivery
+   - premium unlock
+   - renewal
+   - cancellation/downgrade

@@ -1,0 +1,70 @@
+Read carefully: this is a narrow bug fix on the Destinations screen only.
+
+Do not change anything until you first diagnose the current source used by destination cards.
+
+Important facts from Supabase:
+
+1. Destination cards should use public.destinos as their source of truth.
+2. public.destinos contains:
+- hero_image_url
+- mobile_hero_image_url
+- nome
+- pais
+- slug
+- lancado
+- sort_order
+- priority
+- coming_soon_message
+3. public.destinos does NOT contain place_id.
+Therefore, destination cards should NOT depend on place_id-based image resolution.
+
+DIAGNOSIS
+
+This appears to be a frontend source-selection regression, not a Supabase connectivity issue.
+
+The Destinations screen cards should use their own editorial destination image from public.destinos:
+- prefer mobile_hero_image_url on mobile
+- fallback to hero_image_url
+
+This logic must remain completely independent from the global Rio synced background system.
+
+CORE RULE
+
+- Home featured Rio destination card may mirror the active synced Rio frame when Rio is the dominant destination
+- Destinations screen cards must NOT use BackgroundContext as their image source
+- Destinations screen cards must use their own image fields from public.destinos
+
+REQUIRED WORKFLOW
+
+Step 1 — Diagnosis only
+Before changing anything, identify:
+1. what source the Destinations cards are using right now
+2. whether they are using BackgroundContext, fallback images, hardcoded values, or another source
+3. why the card images became black / empty
+
+Step 2 — Minimal fix only
+Only after diagnosis:
+1. restore destination card image sourcing on the Destinations screen
+2. use mobile_hero_image_url first on mobile
+3. fallback to hero_image_url if mobile_hero_image_url is empty
+4. preserve existing card structure, labels, borders, spacing, badges, and "Em breve" behavior
+5. keep current global Rio background sync untouched
+6. do not apply the synced Rio frame logic to destination cards on the Destinations screen
+
+STRICT DO NOT TOUCH
+
+Do NOT touch:
+- Home global background sync
+- Home featured Rio card behavior
+- Rio Destination Home
+- timing
+- fade
+- overlays
+- layout
+- navigation
+- business logic
+- other screens
+- cards outside the Destinations screen
+
+This is a bug fix only for destination card image sourcing on the Destinations screen.
+Make the smallest possible change.

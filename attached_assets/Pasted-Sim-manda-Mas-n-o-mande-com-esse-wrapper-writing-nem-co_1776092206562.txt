@@ -1,0 +1,94 @@
+Sim, manda.
+Mas não mande com esse wrapper :::writing...::: nem com aspas curvas.
+Manda como texto puro, limpo, para o Replit.
+
+Use exatamente isto:
+
+MODO CIRÚRGICO. NÃO REARQUITETE O APP. NÃO TOQUE EM STRIPE, AUTH, ROTEIRO, PAYWALL OU OUTRAS ÁREAS. FOQUE APENAS NO CHAT DO LUCKY.
+
+Contexto real:
+	•	A Edge Function oficial do chat é lucky-concierge
+	•	Ela responde corretamente no Supabase Test/Invoke
+	•	No app, o chat Lucky não está respondendo
+	•	Portanto, o problema agora está no frontend/integração ativa do app
+
+Objetivo:
+Encontrar o caminho real do chat no app, garantir que ele use SOMENTE a function lucky-concierge, remover ou bypassar caminhos antigos e fazer a resposta aparecer no chat.
+
+Function oficial:
+POST ${EXPO_PUBLIC_SUPABASE_URL}/functions/v1/lucky-concierge
+
+Payload esperado:
+
+{
+  "query": "string",
+  "history": [
+    { "role": "user", "content": "..." },
+    { "role": "assistant", "content": "..." }
+  ],
+  "deviceId": "string",
+  "destination": "Rio de Janeiro"
+}
+
+Response esperada:
+
+{
+  "reply": "string",
+  "isPremium": false,
+  "questionCount": 1,
+  "limitReached": false
+}
+
+O que você deve fazer:
+	1.	Encontrar os arquivos, componentes, hooks e helpers responsáveis pelo chat do Lucky.
+	2.	Identificar exatamente qual endpoint o app está chamando hoje.
+	3.	Confirmar se ainda existe chamada para:
+	•	lucky-ai-v2
+	•	lucky-trip-ai
+	•	qualquer outro endpoint antigo
+	4.	Trocar o caminho ativo do chat para usar somente:
+${EXPO_PUBLIC_SUPABASE_URL}/functions/v1/lucky-concierge
+	5.	Garantir que o frontend envie o payload correto:
+	•	query
+	•	history
+	•	deviceId
+	•	destination
+	6.	Garantir que o frontend leia corretamente a resposta real:
+	•	reply
+	•	isPremium
+	•	questionCount
+	•	limitReached
+	7.	Garantir que, quando data.reply existir, ela seja adicionada visivelmente como mensagem do assistente no chat.
+	8.	Remover ou bypassar qualquer lógica antiga/local/mock que esteja interceptando o fluxo.
+	9.	Adicionar logs explícitos no caminho ativo:
+
+console.log("[LuckyChat] url", `${supabaseUrl}/functions/v1/lucky-concierge`);
+console.log("[LuckyChat] payload", payload);
+console.log("[LuckyChat] status", response.status);
+console.log("[LuckyChat] data", data);
+console.log("[LuckyChat] reply", data?.reply);
+console.log("[LuckyChat] append assistant message");
+console.log("[LuckyChat] error", error);
+
+	10.	Se houver qualquer caminho paralelo antigo, mostre qual é e deixe inativo.
+
+Regras:
+	•	Não adivinhe.
+	•	Não diga que está resolvido sem provar o caminho ativo.
+	•	Não mantenha lucky-ai-v2 ou lucky-trip-ai como caminho principal do chat se lucky-concierge é a oficial.
+	•	Não engula erro silenciosamente.
+	•	Não mude o backend. Corrija apenas o frontend/integração, salvo prova de mismatch contratual.
+
+No final, me diga exatamente:
+	1.	quais arquivos foram alterados
+	2.	qual era o endpoint antigo ativo
+	3.	qual é o endpoint ativo agora
+	4.	qual payload o app envia agora
+	5.	qual campo da resposta está sendo renderizado
+	6.	qual era o bug que impedia a resposta de aparecer
+	7.	se ainda existe caminho antigo no código e se ele ficou inativo
+
+Condição de sucesso:
+Quando eu mandar uma mensagem no chat Lucky dentro do app, o app deve chamar lucky-concierge, receber reply e renderizar essa resposta visivelmente na conversa.
+
+Esse é o prompt certo para mandar.

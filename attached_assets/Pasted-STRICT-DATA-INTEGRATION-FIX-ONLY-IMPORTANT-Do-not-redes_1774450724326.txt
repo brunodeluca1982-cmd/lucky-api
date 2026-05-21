@@ -1,0 +1,91 @@
+STRICT DATA INTEGRATION FIX ONLY
+
+IMPORTANT:
+Do not redesign anything.
+Do not change UI.
+Do not change flow.
+Do not touch branding, spacing, colors or typography.
+
+The itinerary engine is still weak because it is NOT pulling enough source data.
+
+ROOT CAUSE:
+The planner is not properly using:
+- o_que_fazer_rio
+- lucky_list_rio
+
+This means the engine lacks enough activities/experiences to build rich multi-day itineraries.
+
+GOAL:
+Update the itinerary engine so it uses all relevant itinerary content sources, not only partial sources.
+
+REQUIRED DATA SOURCES:
+1. o_que_fazer_rio
+2. lucky_list_rio
+3. restaurantes
+4. stay_hotels (when relevant for stay context)
+5. stay_neighborhoods for neighborhood enrichment
+
+TASKS:
+
+1. VERIFY CURRENT DATA FLOW
+Confirm exactly which sources are currently being queried by generate-itinerary.
+If o_que_fazer_rio and lucky_list_rio are missing or only partially used, fix that.
+
+2. NORMALIZE ALL SOURCES
+Normalize records from:
+- o_que_fazer_rio
+- lucky_list_rio
+- restaurantes
+into one unified place format before planning.
+
+3. PRESERVE RICH METADATA
+For each source, keep useful fields such as:
+- nome
+- bairro
+- categoria / tipo_item
+- categoria_experiencia
+- tags_ia / ai_tags
+- momento_ideal / melhor_horario
+- vibe
+- perfil_ideal / perfil_publico
+- seguro_mulher_sozinha / safety_solo_woman
+- nivel_esforco
+- com_criancas
+- meu_olhar
+- como_fazer / how_to_enjoy
+- photo_url
+- google_maps / google_maps_url
+
+4. ENRICH WITH NEIGHBORHOOD CONTEXT
+Continue attaching stay_neighborhoods metadata to each place when bairro/neighborhood matches.
+
+5. PLANNING PRIORITY
+Use this order of importance for itinerary content:
+- saved places first
+- then complementary places from lucky_list_rio
+- then complementary places from o_que_fazer_rio
+- then restaurants
+Hotels should inform stay context, not dominate activity planning.
+
+6. BETTER DAILY DENSITY
+Because more content will be available, improve day richness:
+- each day should feel full but not overloaded
+- avoid weak days caused by lack of source material
+- use Lucky List to add premium/editorial experiences
+- use o_que_fazer_rio to add core Rio anchors and broader activities
+
+7. KEEP CURRENT ARCHITECTURE
+Do not revert to Gemini generation from scratch.
+Keep:
+- deterministic planner first
+- Gemini refinement only
+- validation after refinement
+
+8. OUTPUT
+Return the same final JSON structure already used by the app.
+No UI changes.
+
+STRICT SCOPE:
+Only fix data-source coverage and payload richness inside the itinerary engine.
+Do not redesign anything.
+Do not refactor unrelated systems.

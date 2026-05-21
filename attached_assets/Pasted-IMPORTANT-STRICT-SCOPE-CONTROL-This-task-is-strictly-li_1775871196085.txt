@@ -1,0 +1,226 @@
+IMPORTANT: STRICT SCOPE CONTROL
+
+This task is strictly limited in scope.
+
+DO NOT:
+- refactor unrelated parts of the codebase
+- change existing business logic
+- modify Stripe, checkout, payments, or authentication
+- restructure Supabase or Cloudinary globally
+- change routing or navigation
+- create new parallel systems
+- rewrite working components
+
+ONLY extend the EXISTING background system.
+
+If something is already working, DO NOT TOUCH IT.
+
+If unsure, preserve existing behavior.
+
+---------------------------------------
+
+STEP 0 — FIRST, ANALYZE CURRENT IMPLEMENTATION (MANDATORY)
+
+Before making ANY changes:
+
+1. Identify how the background is currently implemented
+2. Identify which files control background rendering
+3. Identify if background uses Supabase, Cloudinary, or both
+4. Identify how the current loop (if any) works
+
+DO NOT implement anything before understanding this.
+
+Then proceed by EXTENDING the existing system (not replacing it).
+
+---------------------------------------
+
+PRODUCT CONTEXT
+
+We are building a travel app where ONE destination is visually dominant at a time.
+
+For the MVP, the dominant destination is:
+"rio_de_janeiro"
+
+The visual identity of this destination must control the atmospheric background across the app.
+
+---------------------------------------
+
+CORE RULE
+
+While "rio_de_janeiro" is active:
+
+The SAME curated background image pool must be used across:
+
+- Home
+- Destination Home (Rio)
+- Profile
+- Trips
+- Any atmospheric background surfaces
+
+This must feel like ONE continuous environment.
+
+---------------------------------------
+
+MEDIA SOURCE
+
+- Original videos exist in Supabase
+- Frames were generated via Cloudinary
+- We will use ONLY curated image frames (NO video backgrounds for now)
+
+---------------------------------------
+
+TASK OBJECTIVE
+
+Extend the existing background system to support a synchronized "Destination Visual Pool System".
+
+---------------------------------------
+
+STEP 1 — DEFINE VISUAL POOL (CONTROLLED)
+
+Create a FIXED curated list of Rio background images.
+
+IMPORTANT:
+- NO random selection
+- NO auto-fetching
+- NO full folder usage
+- ONLY controlled list
+- ONLY use assets explicitly approved for atmospheric background use
+- DO NOT use blurry, weak, unreadable, badly cropped, overly dark, or visually confusing frames
+- If needed, start with fewer than 6 images rather than including weak ones
+- Quality is more important than quantity
+
+Target range:
+- ideally 6–8 strong images, but fewer is acceptable if quality is higher
+
+Example:
+
+const RIO_BACKGROUND_POOL = [
+  "cloudinary_url_1",
+  "cloudinary_url_2",
+  ...
+];
+
+This list must be easy to move to Supabase later.
+
+---------------------------------------
+
+STEP 2 — GLOBAL STATE (DO NOT OVERENGINEER)
+
+Introduce minimal global state:
+
+- currentDestination = "rio_de_janeiro"
+- currentBackgroundIndex
+- lastSwitchTimestamp
+
+IMPORTANT:
+- reuse existing state system if available (React Context, store, etc.)
+- DO NOT create unnecessary architecture
+- DO NOT duplicate state systems
+
+---------------------------------------
+
+STEP 3 — LOOP EXTENSION (NOT REWRITE)
+
+Extend the current background loop:
+
+- interval: 12 seconds
+- smooth fade transition
+- no flicker
+- no remount
+
+If a loop already exists, MODIFY it instead of replacing it.
+
+---------------------------------------
+
+STEP 4 — SYNCHRONIZATION (CRITICAL)
+
+All screens MUST use the SAME background index.
+
+Behavior:
+
+- If user is on image #3 on Home
+- And navigates to another screen
+
+→ Keep image #3
+→ DO NOT reset
+→ DO NOT restart loop
+
+This must feel continuous.
+
+---------------------------------------
+
+STEP 5 — SAFE INTEGRATION
+
+Apply ONLY to background rendering layer.
+
+DO NOT TOUCH:
+- cards
+- layout
+- navigation
+- media logic outside background
+
+---------------------------------------
+
+STEP 6 — READABILITY PROTECTION
+
+Preserve text readability and UI contrast at all times.
+
+If needed:
+- apply a consistent dark overlay or gradient layer above the background and below the UI
+- keep titles, profile text, buttons, cards, and navigation readable at all times
+
+The new background system must NEVER reduce readability.
+
+---------------------------------------
+
+STEP 7 — FALLBACK SAFETY
+
+If image fails:
+- fallback to another image in pool
+- never break UI
+- never leave empty background
+
+---------------------------------------
+
+STEP 8 — PERFORMANCE
+
+- avoid re-renders
+- avoid reloads
+- cache if needed
+- keep implementation lightweight
+
+---------------------------------------
+
+STEP 9 — VALIDATION SCREENS
+
+Validate the result specifically on:
+- Home
+- Destination Home (Rio)
+- Profile
+- Destinations listing
+
+These screens must feel visually connected while preserving current layout and behavior.
+
+---------------------------------------
+
+STEP 10 — OUTPUT (MANDATORY)
+
+After implementation, clearly explain:
+
+1. Where background logic lives now
+2. Which files were modified
+3. How the pool is defined
+4. How sync works
+5. How to add/remove Rio images
+6. How to support future destinations
+
+---------------------------------------
+
+FINAL RULE
+
+Do NOT expand scope.
+Do NOT redesign the app.
+Do NOT introduce unnecessary abstractions.
+
+Extend what exists.
+Keep it simple, controlled, stable, and visually premium.

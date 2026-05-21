@@ -1,0 +1,129 @@
+Hotel is a REQUIRED entity in ALL itineraries.
+
+---
+
+RULE 1 — ALWAYS INCLUDE HOTEL
+
+Every itinerary MUST include a hotel.
+
+There are TWO scenarios:
+
+---
+
+A. USER PROVIDED HOTEL
+
+If user selected a hotel:
+
+- Fetch from stay_hotels
+- Inject into EVERY day
+
+Structure:
+
+Day:
+→ HOTEL BLOCK (top)
+→ then activities
+
+Hotel must:
+- NEVER be removed
+- NEVER be treated as an activity
+
+---
+
+B. USER DID NOT PROVIDE HOTEL
+
+The system MUST automatically select a hotel.
+
+Selection MUST be based on:
+
+1. Budget preference:
+   - econômico → budget hotels
+   - médio → mid-range hotels
+   - sofisticado → luxury hotels
+
+2. Trip preferences:
+   - gastronomia → near restaurants hubs
+   - natureza → near beaches / parks
+   - festa → nightlife areas
+   - cultura → central / historic areas
+
+3. Location optimization:
+   - hotel must be near main itinerary cluster
+   - avoid long commute distances
+
+---
+
+RULE 2 — HOTEL SELECTION LOGIC
+
+Source:
+- stay_hotels table ONLY
+
+Selection criteria:
+
+- match budget range
+- match preferred areas
+- highest quality (rating / curated priority)
+- proximity to itinerary cluster
+
+If multiple matches:
+→ pick BEST scored option
+
+---
+
+RULE 3 — HOTEL IS STRUCTURAL (NOT OPTIONAL)
+
+Even if:
+- no hotel selected
+- weak data
+- missing preferences
+
+→ system MUST still assign a hotel
+
+Fallback priority:
+
+1. Match preferences
+2. Match geography
+3. Default curated top hotel
+
+---
+
+RULE 4 — INTEGRATION WITH ITINERARY
+
+Hotel must:
+
+- appear in EVERY day
+- appear at the TOP of the day card
+- be visually distinct (not an activity)
+
+Optional:
+- allow tap → go to hotel detail page
+
+---
+
+RULE 5 — CONSISTENCY WITH EXPERIENCE
+
+Hotel must influence:
+
+- geographic clustering
+- travel distances
+- day flow
+
+---
+
+FINAL GOAL:
+
+The itinerary must feel like:
+
+"A real trip where you are staying somewhere real"
+
+NOT:
+
+"a list of places with no base"
+
+---
+
+SUCCESS CRITERIA:
+
+- 100% itineraries include a hotel
+- hotel matches budget and preferences
+- hotel is visible in every day
+- hotel is not treated as activity

@@ -1,0 +1,86 @@
+STRICT SCOPE — DO NOT CHANGE ANYTHING OUTSIDE THIS REQUEST
+
+Fix ONLY the Lucky List/detail image mapping issues and improve the map presentation without violating provider requirements.
+
+Do NOT redesign UI.
+Do NOT change layout structure except where required below.
+Do NOT change navigation.
+Do NOT modify unrelated screens.
+
+--------------------------------------------------
+1. LUCKY LIST ENTITY IMAGE CORRECTION
+--------------------------------------------------
+
+Problem:
+Some Lucky List/detail pages are loading the correct text/entity,
+but the wrong hero/main image.
+
+Examples:
+- Academia dos Flintstones must use the correct Arpoador outdoor gym image
+- Laguna / Ilha da Gigóia must use the correct corresponding image
+- entity text and entity photo must always match
+
+Required rule:
+For every Lucky List/detail page, the image must come from the same resolved entity source as the text.
+
+Strict image priority:
+1. entity-specific photo_url from the resolved Supabase row
+2. entity-specific mapped image explicitly attached to that same entity
+3. provider/places image only if it belongs to that same resolved entity
+4. fallback ONLY if no entity-specific image exists at all
+
+Do NOT use generic beach/city/category fallbacks when the entity has its own correct image.
+
+Also verify this for:
+- lucky_list_rio
+- o_que_fazer_rio
+- restaurantes
+- stay_hotels
+where relevant detail pages are still showing mismatched images.
+
+--------------------------------------------------
+2. FIX MISSING / WRONG LUCKY LIST IMAGES AT ROOT LEVEL
+--------------------------------------------------
+
+Audit the exact failing entities currently showing wrong or missing photos.
+
+At minimum, verify and fix:
+- Academia dos Flintstones
+- Almoçar no Laguna Restaurante na Ilha da Gigóia
+
+If these rows are missing correct image source fields, map them properly.
+
+Do NOT patch visually only.
+Fix the source-of-truth mapping.
+
+--------------------------------------------------
+3. MAP ATTRIBUTION / MAP PRESENTATION
+--------------------------------------------------
+
+Problem:
+The map attribution/footer line (Leaflet / Esri / provider credits) is visually ugly and harming the premium feel.
+
+Important:
+Do NOT remove legally required attribution if the provider requires it.
+
+Instead:
+- make the map presentation cleaner
+- reduce visual intrusion if possible within provider terms
+- use a cleaner placement / padding / crop / container strategy if possible
+- if the current provider/UI makes this impossible, identify a safer alternative approach for later (for example static map preview before entering full interactive map)
+
+Goal:
+keep the map elegant WITHOUT violating attribution/provider requirements.
+
+--------------------------------------------------
+4. REQUIRED CONFIRMATION
+--------------------------------------------------
+
+After fixing, confirm ONLY:
+
+1. where the wrong Lucky List/detail images were coming from
+2. what the corrected image priority is now
+3. confirmation that Academia dos Flintstones now shows the correct image
+4. confirmation that Laguna / Ilha da Gigóia now shows the correct image
+5. whether the map attribution is required by the current provider
+6. what visual improvement was applied without violating provider rules

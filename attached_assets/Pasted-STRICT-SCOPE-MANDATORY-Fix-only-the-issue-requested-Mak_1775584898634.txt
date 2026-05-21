@@ -1,0 +1,146 @@
+STRICT SCOPE (MANDATORY):
+- Fix only the issue requested
+- Make the smallest possible code change
+- Do not modify unrelated components, screens, queries, styles, navigation, loading flows, or other app logic
+- Do not redesign the app
+- Preserve all currently working behavior
+- If another change seems necessary, explain it first instead of silently changing extra things
+
+FEATURE:
+Make the Carolina Dieckmann guide fully resolve entity cards correctly, with premium context applied only inside the guide.
+
+CURRENT BACKEND STATE (SOURCE OF TRUTH):
+Guide slug:
+- rio-carol-dieckmann
+
+Premium state:
+- access_type = premium
+- preview_enabled = true
+- preview_items_limit = 2
+
+Preview items already defined in Supabase:
+- Praia de Ipanema -> preview_rank = 1
+- Capricciosa Ipanema -> preview_rank = 2
+
+Current entity resolution state:
+Most itinerary items are already mapped to core via:
+- friend_guide_places.source_table
+- friend_guide_places.source_id
+or already have:
+- friend_guide_places.place_canonical_id
+
+Some items intentionally remain friend-only / editorial-only:
+- Rua Garcia d’Ávila
+- Caminhada por Santa Teresa
+- Ruas de Santa Teresa / Largo dos Guimarães
+
+GOAL:
+When the user enters the Carolina Dieckmann guide, each itinerary item must:
+1. open the correct entity
+2. reuse the core Lucky Trip card/page when the place is mapped to core
+3. use a friend-only entity page when the place is editorial-only
+4. apply premium / preview logic only inside the Carolina guide context
+
+MANDATORY DATA SOURCES:
+Use only:
+- public.friend_guides
+- public.friend_guide_days
+- public.friend_guide_itinerary_items
+- public.friend_guide_places
+
+If needed for core reuse, resolve via:
+- source_table
+- source_id
+- place_canonical_id
+
+DO NOT use:
+- text matching on title/name as final runtime logic
+- generic placeholder pages for valid places
+- broad redesigns
+- hardcoded fake data
+
+ENTITY RESOLUTION RULES (MANDATORY):
+For a clicked Carolina itinerary item:
+
+STEP 1
+Always load the clicked itinerary item through:
+- friend_guide_itinerary_items.place_id -> friend_guide_places.id
+
+STEP 2
+Resolve the entity with this priority:
+A. If friend_guide_places.source_table and source_id are present:
+   - open/reuse the corresponding core Lucky Trip entity/card/page
+B. Else if place_canonical_id is present and there is already a canonical/core resolver in the app:
+   - resolve through that canonical/core entity path
+C. Else:
+   - render the friend-only entity page directly from friend_guide_places
+
+FRIEND GUIDE CONTEXT RULE:
+The app must understand that the same place can exist in 2 contexts:
+1. General Lucky Trip / Lucky List / O Que Fazer context
+2. Carolina Dieckmann premium guide context
+
+This is critical:
+- the place itself is not necessarily premium
+- the Carolina Dieckmann curation context is premium
+
+So:
+- if the same place is accessed outside the Carolina guide flow, open the normal core card/page
+- if the same place is accessed from inside the Carolina guide flow, apply Carolina guide context, preview, lock state, and branding
+
+PREMIUM / PREVIEW RULES:
+When the user is inside the Carolina guide flow:
+- if user has access/subscription: open all items normally
+- if user does not have access:
+  - items with preview_rank <= preview_items_limit must open
+  - all other items must show a premium locked teaser state
+
+Locked teaser behavior:
+- keep the page premium and desirable
+- show that this is a Carolina Dieckmann tip
+- do not expose the full editorial content
+- do not break navigation
+- do not show generic “coming soon” for valid locked items
+
+FRIEND-ONLY ENTITY PAGE RULE:
+For friend-only entities:
+- use the existing premium editorial visual language
+- strong hero image if available
+- translucent / glass content block
+- show:
+  - place name
+  - category/subcategory when available
+  - bairro
+  - meu_olhar / editorial description
+  - CTA buttons only when data exists
+
+CORE ENTITY REUSE RULE:
+For mapped-to-core entities:
+- do not duplicate the place unnecessarily
+- reuse the core Lucky Trip entity/card/page logic
+- but preserve Carolina guide context when entered from her guide
+
+IMPORTANT:
+The user has already decided this product rule:
+- if a Carolina tip is the same as an existing Lucky Trip / Lucky List / O Que Fazer / restaurante / hotel entity, reuse it
+- if it is editorial-only, keep it as a friend-only entity
+Do not undo this logic.
+
+DO NOT TOUCH:
+- Home logic
+- other tabs
+- splash
+- image loading fixes
+- unrelated routing
+- unrelated Supabase queries
+- unrelated styling
+
+DELIVERABLE:
+At the end, tell me:
+- which files were changed
+- how Carolina guide context is passed through navigation
+- how entity resolution now works
+- how preview/premium logic is applied
+- confirmation that mapped places reuse the correct core card/page
+- confirmation that friend-only places render their own entity page
+- confirmation that valid places no longer fall into generic placeholder behavior

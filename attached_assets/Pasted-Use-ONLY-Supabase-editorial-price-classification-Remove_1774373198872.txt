@@ -1,0 +1,81 @@
+Use ONLY Supabase editorial price classification. Remove all currency symbols.
+
+IMPORTANT:
+- Do NOT redesign UI
+- Do NOT change layout, spacing, or components
+- This is a data + content consistency fix
+
+-----------------------------------
+GOAL
+-----------------------------------
+
+Price display must come directly from Supabase editorial classification.
+
+Do NOT use €, $, or any currency symbols.
+
+-----------------------------------
+SOURCE OF TRUTH
+-----------------------------------
+
+Use the field already defined in Supabase for price classification.
+
+Examples (depending on your schema):
+- perfil_publico
+- categoria_preco
+- faixa_preco
+- or the correct editorial field already created
+
+Use EXACTLY what is defined there.
+
+-----------------------------------
+DISPLAY RULE
+-----------------------------------
+
+- Display the editorial label as text
+- Examples:
+  "Acessível"
+  "Intermediário"
+  "Alto padrão"
+  "Experiência premium"
+
+- Do NOT convert numbers into symbols
+- Do NOT generate labels in the frontend
+- Do NOT infer price levels
+
+-----------------------------------
+FALLBACK RULE (STRICT)
+-----------------------------------
+
+If a place has no price classification in Supabase:
+→ do NOT show anything
+→ do NOT generate fallback text
+→ do NOT display symbols
+
+-----------------------------------
+APPLY EVERYWHERE
+-----------------------------------
+
+- restaurant cards
+- restaurant detail
+- hotel cards (if applicable)
+- any place using price or positioning
+
+-----------------------------------
+DO NOT
+-----------------------------------
+
+- do NOT use €
+- do NOT use $
+- do NOT map preco_nivel → symbols
+- do NOT override Supabase data
+- do NOT mix formats across screens
+
+-----------------------------------
+OUTPUT
+-----------------------------------
+
+Show:
+1. which Supabase field is now being used for price classification
+2. where the old € logic was removed
+3. confirmation that all price displays now come from Supabase only
+4. confirmation that no currency symbols exist anywhere in the app

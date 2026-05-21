@@ -1,0 +1,112 @@
+STRICT FIXES ONLY — NO REDESIGN OF THE WHOLE APP
+
+IMPORTANT:
+Do not change the itinerary engine.
+Do not refactor unrelated architecture.
+Do not send the user back to the start of the trip creation flow.
+Do not redesign the entire app.
+
+This task is only about fixing consistency and interaction problems in the itinerary experience.
+
+CURRENT PROBLEMS TO FIX:
+
+1. The trip-generation steps/loading/edit flow still do not visually match the rest of the app
+2. When the user tries to edit an itinerary item, the app incorrectly returns to the beginning of the trip flow
+3. When the user taps an itinerary item, it opens a new page but not the correct corresponding detail card
+4. The share button is still not working
+
+GOALS:
+
+A. VISUAL CONSISTENCY OF THE ITINERARY FLOW
+The itinerary-related intermediate screens (loading, editing, replacing, selecting alternatives) must follow the same premium visual language as the rest of the app:
+- same card logic
+- same spacing
+- same typography
+- same elegance
+- same “The Lucky Trip” tone
+They should feel like part of the same product, not like a fallback flow.
+
+B. EDIT ITEM MUST NOT RESTART THE FLOW
+When the user taps to edit an itinerary item, do NOT return to the beginning of the trip planner.
+Instead, open an in-context edit flow.
+
+Expected behavior:
+- user stays inside the itinerary context
+- opens an elegant replace/edit screen or bottom sheet
+- sees curated replacement suggestions from our database
+- can also search for a new place manually
+
+C. REPLACE / EDIT FLOW
+For each itinerary item, the edit flow must allow:
+1. Replace with suggestions from our own database first
+2. Search for another place manually if the user wants something outside our current suggestions
+
+Database-first suggestions must prioritize:
+- same category
+- same time-of-day compatibility
+- same neighborhood or nearby region
+- same vibe / profile fit
+- same price / effort level when relevant
+
+Sources to use:
+- lucky_list_rio
+- o_que_fazer_rio
+- restaurantes
+- stay_hotels
+- stay_neighborhoods context when relevant
+
+D. MANUAL SEARCH
+If the user wants a different attraction / restaurant / hotel not currently in our suggestions:
+- provide a search field
+- connect it to Google Maps / Places search
+- validate the selected place
+- allow adding it to the itinerary
+- clearly mark it as user-added / external if needed
+
+E. CLICKING AN ITINERARY ITEM MUST OPEN THE CORRECT CARD
+When the user taps a specific itinerary item, open the exact corresponding detail card for that item.
+
+Correct behavior:
+- hotel item → hotel detail card
+- restaurant item → restaurant detail card
+- activity / attraction / experience → correct place detail card
+
+Use ref_table / source / place_id mapping properly.
+Do not open a generic page.
+Do not open the wrong content.
+The tapped item must resolve to the correct database-backed detail view.
+
+F. SHARE BUTTON MUST WORK
+The share icon on the itinerary screen must:
+- generate or reuse a persistent itinerary URL
+- open the native share sheet
+- share a live route/link, not just a blank action
+
+Use existing itinerary persistence:
+- user_itineraries
+- roteiro_itens
+
+If missing:
+- generate share_slug
+- save itinerary if needed
+- mark is_public = true
+- return the shareable URL
+
+G. KEEP THE USER INSIDE THE ITINERARY EXPERIENCE
+The itinerary result screen should become a live planning surface:
+- open details
+- replace items
+- add items
+- share
+without breaking the flow or restarting the planner
+
+STRICT SCOPE:
+Fix only:
+- itinerary item click behavior
+- edit/replace flow
+- manual place search
+- share behavior
+- visual consistency of itinerary-related subflows
+
+Do not redesign unrelated onboarding screens.
+Do not send the user back to the beginning of the journey.

@@ -1,0 +1,130 @@
+STRICT FINAL CORRECTION — CONTEXTUAL FLOW AND MANUAL EXTERNAL PLACE INPUT ARE STILL WRONG
+
+IMPORTANT:
+This is a correction of two remaining broken behaviors.
+Do not redesign the app.
+Do not refactor unrelated systems.
+Do not change the current result screen visual language.
+Do not reset the user journey.
+
+Two things are still incorrect and must be fixed now.
+
+==================================================
+1. VIAGEM ENTRY WITH SAVED PLACES IS STILL WRONG
+==================================================
+
+CURRENT BUG:
+When the user enters from the Viagem menu and already has saved places for a destination, the app is still showing the initial itinerary questionnaire flow.
+That is wrong.
+
+CORRECT BEHAVIOR:
+If the user enters from the Viagem menu AND already has saved places in a known destination:
+- DO NOT ask destination again
+- DO NOT show the full initial creation questionnaire
+- DO NOT behave like the Home flow
+
+Instead:
+- open directly on the DATE SELECTION screen
+- then continue to the next steps automatically in the contextual flow
+
+Correct contextual flow:
+1. date selection
+2. travel company
+3. interests
+4. travel style
+5. loading
+6. itinerary result
+
+ALSO IMPORTANT:
+When the user selects one step, the app should advance automatically to the next one whenever that makes sense.
+The goal is to reduce friction and make the flow feel fast and intelligent.
+
+Example:
+- after selecting travel company, go to the next step automatically
+- after selecting travel style, continue without unnecessary extra confirmation
+- keep the journey fluid
+
+RULES:
+- Home entry = full flow starting at destination
+- Viagem entry with saved places = contextual flow starting at date selection
+- Viagem entry with NO saved places = same full flow as Home
+
+This distinction is mandatory.
+
+==================================================
+2. EDIT ITINERARY STILL DOES NOT ACCEPT USER-INSERTED EXTERNAL PLACES
+==================================================
+
+CURRENT BUG:
+In the “Substituir lugar” / edit itinerary flow, the user still cannot properly add a place by typing something outside our curated list.
+The UI still behaves as if only internal matches are allowed.
+
+That is wrong.
+
+CORRECT BEHAVIOR:
+When editing/replacing a place in the itinerary:
+
+A. INTERNAL CURATED RESULTS FIRST
+Keep our own curated suggestions first:
+- lucky_list_rio
+- o_que_fazer_rio
+- restaurantes
+- stay_hotels
+when relevant
+
+B. ALSO ALLOW REAL EXTERNAL SEARCH
+If the user types a place that is not in our internal suggestions:
+- the app must search real Google Places / autocomplete
+- show external results in the UI
+- allow selecting one of them
+- fetch details for the selected result
+- insert it into the itinerary
+
+C. EXTERNAL PLACE INSERTION MUST WORK
+When the user selects a Google place, save enough data into roteiro_itens:
+- name
+- address
+- city
+- lat
+- lng
+- source = 'external'
+- ref_table = 'external'
+- place_id = Google place id if available
+
+D. LABEL EXTERNAL ITEMS
+External places inserted by the user must be clearly marked in the UI as:
+- “Lugar externo”
+or
+- “Adicionado por você”
+
+E. DO NOT FORCE INTERNAL MATCH ONLY
+The app must not reject the user’s manual input just because the place is not in our own curated database.
+
+==================================================
+3. KEEP THE GOOD PARTS
+==================================================
+
+Keep:
+- the current result screen visual style
+- the current edit itinerary structure
+- the current bottom navigation
+- the current itinerary engine
+
+Fix only:
+- contextual Viagem entry flow
+- automatic step progression
+- real external Google Places insertion in edit mode
+
+==================================================
+4. REQUIRED CONFIRMATION
+==================================================
+
+After implementing, explicitly confirm:
+
+1. what route/screen Home entry now opens
+2. what route/screen Viagem entry with saved places now opens
+3. what route/screen Viagem entry with NO saved places now opens
+4. which steps now auto-advance
+5. which Google Places source/function is being called
+6. how external places are stored in roteiro_itens
+7. that the current bottom navigation was preserved

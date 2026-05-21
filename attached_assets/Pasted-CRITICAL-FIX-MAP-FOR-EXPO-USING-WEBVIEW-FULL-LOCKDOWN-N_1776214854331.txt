@@ -1,0 +1,103 @@
+CRITICAL: FIX MAP FOR EXPO USING WEBVIEW (FULL LOCKDOWN — NO REGRESSION)
+
+We must make the map work in Expo WITHOUT changing ANY visual or behavior.
+
+-----------------------------------
+
+ABSOLUTE RULES (HARD LOCK — NO EXCEPTIONS)
+
+DO NOT:
+- change ANY map styling
+- change ANY marker
+- change ANY label (Cristo, Ipanema, etc.)
+- change ANY zoom or position
+- change buildLeafletHTML
+- change RioMapViewWeb.tsx
+- change RioMapView.tsx logic
+- change ANY other map in the app
+- change ANY other screen
+- change ANY Supabase logic
+- refactor ANYTHING
+- rename ANYTHING
+- touch ANY UI component
+
+You are ONLY allowed to modify ONE FILE:
+RioMapViewNative.tsx
+
+-----------------------------------
+
+PROBLEM
+
+The map uses iframe (web only).
+
+Expo (React Native) does NOT support iframe.
+
+Error:
+"iframe must be a function"
+
+-----------------------------------
+
+GOAL
+
+Render the EXACT SAME Leaflet map inside Expo mobile.
+
+ZERO visual change.
+
+-----------------------------------
+
+TASKS
+
+1. Install dependency:
+
+pnpm add react-native-webview
+
+-----------------------------------
+
+2. ONLY EDIT:
+
+RioMapViewNative.tsx
+
+-----------------------------------
+
+3. REPLACE ENTIRE FILE CONTENT WITH:
+
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { WebView } from "react-native-webview";
+
+export default function RioMapViewNative({ selectedNeighborhood }) {
+  const html = buildLeafletHTML(selectedNeighborhood);
+
+  return (
+    <View style={styles.container}>
+      <WebView
+        originWhitelist={["*"]}
+        source={{ html }}
+        style={styles.webview}
+        javaScriptEnabled
+        domStorageEnabled
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  webview: { flex: 1 },
+});
+
+-----------------------------------
+
+EXPECTED RESULT
+
+- Map looks EXACTLY the same
+- Works in Expo mobile
+- Works in web (unchanged)
+- No iframe error
+- No RNMapsAirModule error
+- No UI change anywhere
+- No regression anywhere
+
+-----------------------------------
+
+IF ANY OTHER FILE IS MODIFIED → TASK IS INVALID

@@ -1,0 +1,296 @@
+MODO CIRÚRGICO ABSOLUTO. NÃO TOCAR EM CHECKOUT/PAGAMENTO. ÁREA DE STRIPE CONTINUA CONGELADA.
+
+MISSÃO:
+Fazer a inteligência artificial do aplicativo funcionar de forma correta, escalável, barata e portátil, e ao mesmo tempo ajustar a experiência dos destinos ainda não lançados.
+
+ARQUITETURA OBRIGATÓRIA:
+- Replit = app/interface/orquestração mínima
+- Supabase = fonte de verdade + backend da IA + dados + persistência + regras
+- Stripe = intocado, congelado no fluxo atual
+- Modelo padrão da IA = Gemini
+- OpenAI = fallback opcional / adapter opcional, não motor principal por enquanto
+
+REGRA MÁXIMA:
+NÃO MEXER EM NADA DE CHECKOUT, PAGAMENTO, STRIPE, WEBHOOK, ASSINATURA, PREMIUM FLOW OU ENV VARS DE PAGAMENTO.
+QUALQUER MUDANÇA NESSA ÁREA É PROIBIDA.
+
+OBJETIVO DE PRODUTO:
+A IA do roteiro precisa:
+- usar o Supabase como fonte de verdade
+- respeitar tags, vibes, momento_ideal, perfil_ideal e demais metadados estruturados
+- respeitar horários reais e coerência temporal
+- respeitar coerência geográfica e deslocamento
+- equilibrar a viagem conforme preferências do usuário
+- parar de gerar absurdos como pôr do sol às 14h
+- ser escalável
+- não depender da lógica do Replit para “pensar”
+- continuar funcionando mesmo se no futuro o frontend sair do Replit
+
+DECISÃO ARQUITETURAL OBRIGATÓRIA:
+A INTELIGÊNCIA DO ROTEIRO DEVE FICAR NO SUPABASE.
+O REPLIT NÃO DEVE VIRAR O CÉREBRO DO PLANNER.
+O REPLIT DEVE APENAS CHAMAR A CAMADA CERTA NO SUPABASE.
+
+TAMBÉM É OBRIGATÓRIO AJUSTAR A UX DOS DESTINOS AINDA NÃO LANÇADOS:
+- todo destino que NÃO for Rio de Janeiro e aparecer na home ou em qualquer outra área do app deve aparecer como “Em breve”
+- não deve parecer quebrado, vazio ou mal resolvido
+- deve parecer intencional, desejável, editorial e divertido
+- deve seguir o tom de voz do The Lucky Trip: inteligente, leve, confiante, humano, com clareza e charme, sem parecer infantil nem genérico
+- deve trazer uma microcópia curta, divertida e com personalidade, com uma pequena graça, curiosidade ou promessa editorial sobre o destino
+- essa microcópia deve deixar o usuário feliz por ter encontrado o destino, mesmo sem acesso ainda
+- o objetivo é transformar ausência de conteúdo em antecipação de desejo
+
+REGRA PARA DESTINOS NÃO-RIO:
+- Rio de Janeiro continua sendo o único destino plenamente funcional por agora
+- qualquer outro destino deve entrar em estado controlado de “Em breve”
+- não mostrar módulos quebrados
+- não mostrar placeholders pobres
+- não deixar o usuário achar que houve erro
+- não prometer data específica se ela não existir
+- não inventar informações profundas do destino se ainda não houver conteúdo real estruturado no Supabase
+
+COMPORTAMENTO OBRIGATÓRIO PARA DESTINOS NÃO-RIO:
+- exibir selo/título claro de “Em breve”
+- exibir um texto editorial curto com humor leve, curiosidade ou provocação elegante
+- manter estética premium do app
+- manter o destino visualmente bonito e desejável
+- se houver imagem/hero, manter
+- se houver módulos ainda não ativos, manter bloqueados ou ocultos de forma elegante
+- se houver CTA, ele deve ser algo como salvar interesse, explorar depois, ou voltar ao Rio, sem quebrar o fluxo
+
+EXEMPLOS DE TOM DE MICROCOPY “EM BREVE”:
+- “Calma. Este destino ainda está arrumando a mala.”
+- “Estamos deixando este lugar à altura da viagem.”
+- “Ainda não abrimos essa porta, mas ela promete.”
+- “Esse destino ainda está sendo lapidado. E vai valer a espera.”
+- “Em breve. Porque certos lugares merecem estrear direito.”
+
+IMPORTANTE:
+- os textos acima são referência de tom, não cópia obrigatória
+- criar o tom final com consistência de marca
+- manter neurobranding/neuro UX: fricção baixa, desejo alto, frustração baixa, clareza máxima
+
+O QUE VOCÊ DEVE FAZER:
+1. Auditar a arquitetura atual da IA do roteiro
+2. Identificar se hoje o planner está no Replit, no Supabase ou híbrido
+3. Definir um backend canônico único da IA do roteiro no Supabase
+4. Fazer o Replit consumir esse backend corretamente
+5. Preservar 100% o checkout atual
+6. Preservar 100% o fluxo premium atual
+7. Trabalhar com minimum diff
+8. Não inventar nova bagunça
+9. Implementar estado “Em breve” elegante para todos os destinos não-Rio
+
+O SUPABASE DEVE SER A FONTE DE VERDADE PARA:
+- lugares
+- roteiros
+- tags
+- vibe
+- momento_ideal
+- perfil_ideal
+- categoria/tipo
+- bairro/região
+- nível de esforço
+- duração
+- compatibilidade de horário
+- preferências explícitas do usuário
+- qualquer outro metadado estruturado já existente
+
+REGRA CRÍTICA:
+A IA NÃO PODE MAIS GERAR ROTEIRO LIVRE.
+ELA DEVE OPERAR EM 4 CAMADAS:
+
+CAMADA 1 — FILTRO DURO
+Excluir antes da geração qualquer item incompatível com:
+- horário do slot
+- momento_ideal
+- horário de funcionamento
+- perfil do usuário
+- ritmo da viagem
+- duração incompatível com o slot
+- lógica geográfica mínima
+- contexto do dia
+
+Exemplos obrigatórios:
+- pôr do sol só no fim da tarde
+- café da manhã só de manhã
+- almoço só na faixa de almoço
+- jantar só à noite
+- bar/balada não entram em horário incompatível
+- item fechado não entra fora do horário
+- item incompatível com momento_ideal deve ser excluído
+
+CAMADA 2 — SCORE PONDERADO
+Pontuar candidatos usando metadados do Supabase e preferências do usuário.
+O score deve considerar no mínimo:
+- tags
+- vibe
+- momento_ideal
+- perfil_ideal
+- categoria/tipo
+- bairro/região
+- coerência com o slot
+- coerência com o restante do dia
+- deslocamento entre itens
+- duração
+- nível de esforço
+- diversidade de experiências
+- preferências explícitas do usuário
+
+IMPORTANTE:
+Tags e vibes NÃO são decorativas.
+Elas devem influenciar a seleção real.
+
+CAMADA 3 — GERAÇÃO/ORDENAÇÃO
+A IA só pode compor e ordenar usando candidatos já filtrados e ranqueados.
+Ela não pode inventar lógica de horário nem ignorar o banco.
+
+CAMADA 4 — VALIDAÇÃO FINAL
+Antes de salvar ou exibir o roteiro:
+- impedir absurdos temporais
+- impedir sequência geográfica absurda
+- impedir item incompatível com o slot
+- impedir repetição excessiva de mesma vibe/categoria sem equilíbrio
+- impedir item fora de horário
+- impedir incoerência evidente entre preferência do usuário e roteiro final
+
+DECISÃO DE MODELO:
+- usar Gemini como provider default para geração principal
+- manter camada de provider abstrata para futuro fallback em OpenAI
+- não hardcodar a arquitetura a um único provider sem adapter
+- por enquanto, não migrar checkout, não migrar Stripe, não mexer em billing
+
+ARQUITETURA TÉCNICA DESEJADA:
+- uma edge function canônica no Supabase para planner/orquestração do roteiro
+- funções auxiliares do Supabase continuam podendo existir para places/photos/details/autocomplete
+- o Replit deve chamar essa função canônica, não duplicar a inteligência
+
+SE JÁ EXISTIR UMA FUNÇÃO COMO “Lucky Trip AI” OU SIMILAR:
+- auditar antes de criar algo novo
+- se ela puder virar o backend canônico do planner com mudanças mínimas, reutilizar
+- se estiver inadequada, propor substituição controlada
+- não criar duplicidade de função com responsabilidade idêntica
+
+PROIBIÇÕES ABSOLUTAS:
+- não tocar em checkout/pagamento
+- não tocar em Stripe
+- não tocar em webhook
+- não tocar em env vars de pagamento
+- não tocar em publish/deploy de pagamento
+- não refatorar arquitetura sem necessidade
+- não reorganizar arquivos sem necessidade
+- não mexer em UI sem necessidade, exceto para implementar corretamente o estado “Em breve”
+- não inventar dados fora do Supabase
+- não deixar o planner preso ao Replit
+- não criar dependência forte do frontend para a lógica do roteiro
+
+PROCESSO OBRIGATÓRIO:
+
+FASE 1 — AUDITORIA SEM MUDAR NADA
+Mostrar:
+1. onde hoje a IA do roteiro é gerada
+2. quais arquivos no Replit participam disso
+3. quais edge functions no Supabase participam disso
+4. quais tabelas/campos do Supabase estão sendo usados hoje
+5. quais campos importantes estão sendo ignorados
+6. onde o slot/horário do dia é definido
+7. onde as regras temporais são aplicadas hoje, se existirem
+8. qual provider/modelo está sendo usado hoje
+9. se a arquitetura atual está híbrida ou centralizada
+10. quais arquivos e funções precisariam ser alterados para centralizar a inteligência no Supabase
+11. quais riscos existem de impacto colateral
+12. quais dependências existem com as funções de places/photos/details
+13. onde hoje os destinos não-Rio são renderizados na home e em outras áreas
+14. como o estado “Em breve” será aplicado sem quebrar navegação e sem parecer erro
+
+NESTA FASE, NÃO EDITAR NADA.
+
+FASE 2 — PLANO MÍNIMO E EXPLÍCITO
+Depois da auditoria, mostrar:
+- backend canônico proposto para a IA
+- se será reaproveitada uma edge function existente ou criada uma função nova
+- arquivos do Replit que precisariam ser alterados
+- edge functions do Supabase que precisariam ser alteradas
+- como o Gemini será usado como padrão
+- como o fallback/adapter futuro para OpenAI será estruturado
+- como o filtro duro será implementado
+- como o score ponderado será implementado
+- como o validador final será implementado
+- como garantir que o Supabase passa a mandar mais que a IA
+- como o estado “Em breve” será implementado nos destinos não-Rio
+- exemplos de microcopy propostos para destinos não-Rio
+- como garantir que checkout/pagamento permanecem intocados
+- diff estimado
+- risco estimado
+- plano de rollback
+
+DEPOIS DISSO, PARAR E ESPERAR MINHA APROVAÇÃO.
+SEM APROVAÇÃO, NÃO EXECUTAR NADA.
+
+FASE 3 — EXECUÇÃO CONTROLADA
+Só depois da minha aprovação:
+- alterar com minimum diff
+- preservar contratos atuais sempre que possível
+- testar casos absurdos de horário
+- testar influência real de tags/vibes/preferências
+- testar que o Replit está consumindo o backend correto no Supabase
+- testar que destinos não-Rio aparecem corretamente como “Em breve”
+- confirmar que Stripe/checkout não foram tocados
+
+CRITÉRIOS DE SUCESSO:
+- Supabase vira o backend canônico da IA do roteiro
+- Gemini vira o modelo padrão da geração principal
+- Replit deixa de “pensar” e passa a consumir corretamente a camada certa
+- tags/vibes influenciam a seleção real
+- horários absurdos deixam de acontecer
+- coerência geográfica melhora
+- roteiro fica equilibrado com base nas preferências do usuário
+- destinos não-Rio passam a parecer desejáveis e intencionais, não quebrados
+- nenhuma mudança em checkout/pagamento
+- nenhuma duplicidade desnecessária de lógica entre Replit e Supabase
+
+FORMATO OBRIGATÓRIO DA RESPOSTA NA FASE 1:
+- arquitetura atual do planner:
+- arquivos do Replit envolvidos:
+- edge functions do Supabase envolvidas:
+- provider/modelo atual:
+- tabelas/campos usados hoje:
+- campos ignorados hoje:
+- onde o slot é definido:
+- onde faltam regras duras:
+- onde faltam scores:
+- onde falta validação final:
+- backend canônico recomendado:
+- destinos não-Rio hoje aparecem como:
+- proposta de estado “Em breve”:
+- risco estimado:
+
+FORMATO OBRIGATÓRIO DA RESPOSTA NA FASE 2:
+- backend canônico final:
+- edge function canônica:
+- provider default:
+- estratégia de fallback:
+- arquivos que serão alterados:
+- funções que serão alteradas:
+- filtro duro:
+- score ponderado:
+- validador final:
+- implementação de “Em breve”:
+- exemplos de microcopy:
+- garantia de preservação do checkout/pagamento:
+- diff estimado:
+- plano de rollback:
+
+PRIORIDADE ABSOLUTA:
+1. NÃO TOCAR EM PAGAMENTO
+2. CENTRALIZAR A INTELIGÊNCIA DO ROTEIRO NO SUPABASE
+3. USAR GEMINI COMO PADRÃO
+4. FAZER O SUPABASE MANDAR MAIS QUE A IA
+5. ELIMINAR ABSURDOS TEMPORAIS
+6. IMPLEMENTAR “EM BREVE” COM CHARME NOS DESTINOS NÃO-RIO
+7. TRABALHAR COM DIFF MÍNIMO E SEGURANÇA MÁXIMA
+
+INSTRUÇÃO FINAL:
+NÃO EXECUTE NADA AINDA.
+FAÇA APENAS A FASE 1 E A FASE 2.
+PARE E ESPERE MINHA APROVAÇÃO ANTES DE EDITAR QUALQUER ARQUIVO.

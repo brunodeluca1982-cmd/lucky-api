@@ -1,0 +1,96 @@
+Your audit is strong, but still missing critical architectural gaps.
+
+Before any implementation, I need you to EXTEND the diagnosis with concrete, code-level evidence.
+
+CRITICAL RULES
+
+1. Do NOT answer conceptually — every claim must point to exact code
+2. Always reference exact files and functions
+3. Show snippets or pseudo-extracted logic where relevant
+4. Do NOT implement yet
+5. Focus only on the itinerary engine
+
+EXTENDED DIAGNOSIS
+
+1. SLOT SYSTEM
+
+- Do we have real slot constraints or only classification?
+- Can a place be assigned to multiple periods incorrectly?
+- Where exactly are slot rules enforced (file + function)?
+- If no hard constraints exist, show where classification happens without enforcement
+
+2. SCORING MODEL
+
+- Is there a real scoring function or only soft ranking?
+- Show the exact scoring logic (code or pseudo-extracted)
+- Which variables affect ranking?
+- Are there weights? Where are they defined?
+
+3. DISTANCE ROLE
+
+- Where exactly distance influences:
+  - candidate selection
+  - clustering
+  - ordering
+- Show the exact functions involved
+- Confirm whether distance is used only after selection or during decision-making
+
+4. PENALTY SYSTEM
+
+- Are there negative weights or only positive boosts?
+- Is there any penalty for:
+  - long distance
+  - repetition
+  - incompatible sequence
+- Show code evidence
+
+5. AI ROLE
+
+- What exactly is sent to Gemini (show structure)
+- What decisions Gemini is allowed to make
+- What would break if Gemini step is removed
+- Whether AI is:
+  - selecting
+  - scoring
+  - ordering
+  - or only formatting/reordering
+
+6. FAILURE POINT
+
+Identify the exact step where intelligence is lost:
+- selection
+- scoring
+- clustering
+- ordering
+- AI step
+
+Explain WHY that step produces generic output.
+
+REDESIGN UPDATE
+
+Now update the redesign to explicitly include:
+
+- real slot constraints (not just classification)
+- a scoring function with weights + penalties
+- distance as a core decision variable (not post-processing)
+- deterministic correctness BEFORE AI
+- AI strictly as editorial/ordering layer
+
+For each change:
+- show EXACT function/file that would be modified
+- show BEFORE vs AFTER behavior (short, concrete comparison)
+
+OUTPUT FORMAT
+
+1. Extended diagnosis (code-referenced)
+2. Current weaknesses (with exact locations)
+3. Where intelligence is lost
+4. Updated minimal redesign
+5. Files/functions impacted
+6. Risks
+7. What must NOT change
+
+FINAL RULE
+
+Do NOT implement yet.
+Wait for approval after this extended diagnosis.

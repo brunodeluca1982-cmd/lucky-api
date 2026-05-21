@@ -1,0 +1,88 @@
+Audit the current LIVE itinerary generation execution path.
+
+CRITICAL RULES
+
+1. This must be REAL runtime verification, not static code reading
+2. Do NOT explain code structure only
+3. Do NOT give hypothetical examples
+4. Use ONE REAL failing automatic itinerary case from the current app flow
+5. Prefer a case that reproduces the bad behavior I am seeing in practice
+6. If needed, add temporary logs/tracing, run one real generation, and then remove/disable the tracing after the audit
+7. Do NOT implement new features in this audit
+8. Do NOT change engine logic in this audit
+9. Show concrete runtime evidence, not summaries
+
+OBJECTIVE
+
+I need proof of what is ACTUALLY happening at runtime, because the automatic itinerary is still wrong too often even after Steps A, A.5, B, C, D, E, and F.
+
+Use one REAL failing itinerary generation example and trace the full pipeline.
+
+For that real example, show:
+
+1. the exact request payload received by the edge function
+2. whether each step is actually executing in order:
+   - Step A
+   - Step A.5
+   - Step B
+   - Step C
+   - Step D
+   - Step E
+   - Step F
+
+3. For each step, show:
+   - input shape
+   - output shape
+   - which fields are actually changed by that step
+   - whether the step materially changed the itinerary or not
+
+4. Confirm explicitly whether refineWithGemini is really called at runtime
+5. Confirm explicitly whether any fallback path is being triggered
+6. Confirm explicitly that:
+   - Step A caps are applied
+   - Step A.5 validation rules are applied
+   - Step B score survives into clustering
+   - Step C selection changes the candidate pool
+   - Step D hotel changes Day 1 or cluster order
+   - Step E changes intra-period ordering only
+   - Step F fields are actually present in the returned JSON
+
+7. Show one FULL real itinerary trace:
+   - raw savedItems input
+   - hotel extraction (if any)
+   - enriched places
+   - complement items selected
+   - scored/sorted pool
+   - clustered days
+   - post-Step-D day order
+   - pre-Gemini draft
+   - post-Gemini draft
+   - final returned JSON
+
+8. For each stage, tell me whether the observed bad output is caused by:
+   - bad source data
+   - wrong metadata interpretation
+   - no material effect from the step
+   - fallback path
+   - Gemini having too little influence
+   - Gemini having the wrong influence
+   - UI displaying misleading information
+
+IMPORTANT
+
+- Do NOT summarize only
+- Do NOT paraphrase
+- Do NOT choose an easy example if a failing one exists
+- If a step is NOT actually affecting output in practice, say it clearly
+- If the runtime trace proves the main problem is data quality, say it clearly
+- If the runtime trace proves the main problem is UI presentation rather than engine logic, say it clearly
+
+OUTPUT FORMAT
+
+1. real failing request payload
+2. runtime execution proof for each step
+3. fallback status
+4. full before/after trace
+5. which step is still not affecting output in practice
+6. whether the root cause is engine, data, Gemini, or UI
+7. exact root cause of the current bad itineraries

@@ -1,0 +1,75 @@
+The structural sanity-check plan is valid, but it is NOT the current highest-priority fix.
+
+Do NOT implement this yet.
+
+Reason:
+my current pain is not empty period blocks or wrong totalItems counts.
+
+My current pain is still itinerary trust and perceived intelligence:
+- wrong photo / wrong item correspondence
+- restaurant appearing at implausible time
+- itinerary still feeling incoherent
+- items that are technically valid but behaviorally wrong
+
+So before structural cleanup, I need a stricter diagnostic focused ONLY on these trust-critical issues.
+
+CRITICAL RULES
+
+1. Do NOT implement anything yet
+2. Do NOT propose UI redesign in this step
+3. Do NOT propose structural cleanup in this step
+4. Do NOT move to Phase 2 visuals in this step
+5. Focus only on trust-critical itinerary failures
+6. Use the current live pipeline behavior as the reference
+7. Be precise and concrete, not generic
+
+TASK
+
+I need a diagnostic and next-step plan focused ONLY on these four areas:
+
+1. PHOTO-TO-ITEM CORRESPONDENCE
+- why a photo can still mismatch the actual item
+- where exactly that mismatch can happen in the pipeline
+- whether the problem is:
+  - wrong ID/source_table matching
+  - hydration merge issue
+  - fallback image issue
+  - wrong saved item data
+  - UI render issue
+
+2. FINAL TIME ASSIGNMENT PRIORITY CONFLICTS
+- why a restaurant can still appear at an implausible time even after time anchors
+- what exact priority chain is currently winning
+- where anchor rules can be overridden incorrectly
+- whether meal anchors, sunset anchors, theater anchors, and nightlife anchors can still conflict
+
+3. CATEGORY / TIME CONFLICTS THAT SURVIVE VALIDATION
+- which cases are still able to pass through the current validation layer even though they feel wrong
+- especially:
+  - breakfast/brunch exceptions
+  - dinner-only restaurants
+  - nightlife items
+  - theater/show items
+  - sunset items
+
+4. WHY A STRUCTURALLY VALID ITINERARY CAN STILL FEEL WRONG
+- explain the remaining gap between:
+  - technically valid
+  - behaviorally plausible
+  - emotionally/intuitively correct
+
+OUTPUT FORMAT
+
+1. exact trust-critical failure classes
+2. where each one happens in the pipeline
+3. what the current system gets right
+4. what it still gets wrong
+5. the next minimal fix plan focused ONLY on trust-critical issues
+6. what must wait until later
+
+IMPORTANT
+
+Do NOT implement yet.
+Do NOT drift into visual/UI plans.
+Do NOT drift into general architecture.
+Stay only on trust-critical itinerary correctness.

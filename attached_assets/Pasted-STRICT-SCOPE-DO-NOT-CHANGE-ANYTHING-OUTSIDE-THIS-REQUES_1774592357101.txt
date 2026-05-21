@@ -1,0 +1,90 @@
+STRICT SCOPE — DO NOT CHANGE ANYTHING OUTSIDE THIS REQUEST
+
+Fix the root cause of incorrect navigation and broken item clicks across the app.
+
+This is a structural fix. No UI changes.
+
+--------------------------------------------------
+PROBLEM
+--------------------------------------------------
+
+Items in itinerary and other parts of the app are opening:
+- wrong places
+- generic lists
+- “em breve” incorrectly
+
+This is caused by inconsistent or missing entity identification.
+
+--------------------------------------------------
+MANDATORY RULE (SYSTEM LEVEL)
+--------------------------------------------------
+
+Every item must be treated as a strict entity with:
+
+- id (unique database id)
+- source_table (exact table name)
+
+Valid tables:
+- restaurantes
+- stay_hotels
+- o_que_fazer_rio
+- lucky_list_rio
+
+--------------------------------------------------
+REQUIRED FIXES
+--------------------------------------------------
+
+1. ITINERARY DATA STRUCTURE
+
+Ensure every itinerary item includes:
+- id
+- source_table
+
+If any item does not have these:
+→ it is invalid and must NOT be routed
+
+2. REMOVE NAME-BASED NAVIGATION
+
+Completely remove any navigation logic based on:
+- name
+- string matching
+- partial matching
+
+Navigation must NEVER depend on name.
+
+3. ENFORCE STRICT ROUTING
+
+All navigation must follow:
+
+navigateToDetail(source_table, id)
+
+4. DETAIL SCREEN FETCH
+
+Detail screen must:
+- query Supabase using id + source_table
+- never guess or infer the entity
+
+5. INVALID ITEM HANDLING
+
+If item has no valid id or source_table:
+→ show fallback:
+"Em breve disponível"
+
+ONLY in this case.
+
+6. DEBUG LOGGING (TEMPORARY)
+
+Add logging for each click:
+- item.id
+- item.source_table
+- navigation target
+
+--------------------------------------------------
+CONFIRMATION REQUIRED
+--------------------------------------------------
+
+1. confirm that ALL items now have id + source_table
+2. confirm name-based navigation was removed
+3. confirm routing is now 100% based on id
+4. confirm detail pages fetch only by id
+5. confirm invalid items are correctly handled

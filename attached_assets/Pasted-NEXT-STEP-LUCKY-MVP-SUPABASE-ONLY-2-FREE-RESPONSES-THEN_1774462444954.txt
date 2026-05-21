@@ -1,0 +1,227 @@
+NEXT STEP — LUCKY MVP (SUPABASE-ONLY, 2 FREE RESPONSES, THEN PAYWALL)
+
+IMPORTANT:
+Do not redesign the whole app.
+Do not refactor unrelated systems.
+Do not change the itinerary engine.
+Do not build a generic chatbot.
+Lucky must work only with our Supabase data.
+
+ALSO IMPORTANT:
+Do NOT use mock data.
+Do NOT simulate premium access.
+Do NOT hardcode responses.
+All data and permissions must come from real Supabase tables and existing backend flows.
+
+GOAL:
+Implement the Lucky menu as a lightweight concierge AI that:
+- answers naturally
+- uses only our Supabase data
+- gives 2 free responses
+- blocks the 3rd interaction unless the user has premium access
+
+KNOWN PREMIUM LOGIC:
+Use access_levels as the app-facing source of truth.
+
+Premium is active when:
+- access_levels.plan_type indicates premium
+- and access_levels.access_until is in the future
+
+Do not use purchases as the primary permission source.
+subscriptions is the Stripe/commercial layer, but access_levels is the app permission layer.
+
+--------------------------------------------------
+A. LUCKY MUST ONLY USE SUPABASE DATA
+--------------------------------------------------
+
+Lucky must never invent places or recommendations.
+
+It may only answer using our own database and metadata, including when relevant:
+- lucky_list_rio
+- o_que_fazer_rio
+- restaurantes
+- stay_hotels
+- stay_neighborhoods
+- other destination-context tables already used in the app
+
+Use rich metadata when available:
+- meu_olhar / my_view
+- tags_ia / ai_tags
+- momento_ideal
+- vibe
+- perfil_ideal / perfil_publico
+- seguro_mulher_sozinha / safety_solo_woman
+- nivel_esforco
+- com_criancas
+- best_for / better_for
+- walkable / gastronomy / nightlife / scenery
+
+If the data is not available in Supabase, Lucky must say so naturally instead of inventing.
+
+--------------------------------------------------
+B. LUCKY ENTRY SCREEN
+--------------------------------------------------
+
+The Lucky screen must not feel empty.
+
+Show a premium but simple entry state with suggested prompts such as:
+- O que fazer hoje no Rio?
+- Melhores restaurantes em Ipanema
+- Onde ficar para gastronomia?
+- Lugares bons para ir sozinha
+- Ideias românticas no Rio
+- O que fazer com amigos no fim de semana?
+
+Keep the current app visual language.
+Do not build a generic chat UI.
+It should feel like a concierge assistant inside The Lucky Trip.
+
+--------------------------------------------------
+C. FREE LIMIT
+--------------------------------------------------
+
+Non-premium users get exactly 2 Lucky responses for free.
+
+Behavior:
+- first user message -> answer normally
+- second user message -> answer normally
+- third user message -> do NOT answer fully
+
+Instead:
+- block further conversation
+- show a premium/paywall CTA
+- explain naturally that deeper ongoing refinement requires the premium plan
+
+IMPORTANT:
+The 3rd interaction should trigger the gate cleanly.
+Do not half-answer and then cut off awkwardly.
+
+--------------------------------------------------
+D. PREMIUM USERS
+--------------------------------------------------
+
+Premium users can continue using Lucky normally.
+
+For premium users:
+- allow ongoing conversation
+- keep responses grounded in Supabase
+- allow richer and more natural answers
+- still never invent places
+
+--------------------------------------------------
+E. CONTEXT-AWARE LUCKY
+--------------------------------------------------
+
+If the user is already inside a destination context or has an active itinerary context, Lucky should use that context intelligently.
+
+Examples:
+- if user is in Rio, prioritize Rio data
+- if user has an itinerary open, Lucky may refine within that destination context
+- if user asks vague questions, Lucky should prefer the active destination instead of acting globally
+
+--------------------------------------------------
+F. RESPONSE STYLE
+--------------------------------------------------
+
+Lucky should sound:
+- natural
+- useful
+- concise but not robotic
+- premium/editorial
+- grounded in our data
+
+Avoid sounding like ChatGPT.
+Avoid long generic disclaimers.
+Avoid invented confidence.
+
+Responses should feel like:
+- a knowledgeable local concierge
+- using The Lucky Trip’s own curation
+
+--------------------------------------------------
+G. PAYWALL CTA
+--------------------------------------------------
+
+When the free limit is reached and the user is not premium, show a clear upgrade path.
+
+Suggested CTA tone:
+- Continue com o Lucky
+- Assine para continuar refinando seu roteiro
+- Desbloqueie respostas ilimitadas e mais personalização
+
+Hook the CTA into the existing premium flow / Stripe path already available in the app.
+
+--------------------------------------------------
+H. REAL SUPABASE + STRIPE INTEGRATION REQUIRED
+--------------------------------------------------
+
+SUPABASE REQUIREMENTS:
+
+1. Read premium access ONLY from:
+- access_levels table
+
+Premium is active when:
+- plan_type indicates premium
+- access_until > now()
+
+2. Use real queries to Supabase (no mock layer)
+
+3. Lucky responses must query real data from:
+- lucky_list_rio
+- o_que_fazer_rio
+- restaurantes
+- stay_hotels
+- stay_neighborhoods
+
+Do not generate places outside the database.
+
+STRIPE REQUIREMENTS:
+
+1. Use existing Stripe integration already set up:
+- create-checkout
+- customer-portal
+- webhook
+
+2. When user hits paywall:
+- trigger real checkout flow (do not simulate)
+
+3. After successful payment:
+- Stripe webhook must update:
+  → subscriptions
+  → access_levels
+
+4. App must reflect updated access_levels immediately after payment
+
+NO FALLBACK TO FAKE DATA:
+
+If Supabase query fails:
+- show error or fallback message
+- do NOT invent data
+
+--------------------------------------------------
+I. STRICT SCOPE
+--------------------------------------------------
+
+Implement only:
+- Lucky screen
+- Supabase-grounded response flow
+- 2 free response limit
+- premium gating using access_levels
+- starter prompts
+- contextual destination behavior
+- real Stripe checkout/paywall trigger
+
+Do not redesign unrelated tabs.
+Do not rebuild navigation.
+Do not create a generic AI product.
+
+--------------------------------------------------
+J. REQUIRED CONFIRMATION
+--------------------------------------------------
+
+After implementing, explicitly confirm:
+1. which Supabase queries are being used
+2. how access_levels is being checked
+3. which Stripe flow is triggered
+4. how access is updated after payment
+5. that no mock data or simulated premium logic is being used

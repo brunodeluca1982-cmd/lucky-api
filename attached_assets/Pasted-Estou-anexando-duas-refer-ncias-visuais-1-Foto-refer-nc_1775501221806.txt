@@ -1,0 +1,72 @@
+Estou anexando duas referências visuais:
+
+1. Foto/referência da Carolina
+2. Referência da tela de roteiro do app
+
+Ajuste importante de direção de produto e design:
+
+Hoje há um erro de linguagem visual na experiência da Carolina.
+
+REGRA CORRETA:
+
+1. Na home dos friends / no destaque da Carolina:
+- a foto da Carolina DEVE aparecer
+- use a imagem anexada da Carolina como referência principal
+- porque esse card vende a curadora
+- o usuário precisa reconhecer rapidamente a pessoa
+- manter:
+  - foto da Carolina
+  - nome da Carolina
+  - contagem de roteiros
+  - visual premium
+
+2. Na home do friend (após clicar na Carolina):
+- a foto da Carolina também deve aparecer
+- essa tela é editorial e representa a curadora
+- pode seguir a referência visual da imagem anexada da Carolina
+- deve ter:
+  - imagem grande
+  - nome
+  - texto curto
+  - seção “Roteiros curados”
+
+3. Ao clicar no roteiro da Carolina:
+- a tela NÃO deve usar a foto da Carolina como hero principal
+- a hero principal deve ser o DESTINO (Rio de Janeiro)
+- usar como referência visual a tela de roteiro anexada
+- usar foto forte e opaca do destino ao fundo
+- a tela deve seguir exatamente a linguagem visual do restante do app:
+  - glassmorphism
+  - camadas translúcidas
+  - blur estilo iOS
+  - botões e cards transparentes
+  - aparência premium editorial
+  - conteúdo scrollável sobre a imagem de fundo
+
+4. Hierarquia visual correta:
+- home dos friends = foto da Carolina no card
+- home do friend = foto da Carolina em destaque
+- roteiro = hero do Rio / destino
+
+5. Objetivo:
+- manter a identidade da Carolina na entrada
+- manter a identidade visual do destino e do app na tela do roteiro
+
+6. Não quero:
+- tela do roteiro com cara de perfil de influencer
+- quebra de linguagem visual em relação ao resto do app
+- fundo errado
+- componentes fora do design system implícito do Lucky Trip
+
+7. Quero:
+- home com foto da Carolina
+- home do friend com foto da Carolina
+- roteiro com hero do Rio
+- UI igual ao restante do app
+- sensação iOS / vidro / premium / editorial
+
+Por favor, ajuste a implementação atual com base nisso.
+No final, me diga exatamente:
+- quais componentes/telas foram alterados
+- em quais telas a foto da Carolina está sendo usada
+- em qual tela o hero do Rio está sendo usado

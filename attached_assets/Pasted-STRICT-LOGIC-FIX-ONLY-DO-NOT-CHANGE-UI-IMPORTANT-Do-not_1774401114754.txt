@@ -1,0 +1,101 @@
+STRICT LOGIC FIX ONLY — DO NOT CHANGE UI
+
+IMPORTANT:
+Do not redesign anything.
+Do not change layout.
+Do not touch the itinerary setup screens.
+Do not touch the result screen design.
+Do not change branding, spacing, colors or typography.
+
+This task is ONLY about fixing itinerary generation logic.
+
+---
+
+CURRENT BUG
+
+The AI still puts all places into one day.
+This is wrong.
+
+The model must NOT decide the day structure by itself anymore.
+
+---
+
+REQUIRED FIX
+
+Before calling the LLM, the code must predefine the day structure.
+
+Implementation rules:
+
+1. Use the selected trip length as the exact number of days.
+   Example:
+   const totalDays = trip_length;
+
+2. Build a skeleton before the prompt:
+   const skeleton = Array.from({ length: totalDays }, (_, i) => ({
+     day: i + 1,
+     items: []
+   }));
+
+3. Compute expected density:
+   const totalPlaces = places.length;
+   const itemsPerDay = Math.ceil(totalPlaces / totalDays);
+
+4. Change the prompt logic:
+   The LLM must NOT create the day count.
+   The LLM must ONLY fill the existing day structure.
+
+5. Prompt requirement:
+   - must fill ALL days
+   - must not merge days
+   - must not leave empty days
+   - must distribute places as evenly as possible
+   - must use best_time / tags / category / vibe / area / lat-lng when available
+   - must group by proximity
+   - must avoid putting everything in day 1
+
+6. If there are too few saved places:
+   - still keep the exact number of days
+   - optionally use relevant complementary places from Supabase
+   - but keep saved places as priority
+
+7. If distance-matrix or proximity helpers already exist, use them before calling the model.
+
+---
+
+NEW PROMPT BEHAVIOR
+
+The model should receive something like:
+
+- exact trip length
+- exact skeleton
+- places list
+- structured Supabase metadata
+- user preferences
+
+And should ONLY assign places into that structure.
+
+The model is not allowed to invent the number of days.
+
+---
+
+VALIDATION BEFORE RETURN
+
+Before returning the final itinerary:
+- verify total number of days == selected trip length
+- verify no day is empty
+- verify places are distributed
+- verify ordering is geographically coherent
+- verify time-of-day makes sense
+
+If any rule is broken, fix it before returning.
+
+---
+
+STRICT SCOPE
+
+Only change the itinerary generation logic.
+Do not redesign anything.
+Do not modify unrelated screens.
+Do not touch other app areas.
+
+Implement with the smallest safe change set possible.

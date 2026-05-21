@@ -1,0 +1,84 @@
+VISUAL REFINEMENT — REMOVE EMOJIS AND REPLACE WITH PREMIUM ICON SYSTEM
+
+IMPORTANT:
+Do not redesign the app.
+Do not change layout or flow.
+This is a visual refinement only.
+
+CURRENT PROBLEM:
+The itinerary creation flow is using emojis (e.g. 😊, 🍽️, 🌴, etc).
+This breaks the premium feel of the app and makes it look generic.
+
+GOAL:
+Replace all emojis with a clean, elegant, and consistent icon system aligned with The Lucky Trip visual identity.
+
+==================================================
+1. REMOVE EMOJIS COMPLETELY
+==================================================
+
+- Remove all emojis from:
+  - itinerary creation flow
+  - selection screens (interests, vibe, etc.)
+  - labels and UI elements
+
+Do not keep any emoji-based UI.
+
+==================================================
+2. REPLACE WITH PREMIUM ICONS
+==================================================
+
+Use a minimal, elegant icon style:
+
+- thin stroke icons OR soft filled icons
+- neutral color (white or slightly transparent white)
+- consistent size and spacing
+- no playful or cartoon-like icons
+
+The icons should feel:
+- clean
+- subtle
+- premium
+- editorial (not playful)
+
+==================================================
+3. STYLE RULES
+==================================================
+
+Icons must:
+- not dominate the UI
+- support the text, not compete with it
+- follow the glass / image-driven design system
+- match the overall luxury travel tone
+
+Avoid:
+- colorful icons
+- exaggerated shapes
+- heavy visual weight
+
+==================================================
+4. CONSISTENCY
+==================================================
+
+Apply the same icon style across:
+- itinerary creation steps
+- interest selection
+- travel style / vibe selection
+- any step that previously used emojis
+
+==================================================
+5. DO NOT OVERUSE ICONS
+==================================================
+
+If an icon does not add clarity, it should be removed.
+Clean > decorative.
+
+==================================================
+6. REQUIRED CONFIRMATION
+==================================================
+
+After implementing, confirm:
+
+1. where emojis were removed
+2. which icon style/library is now used
+3. how consistency is maintained across screens
+4. that no emoji-based UI remains

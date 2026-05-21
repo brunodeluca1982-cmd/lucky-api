@@ -1,0 +1,142 @@
+ULTRA STRICT MODE — DO NOT MODIFY ANYTHING OUTSIDE THIS EXACT ISSUE
+
+CRITICAL BUG:
+The "Começar agora" button does absolutely nothing when clicked.
+
+This is NOT a redesign task.
+This is NOT a refactor.
+This is NOT a Stripe reimplementation.
+
+This is ONLY to make the existing checkout flow actually trigger.
+
+--------------------------------------------------
+NON-NEGOTIABLE RULES
+--------------------------------------------------
+
+- DO NOT change UI, layout, styles or text
+- DO NOT change Stripe products, prices or IDs
+- DO NOT refactor unrelated code
+- DO NOT touch Supabase logic
+- DO NOT modify working features
+- DO NOT create new payment flows
+
+ONLY fix the broken click → checkout trigger
+
+--------------------------------------------------
+STEP 1 — CONFIRM BUTTON IS WIRED
+--------------------------------------------------
+
+Find the "Começar agora" button.
+
+Ensure it has a working onClick/onPress handler.
+
+Add TEMPORARY logs:
+
+console.log("CHECKOUT CLICKED")
+
+If this log does NOT appear → fix the binding
+
+--------------------------------------------------
+STEP 2 — TRACE CURRENT FLOW (DO NOT REWRITE)
+--------------------------------------------------
+
+Locate the EXISTING checkout function already in the codebase.
+
+DO NOT create a new one if one already exists.
+
+Identify:
+- function name
+- where it is defined
+- what it expects (plan, priceId, etc)
+
+Log:
+
+console.log("Selected plan:", selectedPlan)
+console.log("Calling checkout...")
+
+--------------------------------------------------
+STEP 3 — ENSURE BUTTON CALLS EXISTING FLOW
+--------------------------------------------------
+
+Connect the button to the EXISTING checkout function.
+
+Example:
+
+onClick={() => handleCheckout(selectedPlan)}
+
+DO NOT invent new logic.
+
+--------------------------------------------------
+STEP 4 — VERIFY BACKEND CALL
+--------------------------------------------------
+
+Ensure the checkout function calls the existing backend endpoint.
+
+Examples:
+- /api/create-checkout-session
+- or similar
+
+Log:
+- request sent
+- response received
+
+If endpoint is missing → ONLY THEN create it (minimal implementation)
+
+--------------------------------------------------
+STEP 5 — ENSURE REDIRECT HAPPENS
+--------------------------------------------------
+
+After receiving response:
+
+IF response contains:
+- sessionId → use stripe.redirectToCheckout
+- url → use window.location.href
+
+User MUST be redirected to Stripe checkout.
+
+--------------------------------------------------
+STEP 6 — DO NOT FAIL SILENTLY
+--------------------------------------------------
+
+If ANY error occurs:
+
+- console.error(error)
+- show a minimal alert:
+  "Erro ao iniciar pagamento"
+
+--------------------------------------------------
+STEP 7 — DO NOT TOUCH ANYTHING ELSE
+--------------------------------------------------
+
+Do NOT:
+- change pricing display
+- change plan logic
+- change premium logic
+- change Lucky behavior
+- change navigation
+- change Supabase
+- change Stripe config
+
+--------------------------------------------------
+SUCCESS CRITERIA
+--------------------------------------------------
+
+Clicking "Começar agora" MUST:
+
+1. log "CHECKOUT CLICKED"
+2. call existing checkout function
+3. hit backend
+4. receive valid response
+5. redirect to Stripe
+
+--------------------------------------------------
+FINAL CONFIRMATION (REQUIRED)
+--------------------------------------------------
+
+After fixing, report ONLY:
+
+1. Was the button missing a handler?
+2. What function is now called?
+3. What endpoint is used?
+4. How redirect is done?
+5. What was broken?

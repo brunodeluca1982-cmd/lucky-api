@@ -1,0 +1,87 @@
+Fix image resolution and fallback logic across the app.
+
+IMPORTANT:
+- Do NOT redesign anything
+- Do NOT change layout
+- Do NOT change styles
+- Do NOT change spacing
+- Do NOT change navigation
+- This is a data/image logic fix only
+
+-----------------------------------
+PROBLEM
+-----------------------------------
+
+Some images are:
+- missing
+- incorrect
+- inconsistent between screens
+
+This indicates broken or incomplete image resolution logic.
+
+-----------------------------------
+GOAL
+-----------------------------------
+
+Ensure every entity always renders the correct image using a strict priority system.
+
+This applies to:
+- neighborhoods
+- restaurants
+- hotels
+- activities
+
+-----------------------------------
+IMAGE PRIORITY RULE (STRICT)
+-----------------------------------
+
+1. Use Supabase image if available and valid
+2. If missing or invalid, use Google fallback (based on entity name + city)
+3. If both fail, use a safe neutral placeholder
+
+Never skip steps.
+Never use Google if Supabase already has a valid image.
+
+-----------------------------------
+CRITICAL RULE
+-----------------------------------
+
+The resolved image must be stable.
+
+- Same entity must always render the same image
+- No random or changing images between renders
+- Cache or persist the resolved image when using Google fallback
+
+-----------------------------------
+IMPLEMENTATION
+-----------------------------------
+
+1. Create a single resolver function:
+   getImageForEntity(type, name, id)
+
+2. This resolver must:
+   - check Supabase first
+   - fallback to Google if needed
+   - cache the result (avoid variation)
+
+3. Replace all direct image usage with this resolver
+
+-----------------------------------
+DO NOT
+-----------------------------------
+
+- Do NOT fetch random images per render
+- Do NOT prioritize Google over Supabase
+- Do NOT leave cards without images
+- Do NOT mix images from unrelated entities
+
+-----------------------------------
+OUTPUT
+-----------------------------------
+
+Show exactly:
+1. which file(s) were changed
+2. how the image resolver works
+3. how Google fallback is triggered
+4. how image stability is ensured
+5. confirmation that all cards now have valid images

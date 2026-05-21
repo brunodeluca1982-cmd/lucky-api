@@ -1,0 +1,133 @@
+FINAL VISUAL SYSTEM CORRECTION — REMOVE DARKBROWN + APPLY IMAGE-DRIVEN DESIGN SYSTEM
+
+IMPORTANT:
+Do not redesign the app structure.
+Do not change navigation.
+Do not change layout hierarchy.
+This is a visual system correction only.
+
+CURRENT PROBLEM:
+The app is using a “darkbrown” tone as a base color across screens.
+This makes the UI heavy, dated, and disconnected from the destination imagery.
+
+GOAL:
+The UI must be image-driven, light, and premium.
+The design must be based on image + transparency + glass — not solid colors.
+
+==================================================
+1. REMOVE DARKBROWN COMPLETELY
+==================================================
+
+- Remove any hardcoded dark brown backgrounds
+- Do not use brown as base color anywhere
+- Do not apply brown overlays
+- Eliminate any fallback that defaults to brown
+
+==================================================
+2. IMAGE-DRIVEN BACKGROUND SYSTEM
+==================================================
+
+- Use destination/hero images as the main background
+- Apply a subtle dark gradient overlay for readability:
+  - black with transparency (not brown)
+- Keep the image visible and dominant
+
+Example:
+- rgba(0,0,0,0.4 → 0.7)
+- never use colored overlays
+
+==================================================
+3. GLASS / TRANSLUCENT UI LAYER
+==================================================
+
+All UI components must feel like glass:
+
+Cards, sections, containers:
+- semi-transparent background (white or neutral)
+- backdrop blur (when supported)
+- soft borders
+- light shadows
+
+Example style:
+- background: rgba(255,255,255,0.08)
+- border: 1px solid rgba(255,255,255,0.15)
+- blur
+
+Do NOT use:
+- solid dark fills
+- opaque backgrounds
+- brown or muddy tones
+
+==================================================
+4. COLOR SYSTEM
+==================================================
+
+Use only:
+
+TEXT:
+- white (primary)
+- soft white (secondary)
+
+OVERLAY:
+- black with opacity
+
+ACCENT:
+- gold (#D4AF37) — use sparingly
+
+Avoid:
+- brown
+- heavy dark colors
+- saturated UI colors
+
+==================================================
+5. BUTTON SYSTEM
+==================================================
+
+Primary buttons:
+- translucent or neutral
+- white text
+
+Main CTA:
+- gold accent (only when needed)
+
+Avoid:
+- heavy solid buttons
+- dark blocks
+
+==================================================
+6. CONSISTENCY ACROSS SCREENS
+==================================================
+
+Apply this system consistently to:
+- Home
+- Destination page
+- Itinerary flow
+- Itinerary result
+- Lucky
+- Profile
+
+The app must feel visually unified.
+
+==================================================
+7. CORE PRINCIPLE
+==================================================
+
+The image is the product.
+
+UI must not compete with the image.
+UI must organize and enhance the image.
+
+If the image disappears, the UI should feel incomplete.
+This is intentional.
+
+==================================================
+8. REQUIRED CONFIRMATION
+==================================================
+
+After applying, explicitly confirm:
+
+1. that darkbrown was fully removed from all screens
+2. which components now use glass/translucent style
+3. how background images are now handled
+4. where gold is used and how it is limited
+5. that no solid dark base colors remain

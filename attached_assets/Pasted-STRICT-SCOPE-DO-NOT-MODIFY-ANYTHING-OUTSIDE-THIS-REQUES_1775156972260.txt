@@ -1,0 +1,267 @@
+STRICT SCOPE — DO NOT MODIFY ANYTHING OUTSIDE THIS REQUEST
+
+Implement a complete premium conversion flow aligned with the product logic defined in Bíblia 2.4.
+
+DO NOT redesign existing screens.
+DO NOT change styling unless explicitly required.
+DO NOT break current working features.
+DO NOT modify map behavior.
+DO NOT modify routing outside specified flows.
+
+==================================================
+GOAL
+==================================================
+
+Structure a high-conversion freemium funnel with:
+
+1. Discovery (free exploration)
+2. Tension (contextual paywalls)
+3. Simple decision (subscription screen)
+4. Premium upsell (concierge)
+
+The app must feel editorial, curated, and premium — not aggressive or sales-driven.
+
+==================================================
+1. PAYWALL TYPES (IMPLEMENT ALL 3)
+==================================================
+
+--------------------------------------------------
+A. DISCOVERY PAYWALL (Lucky List items)
+--------------------------------------------------
+
+Trigger:
+- User taps a locked Lucky List item
+
+Behavior:
+- Show paywall modal (existing UI)
+- DO NOT show all pricing options
+
+Content (update text only):
+
+TITLE:
+"Esse lugar não aparece no Google"
+
+SUBTEXT:
+"Só quem conhece o Rio de verdade chega aqui. Este é um dos 127 endereços da Lucky List."
+
+BENEFITS:
+- 127 segredos selecionados por quem vive o Rio
+- Roteiros prontos ou criados para você com IA
+- Salve, organize e acesse offline
+
+PRIMARY CTA:
+"Desbloquear agora"
+
+SECONDARY CTA:
+"Ver planos e benefícios"
+
+OPTIONAL SMALL LINK (low emphasis):
+"Só quer testar? Acesso por 7 dias"
+
+Action:
+- PRIMARY CTA → open Subscription Screen
+- SECONDARY CTA → open Subscription Screen
+- Weekly link → directly select weekly plan
+
+--------------------------------------------------
+B. LUCKY AI PAYWALL (usage limit)
+--------------------------------------------------
+
+Trigger:
+- Non-premium user sends 3rd valid question
+
+Behavior:
+- DO NOT answer the question
+- Show premium conversion card/screen
+
+Rules:
+- Question 1 → normal answer
+- Question 2 → normal answer (no paywall)
+- Question 3 → block + paywall
+
+Content:
+
+TITLE:
+"Você chegou muito perto"
+
+BODY:
+"Continue com o Lucky para refinar sua viagem com inteligência e acessar respostas ilimitadas."
+
+CTA:
+"Desbloquear agora"
+
+SECONDARY (small):
+"Prefere ajuda humana?"
+
+Actions:
+- CTA → Subscription Screen
+- Secondary → Concierge entry (see section 4)
+
+--------------------------------------------------
+C. DEPTH PAYWALL (feature-based)
+--------------------------------------------------
+
+Trigger when non-premium user tries to:
+- Save multiple places
+- Generate itinerary
+- Edit itinerary
+
+Content:
+
+TITLE:
+"Organize sua viagem completa"
+
+BODY:
+"Desbloqueie o Lucky Pro para salvar, planejar e personalizar sua experiência."
+
+CTA:
+"Desbloquear agora"
+
+==================================================
+2. SUBSCRIPTION SCREEN (SIMPLIFY DECISION)
+==================================================
+
+IMPORTANT:
+Do NOT show all plans equally.
+
+ONLY show:
+
+PRIMARY OPTIONS:
+- Annual plan (highlighted)
+- Monthly plan
+
+SECONDARY (small text link):
+- Weekly plan
+
+--------------------------------------
+
+Annual Plan:
+- Show as highlighted
+- Label: "Mais escolhido"
+- Label: "Economize 40%"
+- Price: R$19,90/mês (R$97/ano)
+
+Monthly Plan:
+- Price: R$29,90/mês
+
+Weekly Plan:
+- Small link: "Acesso por 7 dias — R$9,90"
+- No visual emphasis
+
+--------------------------------------
+
+CTA:
+"Começar agora"
+
+Microcopy:
+"7 dias grátis · Cancele quando quiser"
+
+DO NOT show concierge option here.
+
+==================================================
+3. POST-PURCHASE FLOW
+==================================================
+
+After successful subscription:
+
+Screen:
+
+TITLE:
+"Você agora é Lucky Pro"
+
+SUBTEXT:
+"Agora você vê o Rio como quem mora aqui."
+
+BODY:
+"Os lugares que não aparecem no mapa comum agora estão abertos para você."
+
+CTA:
+"Explorar a Lucky List"
+
+SECONDARY:
+"Ir para o início"
+
+==================================================
+4. CONCIERGE (R$197) — PREMIUM UPSELL
+==================================================
+
+This is NOT an alternative to subscription.
+
+It is a higher-tier experience.
+
+DO NOT place it in:
+- main paywall
+- subscription decision screen
+
+ONLY show in these contexts:
+
+A. After Lucky responses (engaged users)
+B. After itinerary generation
+C. After repeated usage
+
+Trigger logic:
+- user has interacted significantly (>=2 AI uses OR itinerary opened)
+
+UI:
+
+Text:
+"Quer que a gente monte tudo para você?"
+
+CTA:
+"Roteiro personalizado"
+
+Route:
+→ Concierge purchase (R$197)
+
+==================================================
+5. USAGE TRACKING
+==================================================
+
+Track per user:
+- Lucky question count
+- Saved places count
+- Itinerary usage
+
+Persist in database (Supabase)
+
+Do NOT reset on refresh.
+
+==================================================
+6. ACCESS CONTROL
+==================================================
+
+Use access_levels as source of truth.
+
+Premium if:
+- active subscription
+- valid access_until
+- OR VIP flag
+
+If premium:
+- remove ALL paywalls
+- allow unlimited Lucky usage
+- allow saving and itinerary features
+
+==================================================
+7. DO NOT BREAK
+==================================================
+
+- Existing navigation
+- Map UI
+- Existing Supabase queries
+- Existing design system
+- Existing routing
+
+==================================================
+8. REQUIRED CONFIRMATION
+==================================================
+
+After implementation, confirm ONLY:
+
+1. Where each paywall is triggered
+2. How Lucky usage limit is enforced
+3. How subscription screen was simplified
+4. Where weekly plan appears
+5. Where concierge appears
+6. How premium access is validated
+7. That no existing feature was broken

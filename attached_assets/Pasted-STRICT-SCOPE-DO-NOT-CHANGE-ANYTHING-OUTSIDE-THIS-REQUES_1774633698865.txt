@@ -1,0 +1,95 @@
+STRICT SCOPE — DO NOT CHANGE ANYTHING OUTSIDE THIS REQUEST
+
+Fix the remaining navigation consistency and naming consistency issues.
+
+Do NOT redesign UI.
+Do NOT change layout.
+Do NOT modify working visual components.
+Do NOT change itinerary styling.
+
+--------------------------------------------------
+1. NAMING CONSISTENCY (MANDATORY)
+--------------------------------------------------
+
+The app must use the approved product naming consistently.
+
+Rule:
+- use "Onde comer"
+- do NOT use "Comer bem"
+
+Search the entire app and replace any remaining "Comer bem" naming with "Onde comer" wherever it refers to the restaurant category or screen.
+
+This includes:
+- tabs
+- routes
+- titles
+- labels
+- buttons
+- headings
+- internal visible text
+
+Do NOT change technical file names unless necessary.
+Focus on user-facing naming consistency.
+
+--------------------------------------------------
+2. COMPLETE ENTITY ROUTING AUDIT
+--------------------------------------------------
+
+The previous fix addressed some restaurant navigation calls, but this must now be enforced across the ENTIRE app.
+
+System rule:
+Every curated Rio entity must always open its exact detail page.
+
+Apply and verify this for ALL entry points:
+- Home cards
+- Highlight cards
+- Hero cards
+- Destination page cards
+- Itinerary items
+- Saved items
+- Search results
+- Suggestion panels
+- Map pin cards
+- Bairro pages
+- Lucky suggestions
+- "Onde comer"
+- "O que fazer"
+- Lucky List
+- Hotels
+
+No generic fallback for any Rio item that exists in Supabase.
+
+--------------------------------------------------
+3. STRUCTURAL VALIDATION
+--------------------------------------------------
+
+Audit all clickable entity entry points and ensure each one passes:
+- source_table
+- reference_id / exact id
+- category/entity type if required
+
+Do NOT rely on:
+- name matching
+- category guesses
+- generic local pages
+
+--------------------------------------------------
+4. INVALID FALLBACK RULE
+--------------------------------------------------
+
+"Em breve disponível" must ONLY appear if:
+- the item truly has no valid entity page yet
+- and it does not exist in the Rio Supabase entity system
+
+It must never appear for a valid Rio entity.
+
+--------------------------------------------------
+5. REQUIRED OUTPUT
+--------------------------------------------------
+
+After fixing, confirm ONLY:
+
+1. where "Comer bem" was replaced with "Onde comer"
+2. which app areas were fully audited for entity routing
+3. confirmation that all Rio entities now open their exact detail pages
+4. in which cases "Em breve disponível" can still appear

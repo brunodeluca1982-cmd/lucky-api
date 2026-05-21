@@ -1,0 +1,27 @@
+Existe um bug de renderização crítico: o app começa com uma tela preta antes de carregar a imagem de fundo. Isso gera um “flash” escuro, quebra a experiência premium e contrasta com a linguagem glassmorphism do restante do app.
+
+Correção obrigatória (em todas as telas que usam imagem de fundo: viagem.tsx, friend/guide/[slug].tsx e roteiro/[id].tsx):
+
+1. NUNCA renderizar cor sólida preta como plano de fundo antes da imagem carregar.
+   – Remover qualquer `backgroundColor: '#000'` ou equivalente no contêiner raiz, em `<NavigationContainer>` e nos wrappers das telas.
+   – Garantir que o primeiro paint tenha um gradiente quente (#2D1A08 → #1A0E04) ou um placeholder neutro agradável, nunca preto.
+
+2. Implementar estado de loading consistente:
+   – Antes da imagem carregar, mostrar imediatamente esse gradiente de fundo, que deve harmonizar com o mood do app (por exemplo, tons de pôr do sol).
+   – A imagem de fundo deve ser renderizada com `opacity: 0` e fazer fade‑in para `opacity: 1` após o evento `onLoad`. Use `Animated.View` com `useNativeDriver: true` para a transição (≈600 ms).  
+   – A dark overlay (gradiente escuro) deve ser aplicada apenas depois que a imagem estiver visível e nunca antes.
+
+3. Fazer a auditoria do código:
+   – Identificar onde o fundo preto está definido (normalmente em estilos base ou no `NavigationContainer`).
+   – Corrigir para que o gradiente ou imagem placeholder estejam sempre presentes desde o primeiro frame.
+
+4. Garantir que em todos os arquivos (viagem.tsx, friend/guide/[slug].tsx, roteiro/[id].tsx) a lógica seja a mesma:
+   – Wrapper Animated.View envolvendo imagem e overlay com opacidade controlada por um Animated.Value.
+   – Evento `onLoad` da imagem aciona `fade-in`.
+   – Overlay e imagem fazem fade‑in juntos.
+
+No final, informar:
+   • em quais componentes/arquivos foi removido o fundo preto;
+   • como o placeholder de gradiente foi implementado;
+   • como foi feita a animação de fade‑in;
+   • confirmação de que o app já não exibe nenhum flash preto em nenhuma tela.

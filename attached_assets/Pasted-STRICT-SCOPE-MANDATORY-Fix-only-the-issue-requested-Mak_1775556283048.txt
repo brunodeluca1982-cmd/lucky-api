@@ -1,0 +1,61 @@
+STRICT SCOPE (MANDATORY):
+- Fix only the issue requested
+- Make the smallest possible code change
+- Do not modify unrelated components, screens, queries, styles, navigation, or loading flows
+- Do not introduce new UI changes unless absolutely required for this exact feature
+- If another change seems necessary, explain it first instead of silently changing extra things
+- Preserve all currently working behavior
+
+FEATURE: Render Carolina Dieckmann as a real 7-day itinerary from Supabase
+
+GOAL
+Stop using the old Carolina category-based tips list.
+Use the structured itinerary data already stored in Supabase.
+
+GUIDE
+- slug: rio-carol-dieckmann
+- title: Rio de Janeiro — Carolina Dieckmann
+
+DATA SOURCE (MANDATORY)
+Use these tables only:
+1. public.friend_guides
+2. public.friend_guide_days
+3. public.friend_guide_itinerary_items
+4. public.friend_guide_places
+
+DO NOT use the old category list as the primary source for Carolina anymore.
+
+RENDER LOGIC
+1. Fetch the guide by slug = 'rio-carol-dieckmann'
+2. Fetch all days from public.friend_guide_days for this guide, ordered by day_number
+3. Fetch all itinerary items from public.friend_guide_itinerary_items for this guide
+4. Join each itinerary item to its matching place in public.friend_guide_places via place_id
+5. Render the Carolina screen as a true itinerary:
+   - grouped by day
+   - ordered by display_time, then item_order
+   - each item shows:
+     - display_time
+     - place name
+     - note
+     - neighborhood if available
+   - each item must be clickable and open the corresponding place card
+
+UI REQUIREMENTS
+- Keep the premium app language already used elsewhere
+- Do not show the old “where to eat / where to stay / etc” list as the main Carolina experience
+- The main Carolina experience must now be the 7-day itinerary
+- Use the existing glass / premium / editorial visual language of the app
+- The destination hero should remain Rio-oriented, not a social-profile layout
+
+IMPORTANT
+- Use friend_guide_days as the source of day titles
+- Use friend_guide_itinerary_items as the source of chronological structure
+- Use friend_guide_places as the source of entity/card data
+- The old Carolina places can still exist in the database, but they should not override the itinerary rendering
+
+DELIVERABLE
+At the end, tell me:
+- which files were changed
+- which query/data flow now powers Carolina
+- confirmation that Carolina no longer renders as the old category-based guide
+- confirmation that the 7 days, 35 itinerary items, and clickable place cards are now being used

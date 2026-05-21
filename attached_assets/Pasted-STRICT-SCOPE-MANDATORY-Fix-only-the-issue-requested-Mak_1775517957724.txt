@@ -1,0 +1,65 @@
+STRICT SCOPE (MANDATORY):
+- Fix only the issue requested
+- Make the smallest possible code change
+- Do not modify unrelated components, screens, queries, styles, navigation, or loading flows
+- Do not introduce new UI changes unless absolutely required for this exact feature
+- If another change seems necessary, explain it first instead of silently changing extra things
+- Preserve all currently working behavior
+
+FEATURE: Splash screen behavior (session-based display)
+
+GOAL
+Display the splash screen ONLY:
+- the first time the user opens the app in a session (per app launch)
+- do NOT show it again while the app remains open
+- show it again only after the app is fully closed and reopened
+
+IMPORTANT
+This is NOT a loading spinner.
+This is a controlled entry experience.
+
+REQUIREMENTS
+
+1. Splash as entry gate
+- Splash must appear immediately on app launch
+- It should block the UI until it finishes
+- No screen (home or others) should be visible before or behind it
+
+2. Session-based logic
+- Show splash once per app launch session
+- Do NOT show again on:
+  - tab navigation
+  - screen navigation
+  - returning to foreground (if app was not killed)
+
+- Show again ONLY when:
+  - app is fully closed (process killed)
+  - and reopened
+
+3. Implementation approach
+- Use expo-splash-screen OR a custom controlled splash component (choose the safest minimal approach)
+- Ensure splash visibility is controlled via a session flag (in-memory, not persistent storage)
+- Do NOT use AsyncStorage for this behavior
+
+4. Timing
+- Splash should stay visible long enough for a smooth premium feel (~1s–2s if needed)
+- Then transition cleanly into the home screen
+- No black frame before or after
+
+5. Integration with current app
+- Do NOT break navigation
+- Do NOT interfere with existing loading states
+- Do NOT change screen structure
+- Do NOT modify Supabase or data logic
+
+6. Visual
+- Use the provided splash image asset (local, not remote)
+- Centered, clean, no layout shifts
+
+DELIVERABLE
+Explain:
+- where the splash logic lives (file/component)
+- how the “once per session” logic is implemented
+- how you detect a fresh app launch
+- when the splash is shown and hidden
+- confirm it does NOT reappear during navigation

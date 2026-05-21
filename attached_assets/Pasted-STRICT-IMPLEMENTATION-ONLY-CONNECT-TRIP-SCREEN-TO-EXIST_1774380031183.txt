@@ -1,0 +1,331 @@
+STRICT IMPLEMENTATION ONLY — CONNECT “TRIP” SCREEN TO EXISTING AI ITINERARY FLOW
+
+IMPORTANT:
+Do not redesign anything.
+Do not change visual style.
+Do not rename unrelated components.
+Do not modify other screens, flows, navigation, spacing, typography, colors or UI hierarchy.
+Do not create a new itinerary flow.
+Reuse the existing itinerary creation flow and existing itinerary result screens.
+
+Scope is strictly limited to:
+- Trip screen CTA behavior
+- existing itinerary flow integration
+- Supabase saved places + tags usage
+- itinerary generation logic input/output
+
+If something is unclear, preserve the current implementation.
+
+---
+
+GOAL
+
+When the user clicks the existing “Create itinerary with AI” CTA inside the Trip screen,
+the app must reuse the existing itinerary flow, but prefilled with the user’s saved places and destination context.
+
+This is NOT a new feature from scratch.
+This is an integration between:
+1. Trip screen saved places
+2. existing itinerary creation flow
+3. Supabase structured metadata
+
+---
+
+EXPECTED USER EXPERIENCE
+
+Current desired behavior:
+
+- User is on “Trip / Minha Viagem”
+- User already has saved places
+- User taps “Create itinerary with AI”
+- App opens the existing itinerary flow
+- Destination step is skipped or prefilled
+- Saved places are injected into the flow
+- Existing preference steps remain available
+- Generated itinerary prioritizes saved places first
+- Existing itinerary result UI is reused
+
+Do not change the look and feel of any of these screens.
+
+---
+
+DATA SOURCE
+
+Use real Supabase data whenever possible.
+
+Each saved place should provide at minimum:
+- id
+- name
+- city / destination
+- category
+- subtype if available
+- neighborhood / area if available
+- latitude
+- longitude
+- image
+- tags
+- any relevant metadata already stored in Supabase
+
+If some fields are missing, degrade gracefully without breaking the flow.
+
+---
+
+ENTRY POINT BEHAVIOR
+
+When user taps the Trip CTA:
+- detect current saved places
+- infer destination from saved places if possible
+- open the existing itinerary flow in “prefilled mode”
+
+Prefilled mode rules:
+- skip “Where are you going?” if destination is already known
+- skip empty onboarding if user already has saved places
+- preserve existing preference selection screens
+- update copy only if necessary to reflect saved places context
+- do not create duplicate routes or duplicate screens
+
+---
+
+PREFILLED MODE
+
+Create a dedicated internal mode for the existing itinerary flow, for example:
+- source = "trip_saved_places"
+
+In this mode:
+- destination is prefilled from saved places
+- savedPlaces[] is injected into flow state/context
+- user still chooses preferences such as inspiration / vibe / budget if those screens already exist
+- the final itinerary generator receives both:
+  1. saved places
+  2. user preferences
+
+---
+
+GENERATION LOGIC
+
+Implement itinerary generation with this priority:
+
+1. PRIORITIZE SAVED PLACES
+Saved places are the main source of truth.
+Do not generate a generic itinerary ignoring them.
+
+2. ORGANIZE, DO NOT RANDOMLY INVENT
+The system should organize intelligently based on:
+- proximity
+- category
+- tags
+- time-of-day suitability
+- daily balance
+
+3. GROUP BY AREA
+Cluster saved places by neighborhood / geographic proximity when possible.
+
+4. MATCH TIME OF DAY
+Prefer:
+- morning: experiences, museums, outdoor, low-friction starts
+- lunch: restaurants
+- afternoon: lighter experiences, walking, viewpoints, beach, culture
+- night: restaurants, bars, nightlife, dinner-oriented suggestions
+
+5. USE TAGS
+Use Supabase tags to align with user-selected preferences.
+
+Examples:
+- gastronomy → prioritize restaurant and food-related tags
+- culture → museums, landmarks, historical places
+- relax → beach, nature, calm experiences
+- adventure → active experiences
+- premium / sophisticated → premium tags, upscale places
+- family → family-friendly tags
+- friends → social / vibrant / group-suitable places
+
+6. BALANCE EACH DAY
+Avoid overload.
+Target a reasonable number of items per day.
+Prefer 3 to 5 useful stops max depending on density and trip style.
+
+7. OPTIONAL GAP FILLING
+Only if current logic already supports it or if easy to add safely:
+- when there are too few saved places, allow optional complementary suggestions from Supabase
+- complementary suggestions must match destination + proximity + tags
+- saved places always come first
+
+Do not let complementary suggestions overpower saved places.
+
+---
+
+MINIMUM FALLBACK RULES
+
+If savedPlaces.length === 0:
+- keep current behavior or empty state
+- do not break existing flow
+
+If savedPlaces.length < 2:
+- allow generation
+- but show a lightweight message such as:
+  “Add more saved places to build a richer itinerary.”
+
+If destination cannot be inferred:
+- fall back to the existing destination step
+
+If tags are missing:
+- use category + area + proximity only
+
+---
+
+STATE MANAGEMENT
+
+Reuse existing state management where possible.
+Do not rebuild the whole flow.
+
+Need a reliable flow state containing:
+- source
+- destination
+- savedPlaces
+- preferences
+- generated itinerary
+
+Persist only if the app already persists itinerary drafts.
+Do not introduce broad persistence changes unless already supported.
+
+---
+
+OUTPUT FORMAT
+
+The generator should return a structured itinerary object that can feed the existing result UI.
+
+Suggested structure:
+
+{
+  destination: "Rio de Janeiro",
+  source: "trip_saved_places",
+  preferences: {
+    inspiration: [],
+    vibe: null,
+    budget: null
+  },
+  summary: {
+    totalDays: 3,
+    totalItems: 8
+  },
+  days: [
+    {
+      day: 1,
+      area: "Ipanema",
+      items: [
+        {
+          slot: "morning",
+          placeId: "...",
+          name: "...",
+          category: "...",
+          image: "...",
+          neighborhood: "...",
+          tags: []
+        },
+        {
+          slot: "lunch",
+          placeId: "...",
+          name: "...",
+          category: "restaurant"
+        }
+      ]
+    }
+  ]
+}
+
+Adapt structure to the current app architecture if needed, but keep it structured and deterministic.
+
+---
+
+UI INTEGRATION
+
+Reuse the existing itinerary result screen.
+
+For each itinerary item, keep current UI behavior and only ensure data is populated correctly.
+
+If existing item actions already exist, preserve them:
+- open place detail
+- remove
+- replace
+- edit
+
+Do not redesign cards, chips, modals or screen layout.
+
+---
+
+SUPABASE INTEGRATION
+
+Use current Supabase tables and existing data access patterns.
+Do not create unnecessary new tables.
+
+Only extend queries if needed to fetch:
+- tags
+- lat/lng
+- category
+- neighborhood
+- image
+
+Prefer existing views / normalized access if already present.
+
+Do not hardcode travel logic into the UI layer if it can live in a helper/service.
+
+---
+
+IMPLEMENTATION PREFERENCE
+
+Preferred architecture:
+- keep UI thin
+- create or extend a helper/service for itinerary assembly
+- isolate ranking/grouping logic from presentation layer
+- make the behavior deterministic and testable
+
+Suggested separation:
+- getSavedPlacesForTrip()
+- inferDestinationFromSavedPlaces()
+- buildItineraryFromSavedPlaces(savedPlaces, preferences)
+- optionally getComplementaryPlaces()
+
+Do not overengineer.
+Keep it simple and stable.
+
+---
+
+NON-GOALS
+
+Do not:
+- redesign the Trip screen
+- redesign itinerary screens
+- create a new onboarding
+- create a parallel itinerary engine disconnected from existing flow
+- rewrite unrelated Supabase queries
+- refactor the whole app
+- change tab behavior
+- modify Lucky, Home or Destinations screens
+
+---
+
+ACCEPTANCE CRITERIA
+
+This task is complete only if:
+
+1. Clicking “Create itinerary with AI” inside Trip uses existing itinerary flow
+2. Destination is prefilled or inferred when possible
+3. Saved places are injected into the flow
+4. Existing preference screens still work
+5. Generated itinerary prioritizes saved places
+6. Tags from Supabase influence ordering and matching
+7. Existing result UI renders real itinerary data
+8. No visual redesign happened outside the current implementation
+9. No unrelated screen changed
+
+---
+
+DELIVERY REQUIREMENT
+
+Before making broad code changes:
+- inspect the current itinerary flow
+- inspect the current Trip screen CTA behavior
+- inspect current Supabase access patterns
+- then implement the smallest safe change set required for this integration
+
+Favor minimal, controlled edits over large refactors.

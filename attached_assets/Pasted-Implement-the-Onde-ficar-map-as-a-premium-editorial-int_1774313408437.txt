@@ -1,0 +1,207 @@
+Implement the “Onde ficar” map as a premium editorial interaction layer using the provided images.
+
+IMPORTANT:
+- This is NOT Google Maps
+- This is NOT a real geographic map
+- This is a static editorial map with an interactive overlay
+- Do NOT redesign or replace the image
+
+---
+
+IMAGES PROVIDED:
+
+Two images are provided:
+
+1. Clean map image (no labels) → MUST be used as the base
+2. Map with labels → REFERENCE ONLY for positioning
+
+IMPORTANT:
+- Always render the CLEAN image
+- NEVER render the labeled image in the UI
+- Use the labeled image ONLY to position labels and hotspots correctly
+
+---
+
+MAP BASE:
+
+- Render the clean map image inside a rounded premium container
+- Maintain correct aspect ratio
+- Do NOT crop incorrectly
+- Do NOT distort
+
+---
+
+VISUAL TUNING (VERY IMPORTANT):
+
+The map must visually match the app style.
+
+Allowed adjustments ONLY:
+- slight desaturation
+- subtle contrast adjustment
+- optional soft dark overlay (max 10–15%)
+
+DO NOT:
+- no heavy filters
+- no blur
+- no strong color shifts
+- no loss of clarity
+
+Goal:
+Make the map feel native to the app — not pasted.
+
+---
+
+OVERLAY SYSTEM:
+
+Create TWO layers:
+
+---
+
+1) VISUAL LABELS (non-interactive)
+
+Add subtle labels positioned manually:
+
+Neighborhoods:
+- Leblon
+- Ipanema
+- Copacabana
+- Leme
+- Botafogo
+- Centro
+- Santa Teresa
+- São Conrado
+- Barra da Tijuca
+- Recreio dos Bandeirantes
+- Arpoador
+
+Landmarks (NOT clickable):
+- Cristo Redentor
+- Maracanã
+- Lagoa Rodrigo de Freitas
+
+Style:
+- small typography
+- elegant
+- white / off-white
+- subtle shadow
+- no backgrounds or boxes
+
+---
+
+2) INTERACTION LAYER (hotspots)
+
+Create SMALL invisible circular touch areas for:
+
+- Leblon
+- Ipanema
+- Copacabana
+- Leme
+- Botafogo
+- Centro
+- Santa Teresa
+- São Conrado
+- Barra da Tijuca
+- Recreio dos Bandeirantes
+- Arpoador
+
+Rules:
+- precise positioning (center of area)
+- no large clickable regions
+- no visible markers
+- touch-friendly but minimal
+
+Landmarks must NOT be clickable.
+
+---
+
+INTERACTION BEHAVIOR:
+
+When a hotspot is tapped:
+
+1. Show a floating card OVER the map
+
+Card must contain:
+- neighborhood name
+- short description (from Supabase if available)
+- button: "Ver hotéis"
+- button: "Por dentro do bairro"
+
+2. Clicking "Ver hotéis":
+- filters hotel list using Supabase data
+
+3. Clicking "Por dentro do bairro":
+- navigate to neighborhood detail (placeholder allowed)
+
+4. Tap outside:
+- closes card
+- resets state
+
+---
+
+ANIMATION SYSTEM (CRITICAL):
+
+The interaction must feel premium and smooth.
+
+When user taps a hotspot:
+
+1. TAP FEEDBACK:
+- quick subtle scale on touch (0.97 → 1)
+- optional soft pulse or glow (very light)
+
+2. MAP FOCUS:
+- slightly scale map (1 → 1.05)
+- gently translate map to center selected area
+- apply very subtle dim overlay on non-focused areas (optional)
+
+3. CARD APPEARANCE:
+- fade in + slide up (or slight scale 0.95 → 1)
+- glass effect (blur + transparency)
+- smooth easing (no abrupt motion)
+
+4. TRANSITION RULES:
+- duration: 200–350ms
+- use ease-out curves
+- no aggressive animation
+- no bouncing
+
+5. STATE CHANGE:
+- tapping another hotspot updates card smoothly
+- no full reset flicker
+
+---
+
+DATA INTEGRATION:
+
+Use Supabase ONLY:
+
+Priority:
+1. v_stay_neighborhoods_with_hotels
+2. v_stay_hotels_full
+3. stay_neighborhoods
+4. stay_hotels
+
+Do NOT use mock data if Supabase exists.
+
+---
+
+STYLE:
+
+- premium
+- minimal
+- iOS-like
+- no clutter
+- no heavy UI
+- glass card
+- editorial feel
+
+---
+
+OUTPUT:
+
+At the end, show exactly:
+
+1. which file contains the map component
+2. how hotspot positions are defined (coordinates or percentages)
+3. how animations are implemented
+4. how card state is handled
+5. how Supabase data is connected to selected neighborhood

@@ -1,0 +1,106 @@
+Stop before Step B.
+
+Real test output revealed more basic failures that must be diagnosed first.
+
+Observed failures from real itinerary output:
+1. Cristo Redentor was suggested with the wrong location/context in the itinerary
+2. A theater activity was suggested at 09:00 in the morning, which is temporally unrealistic
+
+We need a micro-step BEFORE Step B:
+
+STEP A.5 — Truth, Context & Temporal Feasibility Constraints
+
+CRITICAL RULES
+
+1. Do NOT implement yet
+2. Do NOT touch UI
+3. Do NOT touch map logic
+4. Do NOT redesign the engine
+5. Audit only these failure classes first
+6. Focus only on the exact root cause of these incorrect outputs
+
+IMPORTANT SYSTEM EXPECTATION
+
+The itinerary engine MUST behave as an intelligent system that:
+- understands real-world constraints (time, distance, opening hours)
+- uses ALL available Supabase metadata
+- ensures contextual correctness before optimization
+
+If the system is not using available metadata, this is considered a failure.
+
+TASK
+
+For each observed failure above, explain exactly:
+
+1. Which file/function allowed it
+2. Whether the root cause is:
+   - source data problem
+   - metadata not being used
+   - metadata being misinterpreted
+   - slot classification problem
+   - missing hard constraint
+   - bad fallback logic
+   - Gemini reordering side effect
+
+3. Show the exact code path that allows:
+   - a theater/show item to appear in a morning slot
+   - Cristo Redentor to appear with the wrong location/context
+
+4. Audit whether the following Supabase fields are used at the decision level (not just fetched):
+
+- momento_ideal
+- duracao_media
+- tags_ia
+- vibe
+- categoria
+- bairro
+- lat / lng
+- com_criancas
+- seguro_mulher_sozinha
+- nivel_esforco
+
+For each, classify:
+- used correctly
+- used partially
+- ignored
+
+5. Explain whether the engine currently validates:
+
+- real-world time feasibility (e.g. shows, nightlife, sunset)
+- distance feasibility between items
+- contextual correctness (place matches area/day logic)
+
+If not, show where validation should exist but does not.
+
+6. Tell me whether these failures should be solved by:
+   - Step A slot constraints
+   - Step B scoring survival
+   - a new hard-constraint validation layer
+   - a data cleanup / normalization rule
+
+7. Propose the SMALLEST SAFE DELTA to prevent these two classes of error:
+   - impossible time suggestions
+   - wrong place-context suggestions
+
+IMPORTANT
+
+- Do NOT redesign the entire engine
+- Do NOT introduce heavy AI dependency yet
+- If Gemini is used, it must be for validation, not generation
+- Deterministic correctness must exist BEFORE AI
+
+OUTPUT FORMAT
+
+1. Failure 1 root cause
+2. Failure 2 root cause
+3. Metadata usage audit
+4. Missing validation layer
+5. Exact code locations
+6. Whether Step B is sufficient or not
+7. Minimal corrective micro-step proposal
+8. What must NOT change
+
+FINAL RULE
+
+Do NOT implement yet.
+Wait for approval.

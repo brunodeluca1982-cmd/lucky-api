@@ -1,0 +1,111 @@
+AUTOMATED IMPLEMENTATION ONLY — USE EXISTING SUPABASE EDGE FUNCTION
+
+IMPORTANT:
+Do not redesign anything.
+Do not change UI unless strictly necessary for data binding.
+Do not create a new itinerary flow.
+Do not create a new visual system.
+Do not move itinerary logic into the frontend.
+
+Use the existing Supabase Edge Function `lucky-trip-ai` as the main itinerary engine.
+
+Goal:
+Make the existing “Create itinerary with AI” button work correctly using:
+- saved places from Supabase
+- tags and metadata already stored in Supabase
+- Gemini for low-cost refinement
+
+---
+
+WHAT TO DO
+
+1. Inspect current frontend behavior for:
+- Trip / Minha Viagem screen
+- existing itinerary setup flow
+- existing generated itinerary result screen
+
+2. Inspect the existing Supabase Edge Function:
+- `lucky-trip-ai`
+
+3. Update `lucky-trip-ai` to support itinerary generation from saved places.
+
+The function should receive:
+- userId
+- savedPlaceIds
+- destination
+- preferences
+- requestedDays
+
+4. Inside the Edge Function:
+- fetch saved places from Supabase
+- fetch tags, category, neighborhood, lat/lng, image
+- organize places deterministically before calling Gemini
+- distribute places across the requested number of days
+- use tags and preferences to prioritize places
+- optionally add complementary places from Supabase if needed
+- call Gemini only to refine the structured itinerary
+- return structured JSON
+
+5. Frontend integration:
+- keep existing screens
+- connect the current CTA to the updated Edge Function
+- reuse existing itinerary result UI
+- do not redesign the screen
+
+---
+
+GENERATION RULES
+
+- saved places must be prioritized
+- do not force everything into one day
+- requested day count should be respected when possible
+- use proximity / neighborhood clustering
+- use category and tags for time-of-day placement
+- if there are too few saved places, optionally complement from Supabase
+- Gemini should refine, not invent from scratch
+
+---
+
+REQUIRED INTERNAL LOGIC
+
+Implement helper functions inside or alongside the Edge Function:
+
+- getSavedPlacesForUser()
+- inferDestinationFromSavedPlaces()
+- groupPlacesByArea()
+- distributePlacesIntoDays()
+- optionally getComplementaryPlaces()
+- refineItineraryWithGemini()
+
+Keep the logic simple, deterministic and stable.
+
+---
+
+GEMINI USAGE
+
+Use Gemini only after the itinerary draft is already structured.
+Send compact structured data, not long prose.
+Keep costs low.
+
+---
+
+OUTPUT
+
+Return structured itinerary JSON ready for the current UI.
+
+Do not return raw prose.
+Do not return markdown.
+Do not return a generic travel text.
+
+---
+
+STRICT SCOPE
+
+Only change:
+- `lucky-trip-ai`
+- the CTA integration from Trip screen
+- the data binding needed to render the result
+
+Do not change unrelated screens, styles, components or navigation.
+
+Implement with the smallest safe change set possible.

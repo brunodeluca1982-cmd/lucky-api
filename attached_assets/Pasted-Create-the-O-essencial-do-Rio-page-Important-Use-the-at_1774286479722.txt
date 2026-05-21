@@ -1,0 +1,74 @@
+Create the "O essencial do Rio" page.
+
+Important:
+Use the attached screen only as a visual reference for the card style and overall content organization.
+Ignore the bottom menu from the attached image.
+Keep the current bottom navigation already implemented in the Replit app.
+
+Goal:
+This page should represent the curated essential overview of Rio de Janeiro.
+
+Definition of this page:
+- classic must-see landmarks of Rio
+- plus 3 special Lucky List items
+- premium, editorial, easy-to-scan
+- not a long guide
+- not an infinite list
+
+Navigation:
+- When the user taps "O essencial do Rio" on the Rio destination home, open this page.
+
+Structure:
+
+1. Hero area
+- Keep the same premium visual language already used in the app
+- Title: "O essencial do Rio"
+- Short intro text:
+  "Os clássicos que definem o Rio — com um toque Lucky para quem quer começar pelo que realmente importa."
+
+2. Section 1 — Clássicos do Rio
+- Show a curated list of classic Rio highlights as image cards
+- Use the visual style of the attached reference screen:
+  - rounded image cards
+  - destination-style overlay text
+  - premium, clean spacing
+- These should be the classic iconic experiences / landmarks
+- Keep the list concise and visually appealing
+
+3. Section 2 — Lucky List no Rio
+- Title: "3 achados Lucky no Rio"
+- Show exactly these 3 items from Supabase:
+  1. Aula de futevôlei na Barra
+  2. Salgado de cabeleireiro do Fashion Mall que a Carolina Dieckmann frequenta
+  3. Melhor açaí do Rio — ASA
+- These 3 items must be loaded from Supabase, not mocked, if they already exist there
+- Use the same card style family as the attached screen, adapted to the current app design system
+
+4. Card behavior
+- Every card should be tappable
+- If the item already has a detail page, open it
+- If not, create a simple detail placeholder that can later connect to the unified place detail screen
+
+5. Data source
+- Pull the Lucky List items from Supabase
+- Pull the classic Rio items from Supabase if available
+- If the classic items are not yet structured there, use temporary mock data but keep the page ready to connect later
+
+6. Rules
+- Do NOT change the current bottom navigation
+- Do NOT copy the bottom tab bar from the attached reference
+- Do NOT redesign the whole app
+- Only create this new page and match the card/content style inspired by the attached image
+- Keep everything premium, minimal, and editorial
+
+7. Suggested classic Rio items
+If needed as temporary placeholders, use items such as:
+- Cristo Redentor
+- Pão de Açúcar
+- Praia de Ipanema
+- Arpoador
+- Jardim Botânico
+- Santa Teresa
+
+Goal:
+Make "O essencial do Rio" feel like a curated first entry point into the city, mixing iconic landmarks with exclusive Lucky Trip recommendations.

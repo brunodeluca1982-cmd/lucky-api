@@ -1,0 +1,77 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Fix ONLY the entity navigation logic described below.
+Do NOT redesign UI.
+Do NOT change layout.
+Do NOT modify working visual components.
+Do NOT change itinerary generation logic.
+
+ARCHITECTURAL RULE (MANDATORY):
+
+Every curated item from Supabase is its own detail page/entity.
+
+This includes ALL rows from:
+- restaurantes
+- o_que_fazer_rio
+- lucky_list_rio
+- stay_hotels
+
+If an item appears anywhere in the app (hero, highlights, itinerary, search, suggestions, saved items, etc.), it must always resolve to its own corresponding detail page.
+
+That means:
+
+- each restaurante row = one unique detail page
+- each o_que_fazer_rio row = one unique detail page
+- each lucky_list_rio row = one unique detail page
+- each stay_hotels row = one unique detail page
+
+CRITICAL FIX:
+
+Current issue:
+Some clicks are falling back to generic category pages like:
+- "Onde comer no Rio"
+instead of the exact item page like:
+- "Satyricon"
+
+This is wrong.
+
+REQUIRED BEHAVIOR:
+
+1. CLICK RESOLUTION
+When user clicks any item card or itinerary item:
+- resolve by source_table + reference_id (or equivalent exact mapping)
+- open the exact corresponding entity detail page
+- never route by loose name match
+- never fallback to a generic category page if the exact entity exists
+
+2. NO GENERIC FALLBACK FOR RIO ITEMS
+For Rio items already in Supabase:
+- do NOT send user to generic pages
+- do NOT open category hubs
+- do NOT open “local” pages
+- do NOT guess
+
+3. DETAIL PAGE AS SYSTEM RULE
+Treat every Supabase row as a navigable entity with its own page.
+This must become a system rule across the app, not a one-off fix.
+
+4. APPLY TO ALL ENTRY POINTS
+This must work consistently from:
+- Home highlights
+- Destination pages
+- Itinerary result
+- Saved items
+- Search/suggestions
+- Edit itinerary replacement flow
+- Any featured card
+
+5. DO NOT BREAK WHAT IS ALREADY CORRECT
+If a click is already opening the right detail page, leave it untouched.
+Fix only the inconsistent cases.
+
+REQUIRED CONFIRMATION:
+After implementing, confirm ONLY:
+1. how entity routing is now resolved
+2. which fields are used (source_table / reference_id / equivalent)
+3. that Rio Supabase items no longer fall back to generic category pages
+4. which screens/components now follow this rule

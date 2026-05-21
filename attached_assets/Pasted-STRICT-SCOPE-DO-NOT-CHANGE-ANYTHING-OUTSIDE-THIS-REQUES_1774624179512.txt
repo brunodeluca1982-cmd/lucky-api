@@ -1,0 +1,98 @@
+STRICT SCOPE — DO NOT CHANGE ANYTHING OUTSIDE THIS REQUEST
+
+Fix the root cause of itinerary items falling into "Em breve disponível" even when they should open real detail pages.
+
+Do NOT redesign UI.
+Do NOT change layout.
+Do NOT modify working visual components.
+Do NOT change itinerary styling.
+This is a strict entity-data integrity fix.
+
+--------------------------------------------------
+PROBLEM
+--------------------------------------------------
+
+Some itinerary items open the correct detail page.
+Some other itinerary items incorrectly fall back to:
+"Em breve disponível"
+
+This means entity mapping is still inconsistent.
+
+--------------------------------------------------
+MANDATORY SYSTEM RULE
+--------------------------------------------------
+
+Every curated Rio item must have a valid entity identity all the way through the pipeline:
+
+- source_table
+- reference_id (or exact equivalent DB primary key)
+- entity type consistent with its table
+
+Valid Rio source tables:
+- restaurantes
+- stay_hotels
+- o_que_fazer_rio
+- lucky_list_rio
+
+If a Rio item exists in Supabase, it must NEVER fall into "Em breve disponível".
+
+--------------------------------------------------
+REQUIRED FIXES
+--------------------------------------------------
+
+1. FULL PIPELINE AUDIT
+Audit the full itinerary pipeline and find where some items are losing identity:
+- generation
+- hydration
+- mapping
+- rendering
+- click handler
+- detail fetch
+
+2. VALIDATE EVERY ITINERARY ITEM
+Before rendering any itinerary item, ensure it has:
+- source_table
+- reference_id
+- correct entity type
+
+If missing, fix upstream mapping.
+Do NOT rely on name matching.
+
+3. REMOVE FALSE "EM BREVE" FOR RIO ITEMS
+For Rio items that exist in Supabase:
+- do NOT show "Em breve disponível"
+- open the real corresponding detail page
+
+4. STRICT DETAIL FETCH
+On click:
+- fetch directly from Supabase by source_table + reference_id
+- do not guess
+- do not fallback to category pages
+- do not fallback to generic local pages
+
+5. DEBUG INVALID ITEMS
+Add temporary debug logging for every itinerary item click:
+- item name
+- source_table
+- reference_id
+- route target
+- whether Supabase fetch succeeded
+
+6. FIND WHICH ITEMS ARE FAILING
+Return a list of the specific failing itinerary items and explain why each one was falling into "Em breve disponível".
+
+7. FIX AT THE ROOT
+Do NOT patch individual cards manually.
+Fix the structural mapping so all current and future Rio items work consistently.
+
+--------------------------------------------------
+REQUIRED CONFIRMATION
+--------------------------------------------------
+
+After fixing, confirm ONLY:
+
+1. where in the pipeline the identity was being lost
+2. how every itinerary item now keeps source_table + reference_id
+3. confirmation that Rio Supabase items no longer fall into "Em breve disponível"
+4. which specific failing items were fixed
+5. what temporary debug logging was added

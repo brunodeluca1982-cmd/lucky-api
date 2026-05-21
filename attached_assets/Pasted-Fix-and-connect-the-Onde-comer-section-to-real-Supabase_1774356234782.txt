@@ -1,0 +1,113 @@
+Fix and connect the "Onde comer" section to real Supabase restaurant data.
+
+CRITICAL:
+This is NOT a UI task.
+Do NOT redesign anything.
+Do NOT change layout, styles, spacing, or navigation.
+Only fix data source and rendering.
+
+-----------------------------------
+PROBLEM
+-----------------------------------
+
+The "Onde comer" section is currently NOT using real Supabase data.
+It may be using:
+- mock data
+- placeholder data
+- incorrect query
+- wrong table or empty response
+
+This must be corrected.
+
+-----------------------------------
+GOAL
+-----------------------------------
+
+"Where to eat" must display REAL restaurants from Supabase.
+
+-----------------------------------
+STRICT DATA SOURCE RULE
+-----------------------------------
+
+You MUST use existing Supabase data already in the project.
+
+Allowed sources:
+- restaurantes
+- place_photos
+- places_cache
+
+Do NOT:
+- create new tables
+- create fake adapters
+- switch to Replit DB / Drizzle
+- hardcode anything
+
+-----------------------------------
+IMPLEMENTATION STEPS
+-----------------------------------
+
+1. Locate the exact component responsible for rendering "Onde comer"
+
+2. Remove ANY mock or placeholder data completely
+
+3. Connect the component to Supabase:
+   - fetch restaurants from the correct table/view
+   - ensure data is actually returned (log if needed)
+
+4. Render the restaurant list using existing UI components
+
+5. Ensure each card:
+   - displays real restaurant name
+   - displays real editorial text if available
+   - is clickable and navigates correctly
+
+-----------------------------------
+IMAGE SYSTEM (VERY IMPORTANT)
+-----------------------------------
+
+Each restaurant card MUST follow this logic:
+
+1. If Supabase image exists and is valid:
+   → use it
+
+2. If Supabase image is missing/null:
+   → fetch image using Google Places (place_id)
+
+3. If both fail:
+   → use a neutral fallback placeholder
+
+NEVER render a card without image.
+
+-----------------------------------
+DATA VALIDATION
+-----------------------------------
+
+You must verify:
+- restaurants are actually coming from Supabase
+- data is not empty
+- fields are correctly mapped (name, description, image)
+
+If query returns empty:
+→ fix query, do NOT fallback to mock data
+
+-----------------------------------
+DO NOT BREAK
+-----------------------------------
+
+- do not modify other sections
+- do not refactor global architecture
+- do not change navigation
+- do not create new APIs unless strictly required
+
+-----------------------------------
+OUTPUT (MANDATORY)
+-----------------------------------
+
+At the end, show:
+
+1. Exact file(s) modified
+2. Exact Supabase table/view used
+3. The query used to fetch restaurants
+4. Confirmation that mock data was removed
+5. Explanation of how image fallback is working
+6. Confirmation that cards are now rendering real Supabase data

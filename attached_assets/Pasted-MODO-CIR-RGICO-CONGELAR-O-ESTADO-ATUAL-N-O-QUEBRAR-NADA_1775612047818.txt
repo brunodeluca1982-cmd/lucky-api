@@ -1,0 +1,107 @@
+MODO CIRÚRGICO. CONGELAR O ESTADO ATUAL. NÃO QUEBRAR NADA DO QUE JÁ FUNCIONA.
+
+Contexto real e obrigatório:
+	•	o app publicado já abre o Stripe Checkout
+	•	o fluxo atual app → Replit → Stripe já funciona
+	•	o plano já aparece no checkout
+	•	o problema atual não é mais abrir o checkout
+	•	o único objetivo agora é sair de SANDBOX/TEST para LIVE
+	•	qualquer mudança que arrisque quebrar o checkout atual é proibida
+
+REGRA MÁXIMA:
+PRESERVAR O COMPORTAMENTO ATUAL ACIMA DE TUDO.
+
+VOCÊ ESTÁ EXPRESSAMENTE PROIBIDO DE:
+	•	refatorar
+	•	reorganizar arquivos
+	•	renomear rotas
+	•	renomear env vars
+	•	criar nova arquitetura
+	•	mover Stripe de lugar de novo
+	•	mexer em front, UI, layout, navegação, textos ou auth
+	•	tocar em qualquer parte não diretamente necessária para a virada de test para live
+	•	alterar Supabase Functions antigas
+	•	“aproveitar para melhorar” qualquer outra coisa
+
+VOCÊ SÓ PODE MEXER EM:
+	•	STRIPE_SECRET_KEY
+	•	STRIPE_PRICE_ID
+	•	STRIPE_WEBHOOK_SECRET
+	•	endpoint do webhook da Stripe
+	•	arquivos exatos que hoje criam a Checkout Session e recebem o webhook no Replit
+	•	integração mínima necessária para continuar atualizando subscriptions e access_levels no Supabase
+
+PROCESSO OBRIGATÓRIO EM 3 FASES:
+
+FASE 1 — AUDITORIA SEM MUDAR NADA
+Antes de editar qualquer arquivo, você deve me mostrar:
+	1.	qual arquivo atualmente cria a Checkout Session
+	2.	qual arquivo atualmente recebe o webhook
+	3.	quais env vars esses arquivos realmente usam
+	4.	qual URL de checkout está sendo chamada hoje
+	5.	qual URL de webhook está configurada hoje
+	6.	qual price_id está sendo usado hoje
+	7.	se o ambiente atual está test ou live
+	8.	se o app publicado usa deployment secrets ou workspace secrets
+	9.	lista exata dos arquivos que você PRECISA alterar
+	10.	lista exata das env vars que você PRECISA alterar
+
+IMPORTANTE:
+Nessa fase, você não pode editar nada. Só auditar e me mostrar.
+
+FASE 2 — PLANO MÍNIMO
+Depois da auditoria, você deve propor um plano com o MENOR DIFF POSSÍVEL.
+O plano deve:
+	•	alterar o mínimo de arquivos
+	•	alterar o mínimo de env vars
+	•	preservar exatamente o comportamento atual do app
+	•	trocar apenas o necessário para live
+
+Você deve escrever o plano neste formato:
+	•	checkpoint criado:
+	•	arquivos que serão alterados:
+	•	env vars que serão alteradas:
+	•	webhook URL final:
+	•	price ID final:
+	•	risco estimado:
+	•	rollback plan:
+
+Depois disso, você deve PARAR e esperar minha aprovação.
+Sem aprovação, você não executa nada.
+
+FASE 3 — EXECUÇÃO CONTROLADA
+Depois da minha aprovação:
+	1.	criar checkpoint/backup
+	2.	executar as alterações mínimas
+	3.	testar imediatamente após cada mudança crítica
+	4.	se qualquer teste falhar, reverter imediatamente ao checkpoint
+	5.	não continuar “tentando consertar” sem me mostrar o erro primeiro
+
+CRITÉRIOS DE SUCESSO:
+	•	checkout continua abrindo exatamente como hoje
+	•	ambiente final deixa de mostrar sandbox/test
+	•	webhook live fica apontando para a rota correta do Replit
+	•	subscriptions continua sendo atualizada
+	•	access_levels continua sendo atualizada
+	•	nenhuma mudança extra fora do escopo foi feita
+
+FORMATO OBRIGATÓRIO DO RELATÓRIO FINAL:
+	•	checkpoint criado:
+	•	arquivos alterados:
+	•	env vars alteradas:
+	•	webhook live configurado:
+	•	price live configurado:
+	•	checkout continua abrindo:
+	•	ambiente final: live ou sandbox
+	•	subscriptions continuam atualizadas:
+	•	access_levels continuam atualizadas:
+	•	rollback foi necessário: sim/não
+	•	mudanças fora do escopo: sim/não
+
+REGRA FINAL:
+Se houver qualquer dúvida entre preservar o que já funciona e mexer em algo, preserve.
+Se houver qualquer inconsistência entre test e live, pare e me mostre.
+Se o checkout parar de abrir, reverta imediatamente.
+
+PRIORIDADE ABSOLUTA:
+NÃO QUEBRAR O CHECKOUT QUE JÁ ABRE.

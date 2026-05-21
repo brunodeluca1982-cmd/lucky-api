@@ -1,0 +1,78 @@
+VISUAL CORRECTION — REMOVE DARKBROWN AND SWITCH TO IMAGE-DRIVEN UI
+
+IMPORTANT:
+Do not redesign the entire app.
+Do not change layout structure.
+Do not change navigation.
+This is a visual system correction only.
+
+CURRENT PROBLEM:
+The app is using a “darkbrown” tone as a base color across screens.
+This is incorrect and makes the UI feel heavy, dated, and disconnected from the destination imagery.
+
+GOAL:
+The visual style must be driven by images, not by a fixed brown color.
+
+==================================================
+1. REMOVE DARKBROWN AS BASE COLOR
+==================================================
+
+- Remove any hardcoded dark brown backgrounds
+- Do not use brown as the default UI base
+- Do not apply brown overlays on screens
+
+==================================================
+2. IMAGE-DRIVEN BACKGROUND SYSTEM
+==================================================
+
+- Use the destination image (hero image) as the main visual base
+- Apply subtle dark gradient overlay for readability (black/transparent, not brown)
+- Allow the image to be visible and dominant
+
+==================================================
+3. GLASS / TRANSLUCENT UI LAYER
+==================================================
+
+UI elements (cards, buttons, sections) must feel like glass:
+
+- semi-transparent background (white or neutral)
+- backdrop blur when supported
+- soft borders
+- light shadows
+- no solid brown fills
+
+==================================================
+4. COLOR SYSTEM
+==================================================
+
+Use:
+- white for text
+- neutral dark overlays (black with opacity)
+- gold as accent color only
+
+Avoid:
+- brown backgrounds
+- heavy opaque fills
+- muddy tones
+
+==================================================
+5. CONSISTENCY ACROSS SCREENS
+==================================================
+
+Apply this system consistently to:
+- Home
+- Destination page
+- Itinerary flow
+- Itinerary result
+- Lucky
+- Profile
+
+==================================================
+6. REQUIRED CONFIRMATION
+==================================================
+
+After applying:
+1. confirm that darkbrown was fully removed as a base color
+2. confirm which components now use glass/translucent style
+3. confirm how background images are now handled
+4. confirm that gold is used only as an accent

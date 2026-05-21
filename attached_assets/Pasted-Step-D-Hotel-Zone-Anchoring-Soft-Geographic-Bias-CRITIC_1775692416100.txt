@@ -1,0 +1,211 @@
+Step D — Hotel Zone Anchoring + Soft Geographic Bias
+
+CRITICAL RULES
+Do NOT implement yet
+Change only the minimum required for Step D
+Do NOT touch UI
+Do NOT touch map logic
+Do NOT merge Step E into this step
+Do NOT refactor the whole engine
+Keep Step A, A.5, Step B, and Step C behavior intact
+Do NOT introduce new schema, tables, or Supabase changes
+Do NOT change Gemini payload yet
+
+OBJECTIVE
+The engine currently ignores the user’s hotel location when assigning days.
+This leads to poor first-day experiences and unnecessary long-distance movement early in the trip.
+
+Step D must:
+1. Anchor Day 1 around the hotel zone
+2. Introduce a soft geographic bias toward the hotel zone during clustering
+3. Improve day coherence without breaking existing zone grouping logic
+
+IMPORTANT SCOPE LIMIT
+This step must NOT:
+- override clustering completely
+- hard-force all items into hotel zone
+- change complement selection (Step C already did that)
+- change scoring logic (Step B untouched)
+- introduce distance APIs or live routing
+- change Gemini enrichment
+
+ONLY:
+- influence clustering
+- influence which items go into Day 1
+
+---
+
+## 1. Exact Current Failure Points
+
+D1 — No hotel awareness in clustering
+groupByGeography() assigns items purely based on zone distribution.
+Hotel location is never considered.
+
+Result:
+User staying in Copacabana → Day 1 might be Tijuca or Centro.
+
+---
+
+D2 — No Day 1 prioritization logic
+buildFullDraft() receives already-grouped days with no preference for:
+- arrival fatigue
+- proximity to hotel
+
+Result:
+First day can be the most logistically expensive.
+
+---
+
+## 2. Exact Functions to Modify
+
+Location | Change
+---------|--------
+groupByGeography() | inject soft hotel-zone bias into grouping
+buildFullDraft() | ensure Day 1 prioritizes hotel-zone cluster
+main handler | pass hotelZone into pipeline
+
+NO other functions touched.
+
+---
+
+## 3. Minimal Code Delta
+
+### 3.1 — Pass hotelZone through pipeline
+
+At main handler (same place preferences is passed):
+
++ const hotelZone = getZone(hotelLocation || ""); // fallback safe
+
+Pass into grouping:
+
+- const grouped = groupByGeography(scoredPool, tripLength);
++ const grouped = groupByGeography(scoredPool, tripLength, hotelZone);
+
+---
+
+### 3.2 — Modify groupByGeography signature
+
+BEFORE:
+function groupByGeography(pool: EnrichedPlace[], tripLength: number)
+
+AFTER:
+function groupByGeography(pool: EnrichedPlace[], tripLength: number, hotelZone?: number)
+
+---
+
+### 3.3 — Soft hotel bias during grouping
+
+Inside grouping logic (where items are assigned to buckets):
+
+Add scoring bias:
+
+const hotelBias = (item: EnrichedPlace) => {
+  if (!hotelZone) return 0;
+  if (item.zone === hotelZone) return 3;
+  if (Math.abs(item.zone - hotelZone) === 1) return 1;
+  return 0;
+};
+
+When sorting items for assignment:
+
+.sort((a, b) => {
+  const scoreA = a.prefScore + hotelBias(a);
+  const scoreB = b.prefScore + hotelBias(b);
+  return scoreB - scoreA;
+});
+
+IMPORTANT:
+- This is a SOFT bias only
+- prefScore still dominates
+- no filtering
+
+---
+
+### 3.4 — Ensure Day 1 uses hotel-friendly cluster
+
+After grouping is complete:
+
+Sort day clusters:
+
+days.sort((dayA, dayB) => {
+  const scoreDay = (day) => {
+    if (!hotelZone) return 0;
+    const matches = day.filter(p => p.zone === hotelZone).length;
+    const adj = day.filter(p => Math.abs(p.zone - hotelZone) === 1).length;
+    return matches * 2 + adj;
+  };
+  return scoreDay(dayB) - scoreDay(dayA);
+});
+
+Result:
+→ Day with most hotel-zone items becomes Day 1
+
+---
+
+## 4. Before / After Logic
+
+User hotel: Copacabana (Zone 1)
+
+BEFORE:
+Day 1: Centro
+Day 2: Zona Sul
+
+AFTER:
+Day 1: Copacabana / Ipanema cluster
+Day 2: Centro
+
+---
+
+User hotel: Barra (Zone 5)
+
+BEFORE:
+No Barra day → forced mismatch
+
+AFTER:
+Barra items boosted → coherent Barra day appears
+
+---
+
+## 5. Regression Analysis
+
+Risk | Verdict
+-----|--------
+Breaks clustering | No — same grouping logic, only sort bias
+Overrides preference scoring | No — additive only
+Creates rigid behavior | No — no hard rules
+Affects Step C | No — selection already done
+Affects Step B | No — prefScore untouched
+Affects Step A/A.5 | No — applied later
+Gemini | unchanged
+Schema | unchanged
+
+---
+
+## 6. What MUST NOT Change
+
+- prefScore logic (Step B)
+- complement selection (Step C)
+- slot caps (Step A)
+- validation rules (A.5)
+- API output format
+- Gemini payload
+- DB schema
+
+---
+
+## SUMMARY
+
+Step D introduces:
+- hotel-aware clustering
+- better Day 1 experience
+- zero breaking changes
+- purely additive logic
+
+NO hard constraints  
+NO schema changes  
+NO pipeline redesign  
+
+---
+
+Do NOT implement yet.
+Show diff plan first.

@@ -1,0 +1,93 @@
+Fix neighborhood image consistency across all cards and neighborhood pages.
+
+IMPORTANT:
+- Do NOT redesign anything
+- Do NOT change layout
+- Do NOT change styles, spacing, or typography
+- Do NOT change navigation behavior
+- This is a data consistency and image mapping fix
+
+-----------------------------------
+PROBLEM
+-----------------------------------
+
+Neighborhoods are displaying incorrect or generic images.
+
+Examples:
+- Cards are not showing images that match their respective neighborhood
+- Neighborhood pages sometimes use unrelated or fallback images
+
+This breaks visual trust and editorial quality.
+
+-----------------------------------
+GOAL
+-----------------------------------
+
+Ensure every neighborhood ALWAYS displays its correct corresponding image.
+
+This must be consistent across:
+- Home cards
+- Map → neighborhood pages
+- Section lists (Onde ficar, Onde comer, O que fazer, Lucky List)
+- Any place where a neighborhood is rendered
+
+-----------------------------------
+SOURCE OF TRUTH
+-----------------------------------
+
+Neighborhood image must be tied to the neighborhood itself (not to restaurants or hotels).
+
+Use this priority:
+
+1. If a neighborhood image exists in Supabase (recommended: a bairros or locations table)
+2. If not, resolve via a deterministic Google Places image using the neighborhood name (e.g. "Leblon Rio de Janeiro")
+3. Only use a generic fallback if both fail
+
+Do NOT reuse restaurant/hotel images as neighborhood hero images.
+
+-----------------------------------
+STRICT RULE
+-----------------------------------
+
+Same neighborhood = same image everywhere
+
+Examples:
+- "Leblon" must always render the same hero image across the app
+- "Barra da Tijuca" must always render the same hero image across the app
+
+No randomness.
+No variation per screen.
+
+-----------------------------------
+IMPLEMENTATION
+-----------------------------------
+
+1. Identify where neighborhood data is defined
+2. Create or enforce a single resolver:
+   getNeighborhoodImage(neighborhoodName)
+
+3. This resolver must:
+   - fetch from Supabase if available
+   - fallback to Google Places (deterministic query)
+   - cache result (avoid flickering or variation)
+
+4. Replace all ad-hoc image usage with this resolver
+
+-----------------------------------
+DO NOT
+-----------------------------------
+
+- Do NOT assign images manually per screen
+- Do NOT mix restaurant images with neighborhood images
+- Do NOT allow different images for the same neighborhood in different screens
+
+-----------------------------------
+OUTPUT
+-----------------------------------
+
+Show exactly:
+1. which file(s) were changed
+2. where neighborhood images now come from (Supabase / Google / fallback)
+3. how getNeighborhoodImage() works
+4. confirmation that each neighborhood now renders the same image everywhere
+5. confirmation that no layout or UI changes were made

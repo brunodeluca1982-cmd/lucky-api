@@ -1,0 +1,125 @@
+CRITICAL: FORCE SINGLE SOURCE OF TRUTH FOR HOTEL CARDS (NO DEVIATION)
+
+-----------------------------------
+
+PROBLEM
+
+Hotel cards render correctly in destination home
+BUT are broken in "Onde ficar":
+
+- Missing images
+- Different behavior
+- Inconsistent UI
+
+-----------------------------------
+
+ROOT CAUSE
+
+There are TWO different rendering implementations.
+
+This MUST NOT exist.
+
+-----------------------------------
+
+GOAL
+
+There must be ONLY ONE implementation of hotel cards in the entire app.
+
+-----------------------------------
+
+TASK
+
+1. FIND the working implementation:
+
+- Destination home screen
+- Hotel cards section (THIS is the source of truth)
+
+-----------------------------------
+
+2. IDENTIFY the exact component used:
+
+Example:
+- HotelCard.tsx
+- or inline component
+
+-----------------------------------
+
+3. IN "Onde ficar" screen:
+
+DELETE COMPLETELY:
+
+- current card component
+- any custom logic
+- any image handling logic
+
+-----------------------------------
+
+4. REPLACE WITH:
+
+THE EXACT SAME COMPONENT used in destination home
+
+NO CHANGES
+NO ADAPTATION
+NO REFACTOR
+
+-----------------------------------
+
+5. CRITICAL RULES
+
+DO NOT:
+
+- create new component
+- rename props
+- change field names
+- introduce fallback images
+- use thumbnail_url
+- use hero_image_url
+- use random Unsplash
+- use placeholder logic
+
+-----------------------------------
+
+6. IMAGE SOURCE MUST BE EXACT:
+
+<Image source={{ uri: hotel.image_url }} />
+
+(no conditional, no fallback, no ternary)
+
+-----------------------------------
+
+7. DATA CONTRACT MUST MATCH:
+
+If home uses:
+
+hotel.image_url
+
+then Onde ficar MUST use:
+
+hotel.image_url
+
+-----------------------------------
+
+8. VALIDATION (MANDATORY)
+
+Add log:
+
+console.log("HOTEL CARD:", hotel.name, hotel.image_url);
+
+-----------------------------------
+
+EXPECTED RESULT
+
+- Identical cards in both screens
+- Images always match
+- No empty cards (unless data missing)
+- No visual inconsistency
+
+-----------------------------------
+
+ZERO TOLERANCE
+
+If implementation differs from home:
+→ it is WRONG
+→ must be reverted
+
+-----------------------------------

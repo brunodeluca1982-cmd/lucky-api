@@ -1,0 +1,181 @@
+Upgrade the Place Detail screen of The Lucky Trip with a smart, dynamic "Action Block" designed for real user decision-making (not just information display).
+
+Context:
+The Lucky Trip is not a marketplace. It is an editorial travel intelligence product that reduces decision fatigue and helps users take action quickly.
+
+Do NOT redesign the screen.
+Do NOT break existing layout or architecture.
+Enhance only the section below the description.
+
+---
+
+OBJECTIVE
+
+Transform the bottom section of the place detail page into a high-conversion, clean, contextual action area.
+
+This block must:
+- Help the user act (navigate, explore, book)
+- Be minimal, elegant, and intelligent
+- Adapt dynamically based on available data
+
+---
+
+COMPONENT: ActionBlock
+
+Create a reusable component called "ActionBlock" that appears below:
+
+[description]
+[tag/category]
+
+---
+
+DATA SOURCE (SUPABASE-READY)
+
+The component must be built to receive dynamic props (future Supabase integration):
+
+- google_maps_url: string | null
+- instagram_handle: string | null
+- instagram_url: string | null
+- booking_url: string | null
+- tipo_item: "hotel" | "restaurante" | "experiencia"
+
+IMPORTANT:
+Do NOT hardcode values.
+Use mock data ONLY if needed temporarily.
+
+---
+
+DISPLAY LOGIC (CRITICAL)
+
+Render ONLY what exists.
+
+1. Google Maps
+IF google_maps_url exists:
+→ Show row:
+📍 Ver no Google Maps
+→ Opens external link
+
+2. Instagram
+IF instagram_url exists:
+→ Use it directly
+
+ELSE IF instagram_handle exists:
+→ Build URL: https://instagram.com/{handle}
+
+→ Show row:
+📷 @handle
+
+3. Booking CTA
+IF booking_url exists AND tipo_item === "hotel":
+→ Show CTA button:
+“Reserve aqui”
+
+IF booking_url exists AND tipo_item != "hotel":
+→ Show as subtle link (not primary CTA)
+
+IF booking_url does NOT exist:
+→ DO NOT render anything
+
+---
+
+HIERARCHY RULE (VERY IMPORTANT)
+
+Hotels:
+→ Maps + Instagram + STRONG CTA (Reserve aqui)
+
+Restaurants:
+→ Maps + Instagram
+→ Booking is secondary (if exists)
+
+Experiences:
+→ Maps first
+→ Instagram optional
+→ NO forced booking
+
+---
+
+UI / DESIGN RULES
+
+- Minimal luxury (editorial feel, NOT marketplace)
+- Inspired by iOS native UI
+- No heavy cards
+- No shadows overload
+- Clean spacing, subtle separators
+- Thin icons, monochrome
+- Typography first
+
+Avoid:
+- Big buttons everywhere
+- Visual noise
+- "Booking.com style UI"
+
+---
+
+LAYOUT STRUCTURE
+
+[Description text]
+
+[Category tag]
+
+--- spacing ---
+
+[Maps row - if exists]
+[Instagram row - if exists]
+
+--- spacing ---
+
+[Reserve aqui CTA - if exists]
+
+--- spacing ---
+
+[Salvar button - already exists]
+[Voltar button - already exists]
+
+---
+
+INTERACTION
+
+- External links must open properly (target blank)
+- Touch targets must be mobile-friendly
+- No broken states
+- No empty placeholders
+
+---
+
+FALLBACK BEHAVIOR
+
+If NONE of the data exists:
+→ DO NOT render the ActionBlock
+
+---
+
+CODE STRUCTURE
+
+- Create reusable component: <ActionBlock />
+- Accept props from parent (future Supabase integration)
+- Keep logic isolated and clean
+- No duplication
+
+---
+
+FUTURE READY
+
+Prepare for:
+- Affiliate links (Hotels.com)
+- Tracking clicks (analytics ready)
+- Possible “Open in app” deep links later
+
+---
+
+FINAL GOAL
+
+When the user reaches this section, they should immediately understand:
+
+→ Onde é
+→ Como ver mais
+→ Como ir
+→ Como reservar (if relevant)
+
+WITHOUT thinking.
+
+This is a decision interface, not just information.

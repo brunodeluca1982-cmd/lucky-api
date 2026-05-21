@@ -1,0 +1,36 @@
+[1mdiff --git a/artifacts/mobile/app/(tabs)/index.tsx b/artifacts/mobile/app/(tabs)/index.tsx[m
+[1mindex 57d39fa..7106042 100644[m
+[1m--- a/artifacts/mobile/app/(tabs)/index.tsx[m
+[1m+++ b/artifacts/mobile/app/(tabs)/index.tsx[m
+[36m@@ -64,11 +64,9 @@[m [mconst { width: SCREEN_WIDTH } = Dimensions.get("window");[m
+ const CARD_W = (SCREEN_WIDTH - 48 - 12) / 2;[m
+ [m
+ const HOME_BG_POOL = [[m
+[31m-  require("../../assets/images/rio-aerial-clean.png"),[m
+   require("../../assets/images/ipanema.png"),[m
+   require("../../assets/images/hotel1.png"),[m
+   require("../../assets/images/secret1.png"),[m
+[31m-  require("../../assets/images/map-rio-portrait.png"),[m
+ ];[m
+ [m
+ // ── Thin hairline between sections ───────────────────────────────────────────[m
+[1mdiff --git a/artifacts/mobile/app/(tabs)/perfil.tsx b/artifacts/mobile/app/(tabs)/perfil.tsx[m
+[1mindex 8c32a67..306395b 100644[m
+[1m--- a/artifacts/mobile/app/(tabs)/perfil.tsx[m
+[1m+++ b/artifacts/mobile/app/(tabs)/perfil.tsx[m
+[36m@@ -51,7 +51,6 @@[m [mconst LOGO      = require("@/assets/images/logo-symbol.png");[m
+ [m
+ // Hero images for rotating background (login screen only)[m
+ const HERO_IMAGES = [[m
+[31m-  require("@/assets/images/rio-aerial-clean.png"),[m
+   require("@/assets/images/ipanema.png"),[m
+   require("@/assets/images/cristo.png"),[m
+   require("@/assets/images/pao-acucar.png"),[m
+[36m@@ -788,7 +787,6 @@[m [mfunction EmailSentState({[m
+ // Images: Rio de Janeiro only. Same crossfade pattern as the auth hero.[m
+ [m
+ const PROFILE_HERO_IMAGES = [[m
+[31m-  require("@/assets/images/rio-aerial-clean.png"),[m
+   require("@/assets/images/ipanema.png"),[m
+   require("@/assets/images/hero-rio.png"),[m
+   require("@/assets/images/pao-acucar.png"),[m

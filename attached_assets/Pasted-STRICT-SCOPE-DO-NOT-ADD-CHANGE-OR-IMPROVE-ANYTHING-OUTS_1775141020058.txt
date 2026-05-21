@@ -1,0 +1,94 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Fix ONLY the Home highlight navigation and the base itinerary detail experience.
+
+Do NOT redesign the app.
+Do NOT change bottom navigation.
+Do NOT modify unrelated screens.
+Do NOT change visual direction outside what is required below.
+
+--------------------------------------------------
+1. HOME HIGHLIGHT CARDS MUST OPEN THE CORRECT DESTINATION PAGE
+--------------------------------------------------
+
+Current issue:
+The highlight cards on Home are not reliably leading to the correct corresponding page.
+
+Required behavior:
+Each highlight card must open the page that matches what it is announcing.
+
+Examples:
+- "Restaurantes imperdíveis" -> open the Rio "Onde comer" page
+- "O que fazer agora no Rio de Janeiro" -> open the Rio "O que fazer agora" page
+- any hotel-focused highlight -> open the Rio "Onde ficar" page
+- any Lucky List highlight -> open the Rio Lucky List page
+
+Rule:
+The click target must match the card promise exactly.
+No generic fallback.
+No wrong route.
+
+--------------------------------------------------
+2. BASE / READY-MADE ITINERARIES MUST USE THE SAME MODEL AS GENERATED ITINERARIES
+--------------------------------------------------
+
+Current issue:
+The prebuilt intelligent itineraries shown in Home are less detailed and use a weaker model than the itinerary generated when the user creates one.
+
+This is wrong.
+
+Required behavior:
+ALL itineraries in the app must follow the same structure and same design model.
+
+This includes:
+- same visual hierarchy
+- same day cards
+- same section logic (manhã / almoço / tarde / jantar / noite when relevant)
+- same detail density
+- same map actions
+- same item structure
+- same level of polish
+- same type of information
+
+If a user opens a prebuilt/base itinerary from Home, it must feel like a real Lucky Trip itinerary, not a simplified preview.
+
+--------------------------------------------------
+3. BASE ITINERARIES MUST BE UPGRADED, NOT SEPARATE
+--------------------------------------------------
+
+Do NOT keep a separate “lighter” itinerary model for base itineraries.
+
+Instead:
+- adapt the base itineraries into the same data/view model used by the generated itinerary result screen
+- preserve their content, but render them with the same itinerary experience
+
+--------------------------------------------------
+4. KEEP LOGIC COHERENT
+--------------------------------------------------
+
+Do NOT introduce duplicated places.
+Do NOT make the base itineraries less intelligent than the generated ones.
+Do NOT reduce detail.
+
+--------------------------------------------------
+5. DO NOT CHANGE ANYTHING ELSE
+--------------------------------------------------
+
+Do NOT:
+- redesign Home
+- change unrelated routes
+- modify working entity detail pages
+- touch Lucky or Profile
+- change the current premium direction
+
+--------------------------------------------------
+6. REQUIRED CONFIRMATION
+--------------------------------------------------
+
+After fixing, confirm ONLY:
+
+1. which Home highlight cards now route to which pages
+2. that "Restaurantes imperdíveis" now opens Rio "Onde comer"
+3. that "O que fazer agora no Rio de Janeiro" now opens the corresponding Rio page
+4. how base itineraries were migrated into the same model as generated itineraries
+5. confirmation that all itineraries now share the same structure/design standard

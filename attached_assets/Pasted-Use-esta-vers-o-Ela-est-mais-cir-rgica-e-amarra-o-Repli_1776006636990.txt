@@ -1,0 +1,118 @@
+Use esta versão. Ela está mais cirúrgica e amarra o Replit no fluxo certo:
+
+:::writing{variant=“standard” id=“62418”}
+MODO CIRÚRGICO. NÃO FAÇA MUDANÇAS AMPLAS. NÃO REARQUITETE O APP. NÃO TOQUE EM STRIPE, AUTH, CHAT, HOTEL RECOMMENDATION, OU QUALQUER OUTRO FLUXO FORA DA TELA DE ROTEIRO.
+
+Objective:
+The screen “Roteiro inteligente / Viagem” must fetch and render its itinerary from the existing Supabase Edge Function generate-itinerary as the only active source of truth for roteiro generation.
+
+Official endpoint:
+POST ${EXPO_PUBLIC_SUPABASE_URL}/functions/v1/generate-itinerary
+
+Scope restriction:
+Work ONLY on the active code path that generates or refreshes the itinerary shown on the “Roteiro inteligente / Viagem” screen.
+Do NOT modify unrelated screens or systems.
+
+What you must do:
+	1.	Trace the active code path used when the user enters the “Roteiro inteligente / Viagem” screen or taps to generate/refresh the itinerary.
+	2.	Identify the exact component, hook, service, or helper currently responsible for:
+	•	generating the itinerary
+	•	loading the itinerary
+	•	hydrating the itinerary UI
+	3.	Determine whether that path currently:
+	•	uses local/manual generation logic
+	•	uses hardcoded/mock data
+	•	uses a different endpoint
+	•	transforms local state into a fake itinerary
+	4.	Replace ONLY that active generation path with a real HTTP call to Supabase Edge Function generate-itinerary.
+	5.	Build the request payload using the real data already selected in the app:
+	•	savedItems
+	•	destination
+	•	preferences
+	•	requestedDays
+	•	arrivalDate
+	•	departureDate
+	6.	Remove or bypass any local/mock/manual itinerary generation from the active code path.
+	7.	Keep UI changes minimal. The goal is data-source correction, not redesign.
+	8.	If the function fails, show a visible error state. Do not fail silently.
+	9.	Add explicit logs for:
+	•	request payload
+	•	response status
+	•	parsed response
+	•	error path
+	10.	Preserve the function response shape as much as possible. Do not invent fields. Do not create fallback fake itinerary cards.
+
+Required request payload:
+
+{
+  "savedItems": [
+    {
+      "id": "string",
+      "titulo": "string",
+      "categoria": "oQueFazer | restaurante | hotel | lucky",
+      "localizacao": "string"
+    }
+  ],
+  "destination": "Rio de Janeiro",
+  "preferences": {
+    "inspirations": [],
+    "vibe": "tranquilo | moderado | intenso",
+    "travelVibe": "solo | casal | amigos | família | null",
+    "budget": "essencial | conforto | sofisticado | null"
+  },
+  "requestedDays": 3,
+  "arrivalDate": "YYYY-MM-DD",
+  "departureDate": "YYYY-MM-DD"
+}
+
+Required fetch implementation:
+
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL ?? "";
+const supabaseAnon = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? "";
+
+const response = await fetch(`${supabaseUrl}/functions/v1/generate-itinerary`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${supabaseAnon}`,
+    "apikey": supabaseAnon,
+  },
+  body: JSON.stringify(payload),
+});
+
+const data = await response.json();
+
+Mandatory logs:
+
+console.log("[ItineraryScreen] payload", payload);
+console.log("[ItineraryScreen] status", response.status);
+console.log("[ItineraryScreen] response", data);
+console.log("[ItineraryScreen] error", error);
+
+Critical rules:
+	•	Do not create a new itinerary engine in the frontend.
+	•	Do not keep a parallel local generator active.
+	•	Do not hardcode “example” itinerary cards.
+	•	Do not touch the Lucky chat flow.
+	•	Do not touch Stripe.
+	•	Do not touch auth.
+	•	Do not change hotel recommendation logic unless it is literally inside the same active itinerary fetch path.
+	•	Do not remap categories incorrectly.
+	•	Do not reshape the Supabase response more than necessary for the current UI.
+	•	If minimal mapping is required, make it explicit and report it.
+
+Validation tasks you must complete:
+	1.	Show the exact file(s) changed.
+	2.	Show the exact function/component now calling generate-itinerary.
+	3.	Show the old active path that was previously generating/hydrating the itinerary.
+	4.	State whether the old local/manual/mock generator still exists in the repo.
+	5.	State whether it is still active or now bypassed.
+	6.	Show the exact payload object being sent from the screen.
+	7.	Show the exact response fields being consumed by the screen.
+	8.	Confirm whether the displayed itinerary on “Roteiro inteligente / Viagem” is now 100% driven by the Supabase function response.
+
+Success condition:
+When I open or regenerate the “Roteiro inteligente / Viagem” screen, the itinerary displayed there must come from Supabase Edge Function generate-itinerary, not from local/manual/mock logic.
+:::
+
+Esse é o tipo de prompt que reduz bastante a chance dele sair fazendo besteira fora do fluxo certo.

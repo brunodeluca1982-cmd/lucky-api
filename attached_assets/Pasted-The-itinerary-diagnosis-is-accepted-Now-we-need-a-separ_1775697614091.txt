@@ -1,0 +1,123 @@
+The itinerary diagnosis is accepted.
+
+Now we need a separate product-layer plan for the HOME experience.
+
+OBJECTIVE
+
+The home must feel like an editorial travel portal with strong inspiration, social proof, and conversion into automatic itinerary creation.
+
+It should combine:
+- editorial highlights
+- “news-like” cards
+- social proof from friends/curated people
+- flexible featured cards I can control manually
+- strong CTA into the automatic itinerary journey
+
+This should feel closer to:
+- a travel news portal
+- a streaming-style discovery surface
+- a premium editorial home
+NOT a cold utility dashboard
+
+CRITICAL RULES
+
+1. Do NOT implement yet
+2. Do NOT redesign the whole app
+3. Do NOT touch engine logic (Steps A–F)
+4. Do NOT touch map logic
+5. Focus only on the HOME product layer
+6. Preserve current working home sections unless a replacement is clearly better
+7. Prefer Supabase/manual-curation driven architecture over hardcoded content
+8. I want manual control over what appears in highlights
+
+PRODUCT REQUIREMENTS
+
+The home must support at least these content types:
+
+1. HERO CTA CARD
+A top editorial/hero card that stimulates automatic itinerary creation.
+Example intent:
+- “Faça seu roteiro automático”
+- “Monte sua viagem em segundos”
+- click goes directly to the itinerary creation journey
+
+2. EDITORIAL HIGHLIGHTS / NEWS-LIKE CARDS
+Cards that feel like travel stories or highlights.
+Examples:
+- “O hotel que mudou o jeito de viver Barcelona”
+- “3 lugares que valem a viagem só pelo pôr do sol”
+- “O restaurante favorito da Carolina Dieckmann”
+
+These must feel like curated editorial entries, not generic cards.
+
+3. SOCIAL / FRIEND ROUTE CARDS
+Cards featuring people who have route/guide content.
+Examples:
+- Carolina Dieckmann
+- photo of the person OR
+- a place they recommended OR
+- a quote from them
+I want freedom to choose which image/text/card style appears.
+
+4. PLACE / ROUTE / CTA MIX
+The home should allow mixing different card types in one editorial feed:
+- person
+- place
+- route
+- CTA
+- quote/editorial
+Like a curated Netflix-style rail or portal front page.
+
+5. MANUAL CURATION CONTROL
+I want to choose exactly what appears in the highlights.
+This must NOT depend only on automatic ranking.
+It should be possible to choose:
+- title
+- subtitle
+- image
+- quote
+- target link
+- content type
+- active/inactive
+- order
+
+TASK
+
+Audit the current home architecture and propose the minimal safe way to evolve it into this editorial portal model.
+
+Show:
+
+1. what already exists in the current home
+2. what is missing for this editorial/news-portal behavior
+3. the best minimal Supabase-driven content model for manual curation
+4. whether current home_hero_items can be extended or whether a new table is cleaner
+5. how to support multiple card types:
+   - CTA
+   - person
+   - place
+   - route
+   - quote/editorial
+6. how clicking each card type should route
+7. the recommended home structure and section order
+8. exact files/components that would need to change
+9. the minimal implementation roadmap
+
+IMPORTANT
+
+I do NOT want generic “recommended places only”.
+I want the home to feel alive, curated, journalistic, and premium.
+It should stimulate desire and action.
+
+OUTPUT FORMAT
+
+1. current home audit
+2. missing editorial capabilities
+3. recommended data model
+4. recommended card types
+5. routing behavior per card type
+6. exact file/component changes
+7. minimal implementation roadmap
+8. what must NOT change
+
+Do NOT implement yet.
+Show the full home plan first.

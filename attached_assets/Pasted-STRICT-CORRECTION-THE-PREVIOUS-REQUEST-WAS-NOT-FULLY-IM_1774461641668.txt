@@ -1,0 +1,167 @@
+STRICT CORRECTION — THE PREVIOUS REQUEST WAS NOT FULLY IMPLEMENTED
+
+IMPORTANT:
+This is not a new exploration.
+This is a correction of missing work.
+
+Three things are still wrong:
+
+1. The intermediate trip-flow screens were NOT updated to the visual standard I requested
+2. The itinerary edit flow still does NOT allow adding real Google Places results
+3. The routing logic between Home and Viagem entry points is still incorrect
+
+You must fix all three now.
+
+--------------------------------------------------
+A. VISUAL REPLACEMENT OF THE INTERMEDIATE SCREENS
+--------------------------------------------------
+
+The intermediate screens still look like the old/fallback version.
+That is incorrect.
+
+They must be visually replaced to match the reference screens I attached.
+
+This includes:
+- destination step
+- date selection step
+- travel company step
+- interests step
+- style/budget step
+- itinerary generation/loading step
+- any itinerary-related modal/subflow that still looks inconsistent
+
+EXPECTED VISUAL STANDARD:
+- same premium card structure as the reference screens
+- same spacing
+- same typography hierarchy
+- same gold/neutral tone
+- same rounded cards
+- same clean, elegant layout
+- same “The Lucky Trip” design language
+
+IMPORTANT:
+Do NOT copy the bottom navigation from the reference images.
+Keep the current bottom navigation already used in the Replit app.
+
+--------------------------------------------------
+B. CORRECT ENTRY FLOW LOGIC
+--------------------------------------------------
+
+The app must support TWO entry modes, with one fallback rule.
+
+1. HOME ENTRY = FULL FLOW
+When the user taps "Criar meu roteiro" from the Home screen:
+- DO NOT send the user to the Viagem menu
+- DO NOT jump into the contextual trip flow
+- Start the full itinerary creation flow from the beginning
+
+Correct full flow:
+1. destination selection
+2. date selection
+3. travel company
+4. interests
+5. travel style
+6. loading / generating
+7. itinerary result
+
+2. VIAGEM ENTRY WITH SAVED ITEMS = CONTEXTUAL FLOW
+When the user enters from the Viagem menu and already has saved places in a destination:
+- DO NOT ask for destination again
+- Start directly at date selection
+- Then continue with:
+  - travel company
+  - interests
+  - travel style
+  - loading
+  - result
+
+This flow must use the current destination automatically.
+
+3. VIAGEM ENTRY WITH NO SAVED ITEMS = FULL FLOW
+If the user enters from the Viagem menu but has NOT saved any items yet:
+- DO NOT use the contextual flow
+- Use the same full flow as Home
+- Ask for destination first, then the rest of the journey
+
+So the logic must be:
+- Home → full flow
+- Viagem + saved items → contextual flow
+- Viagem + no saved items → full flow
+
+This rule is mandatory.
+
+--------------------------------------------------
+C. REAL GOOGLE PLACES SEARCH INSIDE EDIT ITINERARY
+--------------------------------------------------
+
+The current edit flow is still failing.
+
+Current problem:
+- typing a place name still only searches our internal curated list
+- it is NOT returning real Google Places results
+- the user still cannot properly add a new external place
+
+This must be fixed for real.
+
+EXPECTED BEHAVIOR:
+When editing/substituting an itinerary item:
+
+1. Show our curated database suggestions first
+   - lucky_list_rio
+   - o_que_fazer_rio
+   - restaurantes
+   - stay_hotels
+   when relevant
+
+2. ALSO search Google Places / autocomplete in parallel or as fallback
+   - if the typed query is not found internally
+   - or if the user wants another place
+   - Google results must appear in the UI
+
+3. Google results must be selectable
+   - use the real autocomplete source
+   - then fetch place details
+   - then allow inserting the selected place into the itinerary
+
+4. When a Google place is selected, save enough info into roteiro_itens:
+   - name
+   - address
+   - city
+   - lat
+   - lng
+   - source = 'external'
+   - ref_table = 'external'
+   - place_id = Google place id if available
+
+5. External places must be clearly labeled in the UI:
+   - “Lugar externo”
+   or
+   - “Adicionado por você”
+
+--------------------------------------------------
+D. DO NOT BREAK THE EXISTING GOOD PARTS
+--------------------------------------------------
+
+Keep:
+- the current result screen visual language
+- the current edit itinerary interaction structure
+- the current bottom navigation
+- the current itinerary engine
+
+Only fix:
+- the missing visual replacement of the intermediate screens
+- the incorrect Home / Viagem routing logic
+- the missing real Google Places integration in edit mode
+
+--------------------------------------------------
+E. REQUIRED OUTPUT
+--------------------------------------------------
+
+After implementing, explicitly confirm:
+1. which screens were visually replaced
+2. where the Home CTA now routes
+3. where the Viagem CTA routes when there are saved items
+4. where the Viagem CTA routes when there are NO saved items
+5. which Google Places source/function is being called
+6. how external places are stored in roteiro_itens
+7. that the current bottom navigation was preserved

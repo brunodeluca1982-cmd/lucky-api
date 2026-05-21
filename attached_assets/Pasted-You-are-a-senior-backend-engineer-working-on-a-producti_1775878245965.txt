@@ -1,0 +1,192 @@
+You are a senior backend engineer working on a production app.
+
+You are NOT allowed to redesign the system.
+
+You are ONLY allowed to improve the itinerary generation logic.
+
+---
+
+# 🔒 HARD SAFETY RULES (CRITICAL)
+
+You MUST follow ALL rules below:
+
+1. DO NOT modify:
+   - Stripe logic
+   - Auth system
+   - UI components
+   - Navigation
+   - Any unrelated function
+
+2. ONLY modify:
+   - generate-itinerary function
+   - helper logic directly used by it
+
+3. DO NOT break existing structure:
+   - Keep same response format
+   - Keep same API contract
+   - Keep same data types
+
+4. DO NOT remove working features
+
+5. DO NOT create new architecture
+
+---
+
+# 🎯 CORE OBJECTIVE
+
+Improve the itinerary engine so it behaves like a real human concierge using ONLY Supabase data.
+
+---
+
+# 🔒 DATA RULES
+
+- ONLY use data from Supabase
+- NEVER invent places
+- NEVER use placeholders
+- NEVER use Unsplash or generic images
+
+If photo_url is missing → EXCLUDE the place
+
+---
+
+# 🧠 MANDATORY DATA USAGE
+
+You MUST use:
+
+- place_photos
+- places_cache
+- lat/lng
+- tags_ia
+- vibe
+- perfil_ideal
+- preco_nivel
+- momento_ideal
+
+---
+
+# 📍 LOGIC RULES
+
+- Group by neighborhood
+- Minimize distance
+- Avoid crossing city unnecessarily
+
+---
+
+# 🧩 DAILY STRUCTURE
+
+Each day MUST include:
+
+- Morning
+- Lunch
+- Afternoon
+- Night (MANDATORY)
+
+---
+
+# 🌙 NIGHT RULE
+
+- If "festa" → nightlife EVERY night
+- If NOT → ONLY dinner
+
+---
+
+# 🍽️ FOOD RULE
+
+Each day MUST include:
+
+- Breakfast OR brunch
+- Lunch
+- Dinner
+
+Fallback allowed ONLY with:
+- hotel
+- nearest valid restaurant
+
+---
+
+# 🏨 HOTEL RULE
+
+- Always assume base hotel
+- Match hotel with budget:
+
+sofisticado → premium  
+conforto → mid  
+essencial → efficient  
+
+---
+
+# 👤 USER PROFILE RULES
+
+Use preferences:
+
+família → safe + kids  
+casal → romantic  
+amigos → social  
+solo → calm  
+
+---
+
+# ⚡ PACE RULE
+
+intenso → full days + active nights  
+moderado → balanced  
+tranquilo → fewer items + calm nights  
+
+---
+
+# 🔁 DUPLICATION RULE
+
+- NEVER repeat places
+- Deduplicate by place_id
+
+---
+
+# 🌦️ WEATHER RULE
+
+- Use weather function
+- Attach Lucky Trip icon (NOT emoji)
+- Adjust activities accordingly
+
+---
+
+# 🧠 AI ROLE
+
+AI is ONLY allowed to:
+
+- reorder items
+- improve flow
+
+AI CANNOT:
+
+- add places
+- remove places
+- change structure
+
+---
+
+# 🧩 IMPLEMENTATION
+
+You must:
+
+1. Improve generate-itinerary logic ONLY
+2. Apply rules BEFORE AI step
+3. Keep Gemini as refinement only
+4. Connect existing helpers (DO NOT create new ones)
+5. Remove any image fallback
+6. Ensure deterministic output
+
+---
+
+# 🚀 OUTPUT EXPECTATION
+
+The result must feel like:
+
+"A real concierge planned this."
+
+---
+
+DO NOT explain.
+
+DO NOT summarize.
+
+ONLY implemen

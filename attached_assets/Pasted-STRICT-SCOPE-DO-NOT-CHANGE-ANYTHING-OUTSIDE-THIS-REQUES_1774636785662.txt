@@ -1,0 +1,87 @@
+STRICT SCOPE — DO NOT CHANGE ANYTHING OUTSIDE THIS REQUEST
+
+We need a final source-of-truth audit for Rio.
+
+Problem:
+The app is still behaving inconsistently:
+- some Rio items open correctly
+- some fall into "Em breve disponível"
+- some detail pages show correct text but missing/wrong photo
+This suggests Rio content is still mixed between Supabase and static/mock/local data.
+
+GOAL:
+Identify exactly which Rio screens/components are still not fully Supabase-driven, and make Rio use Supabase as the primary source of truth everywhere.
+
+--------------------------------------------------
+1. SOURCE-OF-TRUTH AUDIT (RIO ONLY)
+--------------------------------------------------
+
+Audit ALL Rio entry points and classify each one as:
+- Supabase-driven
+- static/mock/local data
+- hybrid
+
+Check:
+- Home cards
+- Home highlights
+- Hero cards
+- Destination page (Rio)
+- Itinerary result
+- Saved items
+- Search
+- Onde comer
+- O que fazer
+- Lucky List
+- Hotels
+- Detail pages
+- Photo resolution logic
+
+--------------------------------------------------
+2. RIO MUST BE SUPABASE-FIRST
+--------------------------------------------------
+
+For Rio entities, Supabase must be the primary source of truth for:
+- detail content
+- photos
+- click routing
+- metadata
+- entity identity
+
+Tables:
+- restaurantes
+- stay_hotels
+- o_que_fazer_rio
+- lucky_list_rio
+
+Do NOT keep parallel static/mock copies for Rio if Supabase already has the entity.
+
+--------------------------------------------------
+3. EXPLAIN THE CURRENT FAILURES
+--------------------------------------------------
+
+Specifically explain:
+- why some Rio items still fall into "Em breve disponível"
+- why Hotel Fasano can show correct text but no correct photo
+- which components are still pulling static/local fallback instead of Supabase
+
+--------------------------------------------------
+4. FIX RIO CONSISTENCY
+--------------------------------------------------
+
+For Rio:
+- if entity exists in Supabase, use Supabase
+- do not route to "Em breve disponível"
+- do not prefer static/local copies over Supabase rows
+- do not use mismatched fallback photos if Supabase photo exists
+
+--------------------------------------------------
+5. REQUIRED OUTPUT
+--------------------------------------------------
+
+After auditing and fixing, confirm ONLY:
+
+1. which Rio screens/components were still static or hybrid
+2. which ones were migrated to Supabase-first
+3. why “Em breve disponível” was still happening
+4. why Hotel Fasano had text but no proper photo
+5. confirmation that Rio is now using Supabase as the primary source of truth everywhere possible

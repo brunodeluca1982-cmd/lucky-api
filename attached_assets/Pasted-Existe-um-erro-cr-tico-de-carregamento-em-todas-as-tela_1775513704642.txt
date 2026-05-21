@@ -1,0 +1,26 @@
+Existe um erro crítico de carregamento: em todas as telas com imagem de fundo (viagem.tsx, friend/guide/[slug].tsx, roteiro/[id].tsx), o app inicia com uma camada preta. Depois a imagem aparece, criando um flash escuro. Isso quebra totalmente a experiência premium. Corrija de forma global e definitiva:
+
+1. Não permitir nenhum frame com fundo preto:
+   – Verifique o componente raiz (App / NavigationContainer / wrappers) e remova qualquer `backgroundColor: '#000'` ou equivalente.  
+   – O primeiro paint deve sempre mostrar um fundo agradável (gradiente quente), nunca preto [oai_citation:1‡reddit.com](https://www.reddit.com/r/replit/comments/1hrgm9w/i_need_help_my_replit_is_just_a_loading_screen/#:~:text=I%20need%20help%20my%20Replit,and%20cleared%20the%20cache).
+
+2. Adicionar placeholder imediato:
+   – Ao montar a tela, renderizar um gradiente de transição em tons quentes (laranja/roxo) como plano de fundo. Ele deve aparecer instantaneamente e ocupar toda a tela, antes de carregar a imagem.  
+   – Não usar overlay escuro sobre o placeholder.
+
+3. Carregar a imagem de fundo com fade‑in:
+   – Envolver a imagem e seu overlay em um `Animated.View` (use `useNativeDriver: true`).  
+   – Renderizar a imagem com `opacity: 0` e, no evento `onLoad`, animar suavemente (600 ms) até `opacity: 1`.  
+   – Somente depois que a imagem estiver visível, aplicar o overlay escuro. O overlay nunca deve aparecer antes da imagem.
+
+4. Adotar esse padrão para todas as telas:
+   – A lógica de placeholder + fade‑in deve ser aplicada em `viagem.tsx`, `friend/guide/[slug].tsx` e `roteiro/[id].tsx`.  
+   – O fundo global do app (NavigationContainer, layout raiz) não deve ser preto; deve usar o mesmo gradiente ou ser transparente para permitir o placeholder.
+
+5. Entregar:
+   – Código alterado: componentes/telas onde o fundo preto existia.  
+   – Implementação do gradiente placeholder (cores e componente usado).  
+   – Implementação do fade‑in (`Animated.View`, `onLoad`, duração).  
+   – Confirmação de que o flash preto desapareceu em todas as telas: o app inicia com o gradiente e a imagem de fundo aparece suavemente, com o overlay aplicado somente depois.
+
+Essas mudanças devem ser feitas sem alterar o esquema do banco de dados. A correção deve rodar em todas as telas com imagens de fundo, e o app nunca deve exibir uma tela preta ao abrir, conforme as boas práticas discutidas em fóruns e artigos [oai_citation:2‡reddit.com](https://www.reddit.com/r/replit/comments/1hrgm9w/i_need_help_my_replit_is_just_a_loading_screen/#:~:text=I%20need%20help%20my%20Replit,and%20cleared%20the%20cache).

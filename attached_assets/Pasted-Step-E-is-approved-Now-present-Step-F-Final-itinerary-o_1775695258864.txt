@@ -1,0 +1,83 @@
+Step E is approved.
+
+Now present Step F — Final itinerary output enrichment (product-layer only).
+
+CRITICAL RULES
+
+1. Do NOT implement yet
+2. Do NOT change engine decision logic from Steps A–E
+3. Do NOT touch map logic
+4. Do NOT redesign UI structure
+5. Do NOT change schema or create new tables
+6. Keep everything backward compatible
+7. This step is strictly output enrichment — not logic redesign
+
+OBJECTIVE
+
+The itinerary engine is now strong (Steps A–E), but the final output is still too thin and does not feel like a premium travel product.
+
+We must enrich the final itinerary output so each item feels complete, informative, and editorial — without touching how items are selected or ordered.
+
+At the same time, the hotel must remain a global trip anchor (top of screen), NOT a repeated item inside each day timeline.
+
+However, each day must clearly communicate that it starts from the hotel.
+
+PRODUCT DECISION (IMPORTANT)
+
+- The hotel stays as a separate card at the top (global trip anchor)
+- The hotel must NOT be duplicated as an item inside each day
+- Each day should include a lightweight “origin” context indicating departure from the hotel
+- The timeline must start with the first real activity
+
+TASK
+
+Audit the current final itinerary output and propose the minimal safe changes required to:
+
+1. Enrich each itinerary item with:
+   - thumbnail (photo_url → image)
+   - short editorial description (meu_olhar)
+   - average duration (duracao)
+
+2. Add a lightweight per-day origin context:
+   - derived from the selected hotel (already available from Step D)
+   - NOT a timeline item
+   - used only to indicate “departure from hotel”
+
+3. Ensure deep linking continues to work:
+   - id + source_table must remain unchanged
+
+4. Ensure mobile compatibility:
+   - existing fields must not break
+   - new fields must be optional and additive
+
+IMPORTANT SCOPE LIMIT
+
+This step must NOT:
+- modify candidate selection
+- modify scoring (Step B)
+- modify complement logic (Step C)
+- modify hotel selection logic (Step D)
+- modify Gemini behavior (Step E)
+- introduce weather logic yet
+- introduce routing/distance APIs
+- inject hotel as a fake activity item
+
+OUTPUT FORMAT
+
+1. current output shape (ItemRoteiro and DiaRoteiro)
+2. which required fields already exist vs missing
+3. exact file(s) and function(s) to modify
+4. exact minimal code delta
+5. how to:
+   - propagate photo_url and meu_olhar from Supabase
+   - attach image, descricao, duracao to ItemRoteiro
+   - attach origem (hotel context) to DiaRoteiro
+6. before/after JSON example
+7. regression analysis
+8. explicit confirmation that:
+   - engine logic (Steps A–E) is untouched
+   - output schema remains backward compatible
+   - no UI breakage occurs
+
+Do NOT implement yet.
+Show the full Step F plan first.

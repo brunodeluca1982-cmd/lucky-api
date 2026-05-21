@@ -1,0 +1,138 @@
+We need to implement the itinerary gear / refine control as a PRODUCT FEATURE, not as a generic settings menu.
+
+This is the rule:
+
+The gear is NOT for account settings.
+The gear is for refining the current itinerary quickly.
+
+FEATURE NAME
+
+Use the gear icon visually if needed, but the product meaning must be:
+
+"Refinar roteiro"
+
+========================================
+OBJECTIVE
+========================================
+
+Create a lightweight refinement layer for the current itinerary.
+
+The user must be able to adjust the itinerary without starting over from scratch.
+
+This must feel like:
+- fast
+- smart
+- premium
+- controlled
+
+NOT:
+- technical
+- bloated
+- confusing
+- general app settings
+
+========================================
+MVP PRINCIPLE
+========================================
+
+This refinement layer must change the itinerary through a small number of high-impact controls.
+
+We do NOT want too many options.
+
+We want the 6 best controls only.
+
+========================================
+THE 6 MVP CONTROLS
+========================================
+
+1. Ritmo da viagem
+- Tranquilo
+- Equilibrado
+- Intenso
+
+2. Foco da experiência
+- Gastronomia
+- Clássico
+- Natureza
+- Vida noturna
+- Romântico
+
+3. Tipo de manhã
+- Começar devagar
+- Começar cedo
+
+4. Tipo de noite
+- Jantar tranquilo
+- Barzinho
+- Noite animada
+- Sem programação
+
+5. Orçamento
+- Essencial
+- Conforto
+- Sofisticado
+
+6. Deslocamento
+- Minimizar deslocamento
+- Aceito andar mais
+
+========================================
+STRICT PRODUCT RULES
+========================================
+
+1. Do NOT turn this into general settings
+2. Do NOT include account/config/privacy/system items
+3. Do NOT create a giant filter panel
+4. Keep this focused only on refining the current itinerary
+5. Prefer bottom sheet behavior, not a heavy full new screen
+6. The current itinerary should feel adjusted, not fully discarded
+7. Recalculation should preserve as much useful structure as possible
+
+========================================
+BEHAVIOR RULE
+========================================
+
+When the user changes these controls:
+
+- do NOT restart the whole journey from zero if avoidable
+- do NOT make the app feel like "generate again from scratch"
+- treat this as refinement of the current trip context
+
+Meaning:
+- maintain destination
+- maintain current trip context
+- preserve useful structure when possible
+- update the itinerary intelligently
+
+========================================
+TASK
+========================================
+
+Show the exact product architecture for this refinement system.
+
+I want:
+
+1. where the gear / refine entry should live in the itinerary screen
+2. whether this should open as a bottom sheet, modal, or another lightweight pattern
+3. the exact content structure of the sheet
+4. the 6 controls and how they should be presented
+5. how the "Atualizar roteiro" behavior should work
+6. what should be preserved from the current itinerary
+7. what should be recomputed
+8. exact files/components that would need to change
+9. minimal implementation roadmap
+
+========================================
+IMPORTANT
+========================================
+
+Do NOT implement yet.
+Show architecture first.
+
+Do NOT drift into general app settings.
+Do NOT redesign unrelated screens.
+Do NOT change map logic.
+Do NOT create a bloated control center.
+
+This is only:
+Refinar roteiro

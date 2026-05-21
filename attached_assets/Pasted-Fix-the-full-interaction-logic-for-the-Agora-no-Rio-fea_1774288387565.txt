@@ -1,0 +1,49 @@
+Fix the full interaction logic for the "Agora no Rio" feature.
+
+Important:
+The current behavior is wrong because the suggestion shown on the city home is not being preserved when opening the next page.
+
+This feature must follow these strict rules:
+
+RULE 1 — Home suggestion must persist
+If the city home shows:
+- Section title: "Agora no Rio"
+- Suggested item: for example "Pôr do sol em Ipanema"
+
+Then when the user taps this section, the next page ("O que fazer agora") must open with that exact suggested item as the FIRST and MAIN hero recommendation on the page.
+
+The same suggestion shown on the home must be preserved as context.
+
+RULE 2 — Hero card must open its own detail page
+If the first hero recommendation is "Pôr do sol em Ipanema", then tapping that card must open the specific detail page for "Pôr do sol em Ipanema".
+
+This cannot be generic.
+The card must navigate to the actual item detail.
+
+Expected flow:
+1. Home shows a live suggestion
+2. User taps "Agora no Rio"
+3. "O que fazer agora" page opens
+4. The first hero card is exactly the suggestion that appeared on the home
+5. Tapping that hero card opens the detail page of that same item
+6. Secondary cards can appear below as supporting suggestions
+
+Implementation requirements:
+- Preserve the current home design
+- Preserve the current highlighted yellow style
+- Keep the current page visual style
+- Do NOT redesign the screen
+- Fix the navigation logic and state passing
+
+Technical behavior:
+- Pass the currently suggested item from the city home screen into the "O que fazer agora" page
+- Use this passed item as the hero recommendation
+- Use its real id / slug / route reference so tapping it opens the correct item detail page
+- Do not leave this open or random after navigation
+
+If the suggestion changes by time of day in the future, the same rule must still apply:
+whatever is being suggested on the home must be the first highlighted card on the next page.
+
+Goal:
+Make the "Agora no Rio" experience deterministic and coherent:
+home suggestion → contextual page hero → exact item detail.

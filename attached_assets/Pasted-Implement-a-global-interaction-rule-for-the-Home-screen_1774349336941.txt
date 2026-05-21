@@ -1,0 +1,120 @@
+Implement a global interaction rule for the Home screen.
+
+IMPORTANT:
+Do NOT redesign the app.
+Do NOT change the visual style of the Home.
+Do NOT change the bottom navigation.
+Do NOT change the hero layout.
+Do NOT change logo styling.
+Do NOT touch map behavior.
+
+-----------------------------------
+GOAL
+-----------------------------------
+
+Every visible card on the Home screen must be clickable.
+
+When any Home card is tapped, it must open a detail screen that follows the EXACT visual structure of the attached reference screen (Ciclovia da Orla da Barra).
+
+The attached screen is NOT inspiration.
+It is the REQUIRED visual detail template.
+
+-----------------------------------
+HOME CLICK RULE
+-----------------------------------
+
+Apply this to all Home cards, including:
+- Onde comer cards
+- O que fazer cards
+- Onde ficar cards
+- Lucky List cards
+- Destination cards, if they remain visible on Home
+
+No dead cards.
+No decorative-only cards.
+
+-----------------------------------
+DETAIL TEMPLATE (MANDATORY)
+-----------------------------------
+
+All clicks from Home must open the same visual detail pattern:
+
+1. HERO AREA
+- large hero image at the top
+- support for carousel if multiple images/videos exist
+
+2. OVERLAY / HEADER CONTENT
+- title
+- category/tag pills if available
+- same premium editorial feeling as the attached reference
+
+3. BODY CONTENT
+- descriptive text
+- relevant metadata if already available
+
+4. ACTION AREA
+- keep the same visual structure pattern as the attached reference
+
+-----------------------------------
+IMPORTANT EXCEPTION: HOTEL DETAIL LOGIC
+-----------------------------------
+
+For hotels / Onde ficar items:
+
+- KEEP the existing hotel-specific behavior and logic
+- KEEP reservation-related actions
+- KEEP hotel-specific badges and useful hotel metadata
+- DO NOT remove or simplify the hotel functionality
+
+So:
+- visual style should align with the Ciclovia reference
+- but hotel actions and hotel-specific functionality must remain as they currently are
+
+In other words:
+use the Ciclovia screen as the visual standard,
+but preserve the current hotel detail product logic.
+
+-----------------------------------
+CONSISTENCY RULE
+-----------------------------------
+
+Do NOT create different visual layouts for:
+- restaurant
+- hotel
+- activity
+- lucky list
+
+Use ONE unified visual pattern, adapting only the content.
+
+But preserve category-specific functionality where it already exists.
+
+-----------------------------------
+DATA
+-----------------------------------
+
+Reuse existing data and current navigation where possible.
+If a final detail route does not exist yet, create the minimum necessary route using the same template.
+
+Do NOT invent new visual systems.
+Do NOT create placeholder blocks without function.
+
+-----------------------------------
+SCOPE
+-----------------------------------
+
+Modify ONLY:
+- Home card interactions
+- detail screen routing / reuse needed to support this rule
+
+Do NOT modify unrelated screens unless necessary to make them use this same template.
+
+-----------------------------------
+OUTPUT
+-----------------------------------
+
+At the end, show exactly:
+1. which Home cards are now clickable
+2. which route/template each one opens
+3. which file(s) were changed
+4. confirm that the attached Ciclovia screen was used as the single visual detail standard
+5. confirm that hotel reservation logic was preserved

@@ -1,0 +1,129 @@
+CRITICAL DATA SOURCE & IMAGE INTEGRITY FIX
+
+The itinerary engine is using places and images that DO NOT belong to our curated Supabase database.
+
+Example:
+- "Beco das Sardinhas" appeared but is not in our database
+- Images are being assigned that do not correspond to the actual place
+
+This breaks product trust and is NOT acceptable.
+
+---
+
+MANDATORY RULES (ZERO TOLERANCE)
+
+1. DATA SOURCE (STRICT)
+
+The system MUST ONLY use places from these Supabase tables:
+
+- restaurantes
+- o_que_fazer_rio
+- lucky_list_rio
+- stay_hotels
+
+FORBIDDEN:
+- NO Google Places fallback creating new places
+- NO external APIs adding places
+- NO LLM-generated locations
+- NO places_cache unless it references a valid place_id from Supabase
+
+If a place does NOT exist in Supabase:
+→ IT MUST NOT appear
+
+---
+
+2. IMAGE INTEGRITY (CRITICAL)
+
+Images MUST follow:
+
+- ONLY use photo_url from Supabase
+- OR valid image linked to that exact place_id
+
+FORBIDDEN:
+- NO Google image fallback
+- NO generic stock images
+- NO mismatched images
+- NO "best guess" images
+- NO getItemFallbackImage
+- NO external enrichment of photos
+
+If a place has NO image:
+→ SHOW placeholder (UI fallback)
+→ DO NOT fetch from external sources
+
+---
+
+3. VALIDATION STEP (MANDATORY)
+
+Before returning the itinerary:
+
+For each item:
+- MUST have valid source_table
+- MUST have valid id from Supabase
+
+If NOT:
+→ REMOVE the item
+
+---
+
+4. HOTEL (MANDATORY)
+
+If user selected a hotel:
+
+- MUST appear in EVERY day
+- Must be displayed as "HOSPEDAGEM"
+- Must NOT be treated as an activity
+- Must NOT be removed by any rule
+
+---
+
+5. RESTAURANT RULE (STRICT)
+
+- almoço → ONLY food
+- noite → food OR nightlife
+- tarde → NEVER restaurant
+- manhã → ONLY breakfast-type
+
+If mismatch:
+→ MOVE or REMOVE
+
+---
+
+6. EXPERIENCE CONSISTENCY
+
+Each place must have experience_type:
+
+- beach → relax
+- park → relax
+- viewpoint → scenic
+- restaurant → food
+- bar → nightlife
+- culture → culture
+- activity → active
+
+---
+
+7. FINAL GOAL
+
+The itinerary must be:
+
+- 100% curated
+- 100% deterministic
+- visually consistent
+- trustworthy
+
+NO invented places  
+NO incorrect images  
+NO external contamination
+
+---
+
+DO NOT change:
+- API structure
+- UI
+- existing scoring system
+
+ONLY enforce:
+- data integrity
+- image integrity
+- source validation

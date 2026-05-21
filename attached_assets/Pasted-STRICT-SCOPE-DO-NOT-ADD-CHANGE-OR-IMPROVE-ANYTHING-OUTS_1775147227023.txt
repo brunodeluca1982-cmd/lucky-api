@@ -1,0 +1,150 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Fix ONLY the Lucky assistant backend behavior and response flow.
+
+Do NOT redesign UI.
+Do NOT change navigation.
+Do NOT modify unrelated screens.
+Do NOT create a generic chatbot.
+Do NOT touch itinerary screens.
+
+GOAL:
+Lucky must answer Rio-first travel questions using ONLY Supabase data, allow exactly 2 free questions per user, and gate the 3rd question behind premium.
+
+--------------------------------------------------
+1. ROOT PROBLEM TO FIX
+--------------------------------------------------
+
+Current issue:
+Lucky is often replying:
+"Hmm, algo deu errado. Tente novamente em instantes."
+
+This is not acceptable.
+
+We need to identify the real backend failure and fix it at the root.
+
+--------------------------------------------------
+2. LUCKY MUST USE ONLY SUPABASE DATA
+--------------------------------------------------
+
+Lucky must answer ONLY from the app’s real curated Supabase data.
+
+Relevant sources include:
+- lucky_list_rio
+- o_que_fazer_rio
+- restaurantes
+- stay_hotels
+- stay_neighborhoods
+- any Rio itinerary context already stored
+
+Use available metadata when relevant:
+- meu_olhar
+- vibe
+- tags / tags_ia
+- momento_ideal
+- perfil_ideal / perfil_publico / better_for / best_for
+- segurança_mulher_sozinha
+- nivel_esforco
+- com_criancas
+- walkable / gastronomy / nightlife / scenery
+
+Rules:
+- do NOT invent places
+- do NOT answer outside Supabase
+- if Supabase does not contain enough information, say so naturally
+- do NOT fall back to generic AI answers
+
+--------------------------------------------------
+3. RIO-FIRST MVP RULE
+--------------------------------------------------
+
+For this MVP, Lucky should behave as a Rio concierge.
+
+If the question is about Rio:
+- answer normally using Rio Supabase data
+
+If the question is about another unsupported destination:
+- respond naturally that this destination is not available yet in the current MVP
+
+--------------------------------------------------
+4. 2 FREE QUESTIONS PER USER
+--------------------------------------------------
+
+Non-premium users get exactly 2 Lucky responses.
+
+Behavior:
+- question 1 -> answer normally
+- question 2 -> answer normally
+- question 3 -> do NOT provide the full answer
+
+Instead:
+- trigger premium gating
+- show CTA to continue with subscription
+
+Use access_levels as the source of truth.
+
+Premium active when:
+- plan_type indicates premium or vip
+- and access_until is still valid
+- or vip access is explicitly granted in the existing app logic
+
+Do NOT use purchases as the access truth.
+Do NOT rely on subscriptions alone.
+
+--------------------------------------------------
+5. PERSIST QUESTION COUNT
+--------------------------------------------------
+
+Store Lucky usage per authenticated user.
+
+Requirements:
+- persist question count by user
+- do not reset on refresh
+- use existing table if available, or create a minimal usage table if needed
+- no overbuilt analytics
+
+--------------------------------------------------
+6. LOG THE REAL FAILURE
+--------------------------------------------------
+
+Add temporary debug logging for each Lucky request:
+
+- authenticated user id
+- user question
+- Supabase tables queried
+- number of rows found
+- whether answer grounding succeeded
+- whether premium gate triggered
+- actual backend error if any
+
+Do NOT hide errors behind the same generic message without logging the root cause.
+
+--------------------------------------------------
+7. RESPONSE STYLE
+--------------------------------------------------
+
+Lucky must sound:
+- natural
+- concise
+- premium
+- calm
+- editorial
+
+Not like:
+- a generic chatbot
+- a robotic FAQ
+- a generic LLM
+
+--------------------------------------------------
+8. REQUIRED CONFIRMATION
+--------------------------------------------------
+
+After fixing, confirm ONLY:
+
+1. which Supabase tables Lucky is querying
+2. what the real failure cause was
+3. how answer grounding now works
+4. how the 2-question limit is stored and enforced
+5. how access_levels is checked
+6. what happens exactly on the 3rd question
+7. confirmation that Lucky no longer returns the generic error in normal cases

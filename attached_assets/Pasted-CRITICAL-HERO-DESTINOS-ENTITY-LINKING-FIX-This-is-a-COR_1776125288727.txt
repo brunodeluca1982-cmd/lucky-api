@@ -1,0 +1,138 @@
+CRITICAL: HERO + DESTINOS + ENTITY LINKING FIX
+
+This is a CORE DATA CONSISTENCY FIX.
+
+---
+
+PART 1 — HERO MUST FORCE REQUIRED ITEMS
+
+After fetching Hero data:
+
+You MUST manually inject:
+
+1. Rio de Janeiro (from destinos)
+2. Carolina Dieckmann (from friend_guides)
+
+DO NOT depend on Supabase returning them.
+
+---
+
+IMPLEMENT:
+
+IF Rio not present:
+→ fetch destinos WHERE nome = "Rio de Janeiro"
+→ inject as FIRST item
+
+IF Carolina not present:
+→ fetch friend_guides WHERE slug = "carolina-dieckmann"
+→ inject as SECOND item
+
+---
+
+ORDER MUST BE:
+
+1. Rio de Janeiro
+2. Carolina Dieckmann
+3. Remaining items (restaurant, experience, lucky)
+
+---
+
+PART 2 — HERO IMAGE SOURCE
+
+Rio card MUST use:
+
+destinos.hero_image_url (Cloudinary)
+
+Carolina card MUST use:
+
+friend_guides.photo_url
+
+DO NOT override images
+DO NOT use fallback if image exists
+
+---
+
+PART 3 — ENTITY CONSISTENCY (CRITICAL)
+
+Each entity MUST be identical across:
+
+- Hero
+- Home highlights
+- Entity page
+- Navigation
+
+Meaning:
+
+SAME id
+SAME source_table
+SAME photo_url
+
+NO duplication
+NO remapping
+NO fake objects
+
+---
+
+PART 4 — DESTINOS IMAGE FIX (BLACK CARDS)
+
+Destinos MUST follow:
+
+1. destinos.hero_image_url
+2. place_photos (by canonical match)
+3. Google Places (Edge Function only)
+4. fallback image (last resort)
+
+NEVER allow empty image
+
+---
+
+PART 5 — IMAGE PIPELINE (DO NOT BREAK)
+
+Allowed:
+
+- Supabase photo_url
+- place_photos cache
+- Google (ONLY via Edge Function)
+- fallback image
+
+FORBIDDEN:
+
+- blocking Google images
+- frontend fetching Google
+- returning null without fallback
+
+---
+
+PART 6 — NAVIGATION LINKING
+
+Hero items MUST navigate to SAME entity used elsewhere:
+
+Rio → destination page
+Carolina → guide page
+Others → correct entity page
+
+NO duplicate routes
+NO fake screens
+
+---
+
+PART 7 — DEBUG LOG
+
+Log:
+
+[HERO FIX]
+rio_injected: true/false
+carolina_injected: true/false
+
+[DESTINOS IMAGE]
+source: hero | cache | google | fallback
+
+---
+
+EXPECTED RESULT:
+
+- Rio ALWAYS visible in Hero
+- Carolina ALWAYS visible in Hero
+- Destinos NEVER black
+- Same entity reused everywhere
+- Images consistent across app

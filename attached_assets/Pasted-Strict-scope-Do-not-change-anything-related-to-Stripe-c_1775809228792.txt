@@ -1,0 +1,63 @@
+Strict scope. Do not change anything related to Stripe, checkout, billing, pricing, webhooks, auth, deploy, secrets, env vars, maps, or any flow outside this task. Stripe is frozen and must remain untouched.
+
+Do not create any new tables, views, or Supabase schema.
+Do not redesign the data model.
+Use only existing Supabase data already present in this project.
+
+Goal:
+Replace hardcoded local Rio decorative background pools with Supabase-driven image media only (Phase 1), in a reversible and minimal way.
+
+Supabase source (confirmed structure):
+Use the existing hero media dataset already stored in Supabase with:
+- video_url
+- thumbnail_url
+- is_active
+- sort_order
+- destination_slug
+
+For this phase:
+- DO NOT use video_url yet
+- ONLY use thumbnail_url as image source
+- filter: is_active = true
+- filter: destination_slug = "rio"
+- order by sort_order ascending
+
+Rules:
+- Maps must never be used as decorative backgrounds.
+- Do not use map or aerial-map assets.
+- Do not hardcode new media.
+- Keep local fallback only if Supabase returns empty.
+- No refactor, no architecture changes, no opportunistic improvements.
+
+Allowed files only:
+- artifacts/mobile/app/(tabs)/index.tsx
+- artifacts/mobile/app/(tabs)/perfil.tsx
+- artifacts/mobile/app/(tabs)/lucky.tsx
+- artifacts/mobile/app/(tabs)/destinos.tsx
+- artifacts/mobile/app/(tabs)/roteiro/index.tsx
+
+Hook:
+You may create ONE minimal hook (useHeroPool) ONLY if necessary.
+It must:
+- query Supabase
+- return ImageSourcePropType[] using { uri: thumbnail_url }
+- fallback to existing local images if empty
+- stay extremely small and simple
+
+Do NOT:
+- use o_que_fazer_rio.photo_url
+- create new media abstractions
+- modify RotatingBackground in this phase
+- touch any other file
+
+Process:
+1. Show exactly which files you will edit
+2. Show the exact Supabase query you will implement
+3. Confirm if hook is needed and why
+4. Stop and wait for approval
+
+Success criteria:
+- Hardcoded pools removed
+- App loads hero images from Supabase (thumbnail_url)
+- Fully reversible via database only
+- Zero impact on Stripe, checkout, auth, deploy, maps

@@ -1,0 +1,70 @@
+Refine and standardize the destination home screen UI.
+
+Use the current screen as the base.
+Do NOT redesign the product.
+Do NOT change the visual language.
+Only improve hierarchy, consistency, spacing, and layout balance.
+
+Goals:
+- Standardize all main cards/buttons
+- Move the destination title area slightly higher
+- Try to fit all main actions on the first screen without scrolling
+- Keep the layout elegant, breathable, and premium
+- Avoid making the screen feel cramped
+
+Required changes:
+
+1. Destination title block
+- Move the destination heading ("Rio de Janeiro" / "Brasil") higher on the screen, closer to the ideal top safe area for mobile apps
+- Keep enough breathing room below the back button and top chrome
+- Preserve the premium editorial feeling
+
+2. Vertical layout optimization
+- Rebalance the spacing so that the main destination actions fit better within the first screen
+- Reduce unnecessary vertical gaps slightly
+- Do not compress the layout too much
+- The screen should feel efficient, not crowded
+
+3. Standardize all cards/buttons
+Apply one consistent system for all destination action cards:
+- same width
+- same horizontal padding
+- same corner radius
+- same border opacity
+- same internal vertical alignment
+- same icon position
+- same text alignment
+- same visual weight
+
+Cards to standardize:
+- O essencial do Rio
+- Agora no Rio
+- Onde ficar
+- Onde comer
+- O que fazer
+- Lucky List
+- Como chegar
+
+4. Hierarchy rules
+- "O essencial do Rio" remains the primary entry point
+- "Agora no Rio" remains the highlighted contextual suggestion
+- The other cards should feel secondary but visually consistent
+- Do not let any card feel misaligned or visually off-system
+
+5. Typography alignment
+- Make sure all titles inside the cards are aligned consistently
+- Make sure labels like "COMECE POR AQUI" and "AGORA NO RIO" follow the same spacing logic
+- Keep the current style, just make it cleaner and more systematic
+
+6. Screen fit
+- If possible, make all the main cards visible on the first screen without scrolling
+- If that is not possible without harming readability, prioritize keeping the layout elegant and slightly compact rather than forcing everything too tightly
+
+7. Do NOT change:
+- navigation logic
+- content structure
+- current design language
+- premium glassmorphism style
+
+Goal:
+Make the destination home feel polished, balanced, and systematized, while keeping the current concept intact.

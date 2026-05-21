@@ -1,0 +1,108 @@
+Quero implementar a geração de roteiro do guide da Carolina Dieckmann usando Gemini + Supabase.
+
+OBJETIVO:
+Criar uma função real de produto que:
+1. Busca no Supabase os dados do guide da Carolina no Rio
+2. Usa Gemini para organizar esses dados em um roteiro estruturado
+3. Salva o resultado na tabela `public.friend_guide_itinerary_items`
+
+IMPORTANTE:
+- Não inventar lugares
+- Não inventar restaurantes
+- Não inventar hotéis
+- Não inventar experiências
+- Usar exclusivamente dados reais do Supabase
+- Não alterar schema agora
+- Não criar nova tabela
+- Trabalhar com as tabelas que já existem
+
+TABELAS DISPONÍVEIS:
+- public.friends
+- public.friend_guides
+- public.friend_guide_places
+- public.friend_guide_itinerary_items
+- public.places_canonical
+
+GUIDE A USAR:
+- slug: rio-carol-dieckmann
+
+LÓGICA DE NEGÓCIO:
+1. Buscar o `friend_guide` pelo slug `rio-carol-dieckmann`
+2. Buscar todos os `friend_guide_places` desse guide
+3. Separar os itens por categoria:
+   - hotel
+   - restaurante / bar
+   - outros tipos
+4. Priorizar:
+   - `is_highlight = true`
+   - `ordem`
+   - `curation_dimension`
+   - `bairro`
+5. Enviar para Gemini um payload estruturado
+6. Pedir para Gemini devolver JSON puro, sem texto extra
+7. O JSON deve conter:
+   - 3 dias
+   - area_focus por dia
+   - morning
+   - lunch
+   - afternoon
+   - dinner
+   - night
+   - cada item referenciando `friend_guide_places.id`
+8. Salvar esse JSON estruturado em `public.friend_guide_itinerary_items`
+
+REGRAS DO ROTEIRO:
+- não repetir o mesmo lugar em dias diferentes
+- usar os hotéis como sugestão geral, não necessariamente repetidos em todos os dias
+- agrupar por proximidade de bairro quando fizer sentido
+- manhã deve privilegiar lugares leves / passeio / praia / bairro
+- almoço deve privilegiar restaurantes
+- tarde deve privilegiar passeio, bairro ou experiência
+- jantar/noite deve privilegiar restaurantes, bares ou lugares mais especiais
+- se não houver dado suficiente para uma faixa do dia, deixar vazio
+- não preencher com ficção
+
+FORMATO DE SAÍDA DO GEMINI:
+JSON puro, no formato:
+
+{
+  "guide_slug": "rio-carol-dieckmann",
+  "days": [
+    {
+      "day_number": 1,
+      "area_focus": "Ipanema",
+      "morning": [
+        { "place_id": "uuid", "reason": "..." }
+      ],
+      "lunch": [
+        { "place_id": "uuid", "reason": "..." }
+      ],
+      "afternoon": [],
+      "dinner": [],
+      "night": []
+    }
+  ]
+}
+
+SALVAMENTO EM `public.friend_guide_itinerary_items`:
+- `guide_id`
+- `place_id`
+- `day_number`
+- `period`
+- `item_order`
+- `note` = usar o campo `reason` retornado pela IA
+- `title_override` = null por enquanto
+
+IMPLEMENTAÇÃO TÉCNICA:
+- criar uma edge function ou função server-side apropriada para o stack atual do projeto
+- usar `GEMINI_API_KEY` já existente nos secrets
+- usar `SUPABASE_SERVICE_ROLE_KEY` no backend para leitura/escrita segura
+- não expor secrets no client
+- criar tratamento de erro
+- criar logs claros
+- se já existir itinerário para esse guide, apagar os itens antigos antes de salvar os novos
+- no final, me mostrar:
+  - arquivos criados
+  - arquivos alterados
+  - endpoint/função criada
+  - como executar a geração da Carolina

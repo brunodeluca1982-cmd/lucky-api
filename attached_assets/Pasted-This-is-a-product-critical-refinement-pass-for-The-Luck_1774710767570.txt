@@ -1,0 +1,224 @@
+This is a product-critical refinement pass for The Lucky Trip.
+
+Do NOT redesign the app.
+Do NOT change visual identity.
+Do NOT create new flows unless necessary.
+Keep the current structure and improve functionality, intelligence, and UX precision.
+
+The goal is to make the app feel intuitive, premium, reliable, and context-aware.
+
+==================================================
+1. GLOBAL PRODUCT RULE: NEXT BEST STEP
+==================================================
+
+This is now a core UX rule for the entire app:
+
+The app must always guide the user to the next logical valid step automatically whenever possible.
+
+Principles:
+- reduce taps
+- reduce cognitive load
+- never leave the user stuck after completing an obvious step
+- pre-open the next relevant UI state
+- make the flow feel assisted, intuitive, and continuous
+
+Example:
+When the user selects a departure date, the UI must immediately:
+- switch focus to return date
+- advance the calendar to the next relevant month if needed
+- make it visually clear that the user is now choosing the return date
+
+This principle should be applied across the app wherever the next best step is obvious.
+
+==================================================
+2. TRIP CREATION CALENDAR FIX
+==================================================
+
+Current issue:
+When the user selects the departure date, the interface does not naturally move to the next step.
+
+Expected behavior:
+- User selects departure date (example: March 31)
+- Immediately switch the active selection to return date
+- Automatically move calendar view to the next month (example: April)
+- Keep the departure date visible as reference
+- Make the transition feel automatic and intuitive
+
+This should be production-safe and consistent with the new global Next Best Step rule.
+
+==================================================
+3. ITINERARY INTELLIGENCE FIX
+==================================================
+
+Current issue:
+The itinerary behaves like a flat list of nice places instead of a realistic travel day.
+Example: the same night can show 2 dinner restaurants.
+
+This must be fixed WITHOUT redesigning the UI.
+
+Implement a lightweight post-processing composition layer AFTER candidate retrieval.
+
+Every day must be organized into these logical slots:
+- morning
+- lunch
+- afternoon
+- dinner
+- late_night (optional)
+
+Slot rules:
+- morning: 1 activity only
+- lunch: 1 restaurant only
+- afternoon: 1 activity only
+- dinner: 1 restaurant only
+- late_night: 1 bar / nightlife item optional
+
+Never allow:
+- 2 restaurants in dinner/night
+- 2 restaurants in lunch
+- 2 main activities in the same slot
+
+Expected behavior:
+Correct:
+- Dinner: Oro
+- Late night: Bar dos Descasados
+
+Wrong:
+- Oro
+- Gero
+
+Important:
+- Do not change Supabase schema for this fix
+- Do not redesign the interface
+- Just fix itinerary intelligence with the simplest safe composition layer
+- The system must reorganize the places already returned by type/function before showing the itinerary
+
+==================================================
+4. "WHAT INSPIRES YOU" VISUAL QUALITY FIX
+==================================================
+
+Current issue:
+The “What inspires you” categories are visually weak and not inspiring enough.
+
+Categories affected:
+- nature
+- gastronomy
+- culture
+- adventure
+- relaxation
+- party
+
+Expected result:
+- stronger, more desirable, more premium images
+- each category must feel visually specific and emotionally compelling
+- gastronomy should look like gastronomy
+- party should feel like nightlife/energy
+- culture should feel like place/history/art, not generic scenery
+- relaxation should feel calm and elevated
+- adventure should feel dynamic and active
+- nature should feel visually rich and destination-led
+
+Do not use random generic placeholders if better category-matching visuals are available.
+
+==================================================
+5. CARD IMAGE ACCURACY FIX
+==================================================
+
+This is critical.
+
+Images must correspond to the actual place, or at least to the correct immediate context.
+
+Current observed behavior:
+- Forte de Copacabana -> correct
+- Barzinho -> correct
+- Academia dos Flintstones / Arpoador -> wrong, showing generic Ipanema image
+
+This is not acceptable.
+
+Required image logic priority:
+1. exact place image
+2. if exact place image is unavailable, use real immediate geographic context
+3. never fall back to a generic “nice image” from a nearby but incorrect area if it weakens trust
+
+For example:
+For Academia dos Flintstones / Arpoador:
+acceptable fallback:
+- that exact academy
+- Arpoador
+- Arpoador rocks / beach / immediate environment
+
+not acceptable fallback:
+- generic Ipanema image that feels unrelated
+
+Please fix image resolution/fallback logic so cards feel trustworthy and geographically coherent.
+
+==================================================
+6. LEGIBILITY FIX: ESSENTIAL / COMFORT / SOPHISTICATED
+==================================================
+
+Current issue:
+These labels are working, but readability is weaker than it should be.
+
+Please improve legibility without redesign:
+- contrast
+- text weight
+- spacing
+- overlay/background treatment if needed
+
+Goal:
+Make “Essential / Comfort / Sophisticated” easy to read at first glance.
+
+==================================================
+7. EXPORT BUTTON FIX
+==================================================
+
+Current issue:
+The export button does nothing.
+The share button works, but export-to-URL is broken.
+
+Expected behavior:
+When the user clicks “Export”:
+1. show immediate loading feedback (“Generating link...”)
+2. generate a unique public URL for the trip
+3. save/reuse this URL properly
+4. return it to the frontend
+5. show the generated link and a copy action
+
+Rules:
+- if the trip already has an export URL, reuse it
+- do not generate duplicates unnecessarily
+- repeated clicks must work reliably
+- exported link must open a clean read-only version of the trip
+
+You may add the minimum backend/database support ONLY if necessary for this export feature.
+If database support is needed, implement the smallest safe solution and clearly state what was added.
+
+==================================================
+8. IMPORTANT IMPLEMENTATION RULES
+==================================================
+
+- Do not redesign UI
+- Do not move major navigation
+- Do not create a new visual system
+- Do not break existing working behavior
+- Focus on precision, intelligence, and trust
+- Preserve the premium, calm, editorial feel of The Lucky Trip
+- Only use Supabase content where relevant
+- Do not invent places or fake context
+- Prefer accurate fallback over visually pretty but misleading fallback
+
+==================================================
+9. WHAT I NEED BACK FROM YOU
+==================================================
+
+After implementing, show me clearly:
+
+1. Which files were changed
+2. Which functions were added or edited
+3. Where the itinerary slot composition now happens
+4. Where the calendar next-step automation now happens
+5. Where the export button is connected to backend logic
+6. What image fallback logic was corrected
+7. Whether anything was added to Supabase, and exactly what
+
+Do not answer only in theory.
+Show real file paths and real function names.

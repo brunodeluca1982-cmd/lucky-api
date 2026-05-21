@@ -1,0 +1,88 @@
+Fix the neighborhood detail flow for "Onde ficar".
+
+IMPORTANT:
+Do NOT redesign anything.
+Do NOT change visual style.
+Do NOT change layout structure.
+Do NOT touch other screens unless strictly necessary.
+This is a bug-fix task only.
+
+-----------------------------------
+BUG 1 — MAP FLOATING CARD NOT CLOSING
+-----------------------------------
+
+Current problem:
+When I tap a neighborhood like Barra da Tijuca, the floating map card/buttons remain visible on top of the neighborhood detail screen.
+
+This is wrong.
+
+REQUIRED FIX:
+- When user enters a neighborhood detail screen, the floating map card must be fully dismissed
+- No overlay buttons from the map should remain visible
+- The detail screen must open cleanly, with no previous UI stacked on top
+
+This likely requires fixing navigation/state cleanup before route transition.
+
+-----------------------------------
+BUG 2 — NEIGHBORHOOD HERO IMAGE MISSING
+-----------------------------------
+
+Current problem:
+The neighborhood detail screen opens without its hero image.
+
+REQUIRED FIX:
+- Every neighborhood detail screen must have a visible hero image at the top
+- Do NOT replace it with a flat dark block
+- Use the same editorial image-first pattern already established
+
+Image rule:
+1. use neighborhood image from existing data if available
+2. if missing, use fallback image logic already established
+3. never leave the hero blank
+
+-----------------------------------
+BUG 3 — HOTEL CARDS BELOW WITHOUT PHOTOS
+-----------------------------------
+
+Current problem:
+Hotels listed inside the neighborhood detail screen are showing without images.
+
+REQUIRED FIX:
+- All hotel cards in this screen must render real images
+- Reuse the same hotel image logic already used in other hotel contexts
+- Do NOT create a separate image system
+- Do NOT use blank cards
+
+Image priority rule:
+1. Supabase image if valid
+2. Google fallback if needed
+3. fallback image if neither exists
+But never leave the card without image
+
+-----------------------------------
+STRICT RULES
+-----------------------------------
+
+Do NOT:
+- redesign the screen
+- change typography
+- change spacing
+- change colors
+- change map style
+- change bottom navigation
+
+Only fix:
+1. map overlay cleanup before opening detail
+2. neighborhood hero image rendering
+3. hotel card image rendering inside neighborhood detail
+
+-----------------------------------
+OUTPUT
+-----------------------------------
+
+At the end, show exactly:
+1. which file(s) were changed
+2. how the floating map card state is now cleared before navigation
+3. where the neighborhood hero image now comes from
+4. where the hotel card image source now comes from
+5. confirmation that no overlay remains on top of the detail screen

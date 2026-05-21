@@ -1,0 +1,197 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Fix ONLY the Lucky premium gating behavior and response flow.
+
+Do NOT redesign the Lucky screen.
+Do NOT change navigation outside this flow.
+Do NOT modify unrelated screens.
+Do NOT touch itinerary screens.
+Do NOT change map behavior.
+Do NOT create a generic chatbot.
+
+GOAL:
+Make Lucky follow the product logic defined in Bíblia 2.4:
+- curated, editorial, discreet AI behavior
+- user experiences value first
+- premium only after the value is clear
+- no aggressive interruption
+
+==================================================
+1. PRODUCT RULE FROM BÍBLIA 2.4
+==================================================
+
+Lucky must behave like an editorial concierge, not a generic chatbot.
+
+It must:
+- answer using curated Supabase knowledge only
+- feel discreet
+- feel helpful
+- not impose decisions
+- not mix answer + paywall in the same moment
+
+Premium logic must follow this principle:
+- first the user experiences value
+- then the user may choose to deepen usage
+
+==================================================
+2. FREE VS PREMIUM LUCKY FLOW
+==================================================
+
+For non-premium users:
+
+QUESTION 1
+- answer normally
+- no premium CTA
+- no upsell card
+- no interruption
+
+QUESTION 2
+- answer normally
+- no premium paywall
+- no heavy CTA
+- optionally allow ONE subtle non-blocking editorial line at the end, such as:
+  "Posso refinar isso ainda mais para você."
+- this line must NOT include a button
+- this line must NOT interrupt the answer
+
+QUESTION 3
+- do NOT provide the full answer
+- trigger the premium conversion screen/card
+- this is the first moment where the subscription CTA appears
+
+Important:
+The premium conversion UI must appear ONLY on question 3 for non-premium users.
+
+==================================================
+3. REMOVE EARLY PREMIUM INTERRUPTION
+==================================================
+
+Current problem:
+Lucky is already showing premium subscription pressure too early, attached to the second answer.
+
+Fix:
+- remove any premium card, premium button, or upgrade interruption from question 1 and question 2
+- do not show "Assinar para continuar" before question 3
+- do not mix useful answer and paywall in the same response card
+
+==================================================
+4. ACCESS LOGIC
+==================================================
+
+Use access_levels as the product source of truth.
+
+Premium is active when:
+- plan_type indicates premium or vip
+- and access_until is valid / in the future
+- or vip access is explicitly granted in the current app logic
+
+If premium is active:
+- Lucky continues normally
+- no 2-question limit
+- no premium gate
+
+==================================================
+5. USAGE COUNT
+==================================================
+
+Persist Lucky usage per authenticated user.
+
+Requirements:
+- question count must be stored by user
+- refresh must not reset the count
+- if needed, use an existing usage table or create a minimal dedicated Lucky usage table
+- only count actual user questions sent successfully
+
+Do NOT count:
+- failed submissions
+- blank input
+- backend errors
+
+==================================================
+6. LUCKY RESPONSE BEHAVIOR
+==================================================
+
+Lucky must answer using only curated Supabase data.
+
+Relevant sources may include:
+- lucky_list_rio
+- o_que_fazer_rio
+- restaurantes
+- stay_hotels
+- stay_neighborhoods
+- other Rio travel context already used in the app
+
+Use metadata when relevant:
+- meu_olhar
+- vibe
+- tags / tags_ia
+- momento_ideal
+- perfil_ideal / perfil_publico / better_for / best_for
+- segurança_mulher_sozinha
+- nivel_esforco
+- com_criancas
+- walkable / gastronomy / nightlife / scenery
+
+Rules:
+- do NOT invent places
+- do NOT answer outside Supabase
+- if data is insufficient, say so naturally
+- do NOT behave like a generic AI assistant
+
+==================================================
+7. PREMIUM CONVERSION MOMENT
+==================================================
+
+On question 3 for non-premium users:
+- do not answer fully
+- show a dedicated premium conversion card/screen
+
+Tone:
+- calm
+- premium
+- editorial
+- helpful
+- not aggressive
+- not urgent/salesy
+
+Suggested structure:
+Title:
+"Continue com o Lucky"
+
+Body:
+"Desbloqueie respostas ilimitadas e mais personalização para organizar melhor sua viagem."
+
+CTA button:
+"Assinar para continuar"
+
+Optional small note:
+"Cancele quando quiser"
+
+Important:
+This conversion moment must feel like a natural continuation of value, not a punishment.
+
+==================================================
+8. DO NOT CHANGE ANYTHING ELSE
+==================================================
+
+Do NOT:
+- redesign the Lucky screen
+- change Home
+- change itinerary UI
+- change map components
+- modify unrelated premium logic
+- touch other app modules
+
+==================================================
+9. REQUIRED CONFIRMATION
+==================================================
+
+After implementing, confirm ONLY:
+
+1. what changed in the Lucky free/premium flow
+2. whether question 1 and question 2 are now fully answer-only
+3. whether the premium CTA appears only on question 3
+4. how question count is stored and enforced
+5. how access_levels is checked
+6. whether Lucky still uses only curated Supabase data
+7. whether answer + paywall are now fully separated

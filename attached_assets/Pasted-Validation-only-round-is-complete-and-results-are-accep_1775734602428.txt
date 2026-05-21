@@ -1,0 +1,64 @@
+Validation-only round is complete and results are accepted.
+
+Now add a final diagnostic layer focused on SLOT INTELLIGENCE and multi-item compatibility within the same period.
+
+CRITICAL RULES
+
+1. Do NOT implement fixes yet
+2. Do NOT change any engine logic in this step
+3. This is analysis only
+4. Do NOT treat slot conflicts as simple failures
+5. Evaluate whether conflicts could be resolved intelligently instead of by displacement
+
+OBJECTIVE
+
+Understand how the engine should handle multiple items that belong to the SAME period (especially "noite").
+
+CONTEXT
+
+In Test 3:
+- Teatro → correctly placed in noite
+- Samba → also classified as noite
+- Engine moved Samba to tarde due to slot constraint
+
+However, in real usage:
+- both experiences could be done in the same night
+- or sequenced (e.g. dinner → samba → theater)
+- or combined geographically
+
+TASK
+
+Analyze the current slot allocation behavior and answer:
+
+1. When multiple items belong to the same period (especially noite):
+   - why does the engine restrict to a single item?
+   - where exactly is this constraint enforced?
+
+2. For these conflicts, evaluate:
+   - could both items realistically coexist in the same period?
+   - could they be sequenced based on duration?
+   - could proximity allow grouping them?
+
+3. Classify each conflict scenario:
+   - true conflict (cannot coexist)
+   - soft conflict (can be sequenced)
+   - composable experience (should be grouped intentionally)
+
+4. Propose (WITHOUT IMPLEMENTING):
+   - minimal safe evolution of the engine to support:
+     - multiple items per period when valid
+     - sequencing within the same period
+     - smarter slot capacity based on duration, not fixed limits
+
+5. Confirm explicitly:
+   - this change would not break Steps A–D
+   - this would not interfere with Gemini constraints
+   - this would remain deterministic
+
+OUTPUT FORMAT
+
+1. current slot constraint behavior
+2. why it is too rigid
+3. classification of conflicts (hard vs soft vs composable)
+4. proposed evolution (conceptual only)
+5. risks and safeguards

@@ -1,0 +1,212 @@
+We are finalizing the itinerary engine to behave like a real concierge.
+
+The system is already:
+- deduplicated
+- geographically clustered
+- preference-aware
+
+Now we must enforce STRUCTURE, ROLE, LOGIC, USER INTENTION, and REAL-WORLD BEHAVIOR.
+
+---
+
+1. HOTEL VISIBILITY (MANDATORY)
+
+If a hotel is provided in savedItems:
+
+- It MUST appear in the itinerary
+- It must NOT behave like an activity
+
+Rules:
+- Show hotel at the TOP of each day (outside periods)
+  OR
+- Attach it to "manhã" as contextual info
+
+NEVER:
+- remove hotel
+- treat hotel as experience
+- include hotel inside experience flow
+
+---
+
+2. RESTAURANT LOGIC (STRICT)
+
+Restaurants must follow:
+
+- manhã → ONLY breakfast-type
+- almoço → ONLY food
+- tarde → NEVER restaurant
+- noite → food OR nightlife
+
+If a restaurant appears in the wrong period:
+→ MOVE it to the correct period
+→ If conflict → KEEP highest score, REMOVE others
+
+---
+
+3. EXPERIENCE TYPE (REQUIRED)
+
+Each place must have:
+
+experience_type:
+
+- beach / park → "relax"
+- sunset / viewpoint → "scenic"
+- restaurant → "food"
+- bar → "nightlife"
+- museum / cultural → "culture"
+- activity / trail / sports → "active"
+
+---
+
+4. HARD RULES — NO EXCEPTIONS
+
+A. NO DUPLICATE EXPERIENCE FLOW
+
+- Cannot have 2 consecutive items with same experience_type
+- If happens:
+   → try swap within same period
+   → if impossible → REMOVE lower score
+   → NEVER remove the only food item in that period
+
+---
+
+B. BEACH CONTROL (CRITICAL)
+
+- Max 1 "relax" per period
+- Max 2 "relax" per day
+
+If exceeded:
+→ REMOVE lowest score
+
+---
+
+C. PERIOD ENFORCEMENT
+
+- manhã → active OR culture
+- almoço → food ONLY
+- tarde → relax OR scenic ONLY
+- noite → food OR nightlife ONLY
+
+If mismatch:
+→ MOVE item
+→ if impossible → REMOVE
+
+---
+
+5. USER PREFERENCES MUST BE HARD CONSTRAINTS
+
+Preferences are NOT just scoring — they must shape the day.
+
+If user selects:
+
+- gastronomy → each day MUST include at least 2 food-related experiences
+- nightlife → at least 1 strong night experience per day
+- nature → at least 1 outdoor/scenic experience per day
+- adventure → prioritize active experiences in the morning
+
+Preferences must influence:
+- selection
+- clustering
+- final day composition
+
+NOT just ranking.
+
+---
+
+6. GEOGRAPHIC INTELLIGENCE (UPGRADE)
+
+- Prefer items with close proximity (lat/lng when available)
+- Compute distance between places when possible
+- Penalize long jumps inside the same period
+
+BUT:
+
+Priority order MUST be:
+
+1. Narrative quality
+2. Preference satisfaction
+3. Geographic optimization
+
+Distance must NOT break the experience flow.
+
+---
+
+7. DAY NARRATIVE (CONCIERGE LOGIC)
+
+Each day must feel intentional and human-curated.
+
+Structure:
+
+START (morning)
+- energizing
+- active OR cultural
+- NOT relax-heavy
+
+MIDDLE (afternoon)
+- varied
+- no repetition of experience_type
+- no stacking similar experiences
+
+END (night) → STRONGEST MOMENT
+
+Priority for final experience:
+
+1. scenic (sunset/view)
+2. great food experience
+3. nightlife
+
+If final item is weak:
+→ SWAP with a stronger one from the same day
+
+---
+
+8. REMOVE WEAK STRUCTURE
+
+If a day looks like:
+
+- activity → food → food
+OR
+- relax → relax → relax
+
+→ REMOVE lowest score item
+
+Each day must feel balanced.
+
+---
+
+9. FLOW CORRECTION RULE
+
+If the day sequence feels like a list instead of a journey:
+
+→ Reorder or remove items until it feels like:
+
+"Comecei bem → vivi coisas diferentes → terminei com algo especial"
+
+---
+
+10. DO NOT:
+
+- add fake data
+- change APIs
+- change response structure
+- invent new places
+
+ONLY:
+
+- reorder
+- move
+- remove when necessary
+
+---
+
+FINAL GOAL:
+
+Each day must feel like a premium concierge recommendation.
+
+NOT:
+
+"a list of places"
+
+BUT:
+
+"a curated, intentional experience"

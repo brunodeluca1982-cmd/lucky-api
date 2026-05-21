@@ -1,0 +1,113 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Fix the recurring dark/blur visual issue permanently.
+
+This is NOT a visual tweak.
+This is a system-level consistency fix.
+
+--------------------------------------------------
+1. REMOVE DARK MODE AT ROOT LEVEL
+--------------------------------------------------
+
+The app must NOT use dark mode anywhere.
+
+Check and fix:
+
+- global theme configuration
+- any ThemeProvider or appearance settings
+- system color scheme detection (force light mode)
+- remove any default dark fallback
+
+Force:
+→ light theme only
+
+--------------------------------------------------
+2. IDENTIFY SOURCE OF DARK BLUR
+--------------------------------------------------
+
+The dark blur is reappearing after reload.
+
+Find ALL sources:
+
+- background overlays
+- gradients
+- hero image overlays
+- modal backgrounds
+- screen containers
+
+Remove any:
+- dark gradients
+- black-heavy overlays
+- opacity layers causing dark feel
+
+Replace with:
+- neutral light overlays (black with very low opacity ONLY if needed)
+- or no overlay at all
+
+--------------------------------------------------
+3. REMOVE AUTO-APPLIED STYLES
+--------------------------------------------------
+
+Check if any component is:
+
+- injecting dark background automatically
+- applying fallback styles
+- reapplying styles on mount or reload
+
+Fix:
+- eliminate any automatic dark styling
+
+--------------------------------------------------
+4. HERO BACKGROUND RULE
+--------------------------------------------------
+
+Hero images must:
+
+- be visible
+- not covered by heavy dark gradients
+- use only subtle readability overlays
+
+NO:
+- dark brown
+- near-black opacity
+- heavy blur
+
+--------------------------------------------------
+5. GLOBAL VISUAL CONSISTENCY
+--------------------------------------------------
+
+Ensure ALL screens follow:
+
+- light, calm, flat, premium look
+- no dark mode feeling
+- no heavy contrast
+
+Screens to verify:
+- home
+- viagem
+- roteiro
+- lucky
+- perfil
+
+--------------------------------------------------
+6. DO NOT CHANGE ANYTHING ELSE
+--------------------------------------------------
+
+Do NOT:
+- redesign layout
+- change spacing
+- modify flows
+- touch working components
+
+Only remove the dark visual system.
+
+--------------------------------------------------
+CONFIRMATION REQUIRED
+--------------------------------------------------
+
+After fixing, confirm:
+
+1. where dark mode was disabled (root level)
+2. which components were forcing dark overlays
+3. how the blur/gradient was removed
+4. confirmation that it no longer reappears after reload

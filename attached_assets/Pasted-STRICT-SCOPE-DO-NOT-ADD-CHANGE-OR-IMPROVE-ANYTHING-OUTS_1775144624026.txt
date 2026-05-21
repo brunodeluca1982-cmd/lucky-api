@@ -1,0 +1,154 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Fix ONLY the Lucky assistant behavior and access gating.
+
+Do NOT redesign UI.
+Do NOT change navigation.
+Do NOT modify unrelated app flows.
+Do NOT create a generic chatbot.
+Do NOT change working itinerary screens.
+
+GOAL:
+Lucky must behave as a Rio-first concierge assistant powered only by Supabase data, with 2 free user questions and premium gating on the 3rd.
+
+--------------------------------------------------
+1. LUCKY MUST USE ONLY SUPABASE DATA
+--------------------------------------------------
+
+Lucky must answer using ONLY the app’s real curated data from Supabase.
+
+Relevant sources include:
+- lucky_list_rio
+- o_que_fazer_rio
+- restaurantes
+- stay_hotels
+- stay_neighborhoods
+- any existing Rio travel context already used in the app
+
+Use metadata when available:
+- meu_olhar
+- vibe
+- tags / tags_ia
+- momento_ideal
+- perfil_ideal / perfil_publico / better_for / best_for
+- segurança_mulher_sozinha
+- nivel_esforco
+- com_criancas
+- walkable / gastronomy / nightlife / scenery
+
+Rules:
+- do NOT invent places
+- do NOT suggest things outside Supabase
+- if data is missing, say so naturally
+- do NOT answer like a generic AI assistant
+
+--------------------------------------------------
+2. LUCKY MUST BE RIO-FIRST
+--------------------------------------------------
+
+For this MVP, Lucky should behave as a Rio concierge.
+
+If the question is clearly about Rio:
+- answer normally using Rio data
+
+If the question is about another destination not yet supported:
+- do NOT invent
+- respond naturally that this destination is not available yet in the current MVP
+
+--------------------------------------------------
+3. 2 FREE QUESTIONS PER USER
+--------------------------------------------------
+
+Non-premium users get exactly 2 Lucky responses.
+
+Behavior:
+- first user question -> answer normally
+- second user question -> answer normally
+- third user question -> do NOT provide the full answer
+
+Instead:
+- show premium gating
+- invite user to continue with Lucky through subscription
+
+Example CTA tone:
+- Continue com o Lucky
+- Desbloqueie respostas ilimitadas e mais personalização
+- Assine para continuar refinando sua viagem
+
+Do NOT half-answer awkwardly on the third question.
+
+--------------------------------------------------
+4. PREMIUM CHECK
+--------------------------------------------------
+
+Use access_levels as the product permission source of truth.
+
+Premium is active when:
+- plan_type indicates premium or vip
+- and access_until is valid / in the future
+- or vip access is explicitly granted according to the current app logic
+
+Do NOT use purchases as the access truth.
+Do NOT rely on subscriptions alone for gating.
+
+--------------------------------------------------
+5. COUNT QUESTIONS PER USER
+--------------------------------------------------
+
+Persist Lucky usage by user.
+
+Requirements:
+- count questions per authenticated user
+- if needed, create or use a lightweight usage table for Lucky
+- store enough information to know how many Lucky questions the user has already consumed
+- avoid resetting the count accidentally on refresh
+
+For MVP:
+- only the Lucky question count matters
+- do NOT overbuild analytics
+
+--------------------------------------------------
+6. RESPONSE STYLE
+--------------------------------------------------
+
+Lucky must sound:
+- natural
+- concise
+- premium
+- helpful
+- editorial
+- calm
+
+It must feel like:
+- a travel concierge
+- not a generic chatbot
+- not a robotic FAQ engine
+
+--------------------------------------------------
+7. KEEP THE UI SIMPLE
+--------------------------------------------------
+
+Do NOT redesign the Lucky screen.
+
+Keep:
+- current visual direction
+- suggested prompts
+- current app style
+
+Only fix:
+- real Supabase-grounded answers
+- 2-question free limit
+- premium gating on question 3
+
+--------------------------------------------------
+8. REQUIRED CONFIRMATION
+--------------------------------------------------
+
+After implementing, confirm ONLY:
+
+1. which Supabase tables Lucky is querying
+2. how the answer grounding works
+3. how the 2-question limit is stored and enforced
+4. how access_levels is checked
+5. what happens exactly on the 3rd question
+6. confirmation that Lucky no longer behaves like a generic chatbot

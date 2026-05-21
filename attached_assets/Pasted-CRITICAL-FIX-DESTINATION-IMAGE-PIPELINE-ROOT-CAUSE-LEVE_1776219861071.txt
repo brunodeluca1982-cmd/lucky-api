@@ -1,0 +1,156 @@
+CRITICAL: FIX DESTINATION IMAGE PIPELINE (ROOT-CAUSE LEVEL)
+
+-----------------------------------
+
+CONTEXT
+
+We are using Supabase view:
+
+v_destinos_mvp
+
+This view already provides the correct image field:
+
+hero_image_url_effective
+
+The database is CONFIRMED correct.
+
+The issue is in the frontend data consumption and rendering pipeline.
+
+-----------------------------------
+
+PROBLEM
+
+Destination cards render WITHOUT images.
+
+Root cause is NOT missing data.
+
+Root cause is:
+- Wrong field usage
+- Possible undefined access
+- Possible mismatch between fetch layer and UI layer
+- Possible destructuring issue
+
+-----------------------------------
+
+GOAL
+
+Make destination images render RELIABLY and PERMANENTLY.
+
+No fragile logic.
+No fallback ambiguity.
+No silent failures.
+
+-----------------------------------
+
+TASK (STRICT ORDER)
+
+1. FIND DATA FETCH
+
+Locate where destinations are fetched.
+
+Search for:
+
+supabase.from("v_destinos_mvp")
+
+-----------------------------------
+
+2. FORCE CORRECT SOURCE
+
+Ensure we are using:
+
+supabase.from("v_destinos_mvp")
+
+NOT "destinos"
+
+-----------------------------------
+
+3. VERIFY DATA SHAPE
+
+Immediately after fetch, ADD:
+
+console.log("DESTINOS RAW:", data);
+console.log("ERROR:", error);
+
+-----------------------------------
+
+4. NORMALIZE DATA (CRITICAL STEP)
+
+Before rendering, enforce:
+
+const normalized = (data ?? []).map((item) => ({
+  ...item,
+  image: item.hero_image_url_effective ?? null,
+}));
+
+-----------------------------------
+
+5. FIX RENDER LAYER
+
+In the card component:
+
+DO NOT access raw fields anymore.
+
+Use ONLY:
+
+const imageUrl = item.image;
+
+-----------------------------------
+
+6. SAFE IMAGE RENDER
+
+Replace ALL image usages with:
+
+<Image
+  source={imageUrl ? { uri: imageUrl } : undefined}
+/>
+
+-----------------------------------
+
+7. ADD DEBUG VISIBILITY
+
+Add:
+
+console.log("IMAGE CHECK:", item.slug, imageUrl);
+
+-----------------------------------
+
+8. REMOVE ALL LEGACY FIELDS
+
+Remove ANY usage of:
+
+- thumbnail_url
+- hero_image_url
+- mobile_hero_image_url
+
+-----------------------------------
+
+9. ENSURE RENDER IS NOT BLOCKED
+
+Check and REMOVE conditions like:
+
+if (!data) return null;
+if (!item.image) return null;
+
+-----------------------------------
+
+EXPECTED RESULT
+
+- Images render for ALL destinations
+- No blank cards
+- No dependency on fallback chains
+- Stable rendering independent of backend changes
+
+-----------------------------------
+
+STRICT RULES
+
+DO NOT:
+- Modify Supabase
+- Modify SQL
+- Modify view
+- Add new API calls
+- Add external image sources
+
+-----------------------------------
+
+THIS IS A FRONTEND DATA PIPELINE FIX ONLY

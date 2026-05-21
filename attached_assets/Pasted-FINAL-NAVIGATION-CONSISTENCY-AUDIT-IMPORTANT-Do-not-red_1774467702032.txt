@@ -1,0 +1,119 @@
+FINAL NAVIGATION + CONSISTENCY AUDIT
+
+IMPORTANT:
+Do not redesign the app.
+Do not refactor the entire architecture.
+Do not change the premium visual language.
+This is a focused audit-and-fix pass for navigation consistency and app continuity.
+
+GOAL:
+Make sure the app feels like one coherent product from screen to screen.
+
+Please audit and fix the following:
+
+==================================================
+1. BOTTOM TAB BAR CONSISTENCY
+==================================================
+
+The existing bottom tab bar must remain visible on all main navigable app screens whenever appropriate.
+
+Expected tabs:
+- Início
+- Destinos
+- Viagem
+- Lucky
+- Perfil
+
+Check and fix visibility/consistency on:
+- Home
+- Destinations list
+- Destination page
+- Viagem page
+- itinerary creation flow screens (when appropriate)
+- itinerary result screen
+- Lucky
+- Profile
+
+Do not create a second bottom nav.
+Do not redesign the current one.
+
+==================================================
+2. SCREEN-TO-SCREEN CONTINUITY
+==================================================
+
+Audit whether the app maintains context correctly across:
+- Home -> Criar roteiro
+- Viagem -> Criar roteiro com IA
+- destination -> section pages
+- itinerary result -> edit flow
+- itinerary result -> share
+- itinerary result -> map
+- destination -> saved places -> itinerary generation
+
+Fix any context loss, reset, or broken routing.
+
+==================================================
+3. BACK NAVIGATION CONSISTENCY
+==================================================
+
+Back behavior must feel predictable.
+
+Check and fix:
+- destination page -> back to previous logical screen
+- itinerary flow -> back should not break state
+- edit itinerary -> back should not reset the trip
+- map/details -> back should return correctly
+
+==================================================
+4. CLICK TARGET CONSISTENCY
+==================================================
+
+Audit all major clickable elements:
+- destination cards
+- saved place cards
+- itinerary day chips
+- itinerary items
+- map CTA
+- edit CTA
+- share CTA
+- Lucky starter prompts
+- profile actions
+
+Make sure each one opens the correct destination, detail, or flow.
+
+==================================================
+5. EMPTY / ERROR / FALLBACK STATES
+==================================================
+
+Check for weak fallback states and broken transitions:
+- empty saved places
+- no destination context
+- no hero image
+- no item thumbnail
+- route params missing
+- Supabase query failure
+
+Fix weak/broken states without redesigning the app.
+
+==================================================
+6. KEEP CURRENT VISUAL LANGUAGE
+==================================================
+
+Keep:
+- current premium visual direction
+- current bottom tab bar
+- current destination page aesthetic
+- current itinerary result aesthetic
+
+This is an audit-and-fix pass, not a redesign pass.
+
+==================================================
+7. REQUIRED OUTPUT
+==================================================
+
+After auditing and fixing, explicitly confirm:
+1. which screens now preserve the bottom tab bar
+2. which broken navigation flows were fixed
+3. which click targets were corrected
+4. which fallback/error states were improved
+5. that no redesign of the app was performed

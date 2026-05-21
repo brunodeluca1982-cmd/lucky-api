@@ -1,0 +1,66 @@
+The attached reference screenshot is much closer to the intended itinerary product behavior than the current Lucky Trip result.
+
+Use it as PRODUCT-LOGIC inspiration only, not as visual design to copy literally.
+
+CRITICAL RULES
+
+1. Do NOT implement yet
+2. Do NOT defend the current itinerary screen
+3. Do NOT focus only on visual polish
+4. Focus on itinerary product structure and behavioral logic
+5. Keep Lucky Trip identity — do not clone the reference app literally
+6. Do NOT change engine logic yet in this task
+7. This is a product-layer diagnosis and rebuild plan only
+
+OBJECTIVE
+
+The final itinerary experience must feel much closer to a real travel control center.
+
+Compared to the current Lucky Trip result, the attached reference gets several things right:
+- hotel/recommended stay clearly visible at the top
+- trip summary visible
+- day-by-day segmentation
+- coherent time blocks
+- compact and legible cards
+- travel/displacement context between items
+- total time per day
+- stronger hierarchy and clearer action flow
+
+TASK
+
+Audit the CURRENT Lucky Trip itinerary screen/result against this intended product behavior.
+
+Explain exactly:
+
+1. what the current Lucky Trip itinerary experience is still missing
+2. which parts are:
+   - engine problem
+   - mapping/data problem
+   - product-layer problem
+   - UI structure problem
+
+3. how the final itinerary product should be structured to match Lucky Trip 2.4 expectations, including:
+   - hotel as top anchor
+   - trip summary block
+   - day cards
+   - per-day time total
+   - displacement/travel context
+   - compact itinerary cards
+   - stronger action hierarchy
+   - future tabs/modes (roteiro, detalhes, ingressos, gastronomia)
+
+4. what the MINIMUM SAFE REBUILD PLAN is for the itinerary screen, in the correct order
+
+IMPORTANT
+
+Do NOT propose random beauty improvements only.
+I want the correct product architecture for the final itinerary experience.
+
+OUTPUT FORMAT
+
+1. current product-layer failures
+2. what the reference is doing better structurally
+3. what Lucky Trip final itinerary must contain
+4. exact files/components that would need to change
+5. minimal rebuild roadmap
+6. what must be fixed before visual polish

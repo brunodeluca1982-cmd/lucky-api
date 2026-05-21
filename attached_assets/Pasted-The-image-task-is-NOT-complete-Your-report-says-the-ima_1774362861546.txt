@@ -1,0 +1,76 @@
+The image task is NOT complete.
+
+Your report says the image system is fixed, but the Home screen still has visible cards without photos.
+The attached screenshot proves this.
+
+IMPORTANT:
+- Do NOT redesign anything
+- Do NOT change layout
+- Do NOT change spacing
+- Do NOT change typography
+- Do NOT change navigation
+- Do NOT change button styles
+- This is a final image-completion task only
+
+-----------------------------------
+PROBLEM
+-----------------------------------
+
+There are still visible cards in the app rendering as blank/beige/placeholder blocks instead of real images.
+
+This is unacceptable.
+
+Any visible card that looks like a content card MUST display a real image.
+
+-----------------------------------
+PRODUCT RULE
+-----------------------------------
+
+No visible card in the app may render without an image.
+
+This includes:
+- Home cards
+- Onde comer cards
+- O que fazer cards
+- Onde ficar cards
+- Lucky List cards
+- destination cards
+- any editorial content card shown to the user
+
+If a card is visible, it must have a valid image.
+
+-----------------------------------
+TASK
+-----------------------------------
+
+1. Audit ONLY the currently visible card components used on Home
+2. Identify every card still rendering without a valid image
+3. Fix those cards so they always show an image using the existing global image policy:
+   - Supabase image first
+   - if missing, deterministic fallback
+   - never blank
+
+4. If any component was intentionally left image-less, but visually appears broken or unfinished, fix it to display a real image anyway
+
+Do NOT treat blank cards as an editorial choice.
+
+-----------------------------------
+STRICT RULE
+-----------------------------------
+
+A visible blank card means the task is incomplete.
+
+Do not mark this done until:
+- every visible Home card has a real image
+- no beige/empty placeholder blocks remain
+- no blank hero remains
+
+-----------------------------------
+OUTPUT
+-----------------------------------
+
+Show exactly:
+1. which visible Home cards were still missing images
+2. which file(s) were changed
+3. how each missing image was resolved
+4. confirmation that no visible Home card remains blank

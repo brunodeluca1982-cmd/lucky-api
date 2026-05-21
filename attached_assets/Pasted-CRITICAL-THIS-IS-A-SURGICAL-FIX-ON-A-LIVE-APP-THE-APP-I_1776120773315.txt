@@ -1,0 +1,171 @@
+CRITICAL: THIS IS A SURGICAL FIX ON A LIVE APP.
+
+THE APP IS ALREADY WORKING IN PRODUCTION.
+
+DO NOT BREAK ANY EXISTING WORKING FEATURES.
+
+DO NOT REFACTOR UNRELATED FILES.
+DO NOT REWRITE HOOKS.
+DO NOT CHANGE DATA STRUCTURE.
+
+ONLY FIX WHAT IS EXPLICITLY REQUESTED BELOW.
+
+---
+
+GOAL:
+
+Fix image consistency + restore Hero + fix Destinos images
+
+WITHOUT breaking anything that already works.
+
+---
+
+PART 0 — DO NOT TOUCH (CRITICAL)
+
+DO NOT MODIFY:
+
+- generate-itinerary logic
+- API routes
+- Supabase schema
+- Stripe / auth
+- existing working hooks (unless explicitly required)
+
+---
+
+PART 1 — SINGLE SOURCE OF IMAGE (SAFE ENFORCEMENT)
+
+Each entity must use:
+
+photo_url (already coming from Supabase or pipeline)
+
+RULE:
+
+- If photo_url exists → use it
+- DO NOT override existing working images
+- DO NOT replace valid images
+
+---
+
+PART 2 — DESTINOS FIX (NON-DESTRUCTIVE)
+
+ONLY fix cases where image is:
+
+- null
+- undefined
+- empty
+- black
+
+Apply fallback:
+
+1. destinos.hero_image_url
+2. place_photos
+3. (optional) Google → ONLY if already implemented backend-side
+4. fallback static image
+
+DO NOT change working destinations.
+
+---
+
+PART 3 — HERO (RESTORE ONLY)
+
+HeroCarousel MUST:
+
+- continue using existing Supabase source (likely home_hero_items)
+- OR existing working logic
+
+DO NOT invent new source.
+
+ONLY:
+
+- fix rendering if empty
+- ensure it never breaks
+
+Fallback (ONLY if empty):
+
+- Cristo Redentor
+- Pão de Açúcar
+- Ipanema
+- Arpoador
+- Maracanã
+
+---
+
+PART 4 — HERO → BACKGROUND (RESTORE BEHAVIOR)
+
+Restore previous behavior:
+
+- Hero item controls background
+- Background uses existing Cloudinary videos
+
+DO NOT:
+
+- change video system
+- replace background logic
+- introduce new sources
+
+ONLY reconnect mapping.
+
+---
+
+PART 5 — HIGHLIGHT IMAGE CONSISTENCY (SAFE)
+
+ONLY enforce:
+
+If highlight has reference_id:
+
+→ use SAME photo_url as entity
+
+BUT:
+
+DO NOT override if already correct
+
+---
+
+PART 6 — IMAGE PIPELINE (DO NOT BREAK)
+
+Current correct pipeline:
+
+1. Supabase photo_url
+2. place_photos
+3. Google (backend only, cached)
+
+DO NOT:
+
+- block Google globally
+- move calls to frontend
+- remove existing caching logic
+
+ONLY ensure:
+
+- missing images follow fallback
+- existing images remain untouched
+
+---
+
+PART 7 — UI SAFETY
+
+If image fails:
+
+→ show placeholder
+
+NEVER render empty/black block
+
+---
+
+PART 8 — DEBUG (SAFE LOGGING)
+
+Add logs WITHOUT affecting logic:
+
+[IMAGE] source: supabase | cache | fallback  
+[HERO] items: count  
+[DESTINOS] missing_images: count  
+
+---
+
+SUCCESS CRITERIA:
+
+- NO regressions
+- NO broken screens
+- Hero visible again
+- Destinos without black images
+- Existing working features untouched

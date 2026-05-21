@@ -1,0 +1,93 @@
+Good. Block 2 is approved.
+
+Now we will move to BLOCK 3 — Fix itinerary persistence.
+
+CRITICAL EXECUTION RULES (NON-NEGOTIABLE)
+
+1. Do NOT implement yet
+2. Do NOT touch anything outside itinerary persistence
+3. Do NOT redesign the trip flow
+4. Do NOT change the wizard UX unless strictly necessary
+5. Do NOT modify map logic
+6. Do NOT refactor unrelated code
+7. Use the smallest possible schema + code delta
+8. Do NOT delete or replace existing tables
+9. Do NOT break current Share/public itinerary behavior
+10. Do NOT destroy or orphan any existing itinerary data
+
+OBJECTIVE
+
+Generated itineraries must persist correctly and be recoverable by user, without depending only on Share.
+
+CURRENT PROBLEM TO SOLVE
+
+- user_itineraries exists as the trip header
+- roteiro_itens exists as itinerary items
+- roteiro_itens is not correctly linked to user_itineraries
+- generated itineraries are not reliably recoverable later
+- current persistence is incomplete / misaligned
+
+TASK — ANALYZE BEFORE EXECUTING
+
+1. Identify the exact schema issue
+2. Identify the exact files/functions responsible for:
+   - generating itineraries
+   - persisting itineraries
+   - reading itineraries back
+   - share/public slug persistence
+3. Show the current relationship between:
+   - user_itineraries
+   - roteiro_itens
+   - roteiro_rio
+4. Explain clearly what is broken today
+5. State whether any existing data is currently at risk of being orphaned or ignored
+
+TASK — PROPOSE MINIMAL FIX
+
+6. Propose the smallest safe schema/code fix to make itinerary persistence correct
+
+Important:
+- preserve existing tables
+- do not destroy current data
+- prefer additive change
+- if a new column like user_itinerary_id is enough, prefer that
+- keep backward compatibility whenever possible
+- preserve current share/public access behavior
+
+7. If a schema change is required, show:
+- exact schema delta
+- whether a backfill/migration of existing rows is needed
+- how existing roteiro_itens rows will be handled
+- whether roteiro_rio remains untouched, deprecated, or partially reused
+
+8. Show:
+- exact files that would change
+- exact persistence flow before vs after
+- exact read/recovery flow before vs after
+
+VALIDATION
+
+9. Confirm explicitly:
+- generated itineraries will persist without Share
+- persisted itineraries can be recovered by user later
+- current Share/public itinerary flow will continue to work
+- no unrelated trip UX is changed
+- no premium logic is affected
+- no map logic is touched
+- no existing itinerary data is silently lost
+
+OUTPUT FORMAT
+
+1. Current broken state
+2. Minimal fix proposal
+3. Exact schema change
+4. Backfill / migration plan
+5. Exact file changes
+6. Risks
+7. Why this is the safest implementation
+8. What must NOT be changed
+
+FINAL RULE
+
+Do NOT implement yet.
+Wait for my approval after showing the full plan.

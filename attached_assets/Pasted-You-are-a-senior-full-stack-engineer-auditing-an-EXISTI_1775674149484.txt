@@ -1,0 +1,184 @@
+You are a senior full-stack engineer auditing an EXISTING, PARTIALLY FUNCTIONAL production app called The Lucky Trip.
+
+CRITICAL EXECUTION CONSTRAINTS (NON-NEGOTIABLE)
+
+1. DO NOT rewrite or recreate the app from scratch
+2. DO NOT replace existing architecture unless explicitly required
+3. DO NOT delete or overwrite working features
+4. DO NOT change stack, frameworks, or core dependencies
+5. DO NOT refactor large portions of code unless a bug or critical misalignment is proven
+6. Extend existing code instead of replacing it
+7. Reuse current logic whenever possible
+8. Implement only incremental, minimal, non-destructive changes
+9. Before changing anything, identify what already exists and whether it already partially solves the requirement
+10. If something is unclear, assume preservation over replacement
+
+YOU MUST PRIORITIZE:
+stability > correctness > improvement
+
+PRODUCT SOURCE OF TRUTH
+
+The Lucky Trip is NOT a travel search app.
+
+It is a system that transforms:
+inspiration → understanding → planning → execution → memory → intelligence
+
+Anything that breaks this loop is wrong.
+
+OFFICIAL USER FLOW + SYSTEM FLOW
+
+PHASE 1 — INSPIRATION
+Goal:
+capture intent without forcing decisions
+
+Expected behavior:
+- home feed with visual/editorial content
+- no mandatory input at entry
+- no search-first UX
+
+User actions:
+- view content
+- open destination
+- open place
+- save place
+
+System requirements:
+- saving must be immediate
+- saving must persist
+- saving must not depend on trip creation
+- inspiration must turn into memory
+
+Anti-patterns:
+- forcing destination selection on entry
+- empty states without content
+- infinite uncurated lists
+
+PHASE 2 — UNDERSTANDING
+Goal:
+reduce cognitive load and give context
+
+Expected behavior:
+- destination page with neighborhoods or contextual zones
+- curated lists / Lucklists
+- grouped places by context
+- editorial explanation
+- visual explanation
+
+User actions:
+- explore destination
+- compare areas
+- save places
+
+System requirements:
+- places must have context, not flat listing
+- no unbounded results
+- support meaning-based exploration, not only category
+
+Anti-patterns:
+- generic top lists
+- lack of neighborhood/vibe/context
+
+PHASE 3 — PLANNING
+Goal:
+convert saved ideas into an executable itinerary
+
+Entry point:
+Create Trip
+
+Expected flow:
+1. select destination
+2. select dates
+3. system generates trip structure
+4. user adds saved places or new places
+5. user reorganizes itinerary
+6. AI helps organize, not invent
+
+Required planning concepts:
+- Trip
+- TripDay
+- TripItem
+
+AI rules:
+- only use curated database
+- never hallucinate places
+- never use uncontrolled external data
+- optimize for proximity, balance, and diversity
+
+Anti-patterns:
+- generic itinerary generation
+- non-editable itinerary
+- inability to move items across days
+
+PHASE 4 — EXECUTION
+Goal:
+support use during the real trip
+
+Expected behavior:
+- day-by-day trip view
+- clear order
+- low friction
+- simple practical usage
+
+Anti-patterns:
+- cluttered interface
+- hidden itinerary
+- too many actions during use
+
+PHASE 5 — MEMORY
+Goal:
+create long-term retained value
+
+Expected behavior:
+- saved places persist independently from trips
+- users can revisit saved places
+- users can reuse saved places in future trips
+- app remains useful even when user is not actively traveling
+
+System requirements:
+- persistence across sessions
+- explicit deletion only
+- support future personalization
+
+INTELLIGENCE LAYER
+The system should learn from:
+- what the user saves
+- what the user adds to trips
+- what kinds of places cluster together
+
+MONETIZATION RULES
+Free:
+- explore
+- save places
+
+Premium:
+- create/edit trips
+- reorganize itinerary
+- deeper planning features
+
+Critical monetization rule:
+- do NOT block inspiration
+- do NOT block saving
+- only gate deeper planning
+
+TASK
+
+Audit the current codebase and compare it against the product flow above.
+
+For each phase, report:
+- implemented
+- partially implemented
+- missing
+- incorrectly implemented
+
+Then provide:
+1. UX flow validation
+2. data flow validation
+3. critical gaps ranked by importance
+4. incremental implementation plan
+5. exact files/components likely involved
+6. risks
+7. what must NOT be changed
+
+IMPORTANT:
+Do not implement yet unless the gap is tiny and obviously safe.
+Audit first.

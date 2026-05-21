@@ -1,0 +1,121 @@
+FINAL RESULT SCREEN FIXES — THE ITINERARY RESULT IS STILL INCOMPLETE
+
+IMPORTANT:
+Do not redesign the whole app.
+Do not refactor unrelated systems.
+Keep the current premium visual language.
+This is a focused completion pass for the itinerary result screen.
+
+CURRENT PROBLEMS TO FIX:
+
+1. The background hero image of the itinerary result is still weak/generic
+2. The small thumbnail images for itinerary items are missing on many cards
+3. The “Ver no mapa” block at the end is missing / incomplete
+4. The day chips/tabs are not properly clickable
+5. Export/share-as-link persistence is still missing
+
+GOAL:
+Make the itinerary result screen feel complete, premium, and fully usable.
+
+==================================================
+1. HERO IMAGE IMPROVEMENT
+==================================================
+
+The itinerary result screen must use a strong, relevant hero image.
+
+Rules:
+- use the best available destination/itinerary hero image
+- do not use a weak generic fallback if a stronger destination image exists
+- prefer a cinematic Rio/destination image aligned with the route
+- keep the dark/glass overlay style
+
+If multiple strong images are available, choose the best one deterministically.
+
+==================================================
+2. ITEM THUMBNAILS MUST APPEAR CONSISTENTLY
+==================================================
+
+Every itinerary item card should display a thumbnail whenever possible.
+
+Sources can include:
+- photo_url from the source tables
+- mapped image from the original saved item
+- place photo pipeline / Google place photo if already available in the stack
+
+Rules:
+- do not leave most cards blank if image data exists upstream
+- preserve current card layout
+- fall back gracefully only when no image is truly available
+
+==================================================
+3. “VER NO MAPA” MUST EXIST AND WORK
+==================================================
+
+The result screen must include the “Ver no mapa” section/button at the end, as intended.
+
+Expected behavior:
+- visible in the result screen
+- opens the map view for the itinerary
+- uses the itinerary places currently displayed
+
+Do not remove it.
+Restore/fix it.
+
+==================================================
+4. DAY CHIPS MUST BE CLICKABLE
+==================================================
+
+The day chips/tabs (Dia 1, Dia 2, etc.) must be interactive.
+
+Expected behavior:
+- tapping a day chip jumps/scrolls to that day section
+- active state is visually clear
+- the interaction feels smooth and premium
+
+==================================================
+5. EXPORT / SHAREABLE URL MUST BE IMPLEMENTED
+==================================================
+
+The itinerary must be exportable into a persistent URL.
+
+Use the existing Supabase structure:
+- user_itineraries
+- roteiro_itens
+
+Expected behavior:
+- save itinerary if needed
+- generate/reuse share_slug
+- allow exporting/sharing a persistent itinerary link
+- this link should be usable later before/during/after the trip
+- recipients can open the itinerary in read-only mode
+
+Do not simulate this.
+Use real Supabase persistence.
+
+==================================================
+6. KEEP GOOD PARTS
+==================================================
+
+Keep:
+- current result screen visual language
+- current itinerary engine
+- current bottom navigation
+- current editing structure
+
+Fix only:
+- hero image quality
+- item thumbnails consistency
+- map CTA restore
+- clickable day chips
+- export/shareable URL
+
+==================================================
+7. REQUIRED CONFIRMATION
+==================================================
+
+After implementing, explicitly confirm:
+1. which image source is used for the hero background
+2. how item thumbnails are resolved
+3. that “Ver no mapa” was restored/fixed
+4. how day chips now navigate
+5. how the persistent share/export URL is generated and stored

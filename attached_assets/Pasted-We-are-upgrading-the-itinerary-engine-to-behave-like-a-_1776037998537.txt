@@ -1,0 +1,125 @@
+We are upgrading the itinerary engine to behave like a human concierge.
+
+The system is currently correct structurally, but lacks experiential intelligence.
+
+We must introduce EXPERIENCE VARIETY and DAY RHYTHM without breaking the existing pipeline.
+
+---
+
+IMPORTANT CONTEXT:
+
+- The system already has:
+  - deduplication (Step 3c)
+  - scoring (prefScore)
+  - clustering (Step 4)
+  - draft building (Step 5)
+  - validation (Step 7)
+
+- We MUST NOT break any of these.
+
+---
+
+TASK:
+
+1. Add a derived field (DO NOT persist in DB):
+   experience_type
+
+This must be computed in-memory for each EnrichedPlace.
+
+Rules:
+
+- If tags or name include beach / praia → "relax"
+- If includes sunset / mirante / vista → "scenic"
+- If categoria === "restaurante" → "food"
+- If includes museum / cultura / história → "culture"
+- If includes bar / nightlife / drinks → "nightlife"
+- If includes trilha / activity / outdoor → "active"
+
+Fallback:
+→ "relax"
+
+---
+
+2. Inside buildFullDraft (CRITICAL LOCATION):
+
+After periodMap is fully built
+BUT BEFORE final period ordering and mapping to output
+
+---
+
+A. ENFORCE VARIETY (within each period)
+
+For each period:
+
+- Walk through items in order
+- If 2 consecutive items have same experience_type:
+   → try to swap with another item in same period with different type
+   → if not possible:
+        KEEP the one with higher prefScore
+        REMOVE the other
+
+---
+
+B. ANTI-REPETITION (DAY LEVEL)
+
+For each day:
+
+- Count items with experience_type === "relax"
+
+Rules:
+- Max 1 "relax" per period
+- Max 2 "relax" per day
+
+If exceeded:
+→ remove lowest prefScore items first
+
+---
+
+C. DAY RHYTHM (SOFT ENFORCEMENT)
+
+Do NOT break system — only adjust if obvious mismatch:
+
+- manhã:
+   prefer "active" or "culture"
+   if contains "relax" and there is better alternative → swap
+
+- almoço:
+   MUST be only "food" (already mostly handled)
+
+- tarde:
+   prefer "relax" or "scenic"
+
+- noite:
+   prefer "food" or "nightlife"
+
+If mismatch:
+→ try to move item to a better period
+→ if not possible → keep (do NOT force removal aggressively)
+
+---
+
+IMPORTANT RULES:
+
+- DO NOT change API response structure
+- DO NOT touch validateAndFix
+- DO NOT break clustering logic
+- DO NOT create new DB fields
+- DO NOT introduce randomness
+
+---
+
+GOAL:
+
+Transform the itinerary from:
+"list of nearby places"
+
+into:
+"a curated day with flow, variation, and intention"
+
+---
+
+SUCCESS CRITERIA:
+
+- No repeated beach experiences in same period
+- No "same vibe stacking"
+- Days feel balanced (activity → pause → relax → night)

@@ -1,0 +1,138 @@
+We need to audit and redesign the itinerary generation engine.
+
+CRITICAL RULES (NON-NEGOTIABLE)
+
+1. Do NOT change UI
+2. Do NOT touch the Rio map
+3. Do NOT refactor unrelated code
+4. Focus ONLY on the itinerary intelligence layer
+5. Audit first — do NOT implement yet
+6. Do NOT change database schema yet
+7. Do NOT redesign the whole product architecture
+8. Prefer reusing existing Supabase metadata and current generation pipeline wherever possible
+9. Preserve all current working flows unless they directly cause generic itinerary output
+
+PRODUCT REQUIREMENT
+
+The Lucky Trip itinerary engine must feel like:
+- it understands the user
+- it understands the city
+- it understands distance, timing, rhythm, and compatibility
+- it uses the rich Supabase metadata already created
+
+Today the itinerary output still feels generic and underuses the database.
+
+AUDIT TASK
+
+Inspect the FULL itinerary generation pipeline end-to-end and explain it step by step.
+
+I need you to identify the exact current flow from:
+saved places / trip inputs
+→ enrichment
+→ candidate selection
+→ day grouping
+→ ordering
+→ time slot assignment
+→ final itinerary output
+
+1. Identify the EXACT files/functions responsible for:
+- candidate selection
+- metadata enrichment
+- day distribution
+- ordering within each day
+- timing assignment
+- Gemini/OpenAI usage
+- hotel influence
+- persistence of itinerary preferences
+- fallback logic if AI fails
+
+2. For each of these Supabase fields, say whether it is:
+- fully used
+- partially used
+- ignored
+- present in DB but lost before reaching the engine
+
+Fields to audit:
+- tags_ia
+- vibe
+- momento_ideal
+- perfil_ideal
+- categoria
+- bairro
+- lat
+- lng
+- com_criancas
+- seguro_mulher_sozinha
+- nivel_esforco
+- budget/style inputs
+- travel company inputs
+- hotel / neighborhood context
+
+3. Explain EXACTLY:
+- how distance is currently calculated
+- whether travel time is actually used
+- whether duration per place is modeled
+- whether slot compatibility exists
+- whether hard rules exist before AI
+- whether Gemini is selecting, scoring, ordering, formatting, or only rewriting output
+- what data is actually sent into the AI prompt
+- what constraints are enforced before the AI call vs after the AI call
+
+4. Show the CURRENT ENGINE WEAKNESS clearly:
+- why itineraries still feel generic
+- which metadata is wasted
+- where the loss of intelligence happens
+- whether the main problem is data selection, scoring, prompt design, ordering, or post-processing
+
+5. Show the CURRENT PROMPT / AI CONTRACT weakness:
+- what the AI is asked to do today
+- why that instruction is too weak or too broad
+- what important structured inputs are missing
+
+REDESIGN TASK
+
+Then propose the SMALLEST SAFE DELTA to evolve the engine into a real Lucky Trip engine.
+
+The redesign must separate:
+
+Layer 1 — Candidate normalization
+Layer 2 — Rule-based filtering
+Layer 3 — Slot scoring
+Layer 4 — Geographic/day clustering
+Layer 5 — AI editorial organization
+
+The redesigned engine must support:
+- morning / lunch / afternoon / sunset / dinner / night logic
+- distance-aware planning
+- travel-time-aware planning
+- compatibility rules
+- vibe/style/profile matching
+- user preference weighting
+- hotel/neighborhood influence
+- deterministic rules before AI
+- AI as organizer/editor, not uncontrolled decision-maker
+
+IMPORTANT REDESIGN CONSTRAINTS
+
+- Prefer additive changes over rewrites
+- Reuse current Supabase tables and metadata first
+- Reuse current generation flow where possible
+- Do NOT propose schema changes in this step unless absolutely unavoidable
+- If you think a schema change is needed, mark it as “later”, not “required now”
+
+OUTPUT FORMAT
+
+1. Current engine diagnosis
+2. Current pipeline step-by-step
+3. Which metadata is wasted today
+4. Exact reason itineraries feel generic
+5. Weakness of the current AI prompt/contract
+6. Minimal redesign proposal
+7. Exact files/functions to change
+8. Risks
+9. What must NOT be changed
+
+FINAL RULE
+
+Do NOT implement yet.
+Wait for approval after the full diagnosis.

@@ -1,0 +1,178 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Implement the first WOW moment and the first invisible monetization layer for the MVP.
+
+IMPORTANT:
+- Do NOT redesign the app
+- Do NOT change navigation structure
+- Do NOT break working flows
+- Do NOT refactor unrelated systems
+- Do NOT add generic AI features
+- Do NOT create new product directions outside this request
+
+GOAL:
+Make the app feel immediately intelligent and valuable, while preparing a soft premium layer that does not feel aggressive.
+
+==================================================
+1. FIRST WOW MOMENT — “O QUE FAZER AGORA”
+==================================================
+
+Implement a true “O que fazer agora” experience on Home.
+
+This section must feel hyper-relevant, premium, and curated.
+
+CONTEXT PRIORITY:
+1. If user location is available:
+   -> show “O que fazer agora em [cidade do usuário]”
+2. Else if user has an active trip:
+   -> show “O que fazer agora em [destino da viagem]”
+3. Else:
+   -> show “O que fazer agora”
+
+IMPORTANT:
+- This section must NOT depend on the hero rotation
+- Hero = inspiration
+- “O que fazer agora” = action
+
+CONTENT RULE:
+Show only 3 highly relevant suggestions.
+Do NOT show long generic lists.
+
+SCORING / PRIORITIZATION:
+Build a simple ranking using existing curated metadata when available:
+- current context city / active trip destination
+- vibe
+- momento_ideal / best time-of-day
+- perfil_publico / perfil_ideal / better_for / best_for
+- walkable / gastronomy / nightlife / scenery
+- travel intentions if available
+- saved items / itinerary context if available
+
+The result must feel:
+- immediate
+- context-aware
+- calm
+- premium
+- editorial
+- useful
+
+==================================================
+2. KEEP THE EXPERIENCE STABLE
+==================================================
+
+Do NOT make the Home screen feel nervous or overly dynamic.
+
+Rules:
+- Hero can remain editorial and inspirational
+- “O que fazer agora” must be stable and useful
+- Do NOT change the section every few seconds with the hero carousel
+- Avoid random mixed cities
+
+==================================================
+3. FIRST INVISIBLE MONETIZATION LAYER
+==================================================
+
+Do NOT create a hard paywall on the whole app.
+Do NOT block the user too early.
+
+Implement a soft premium logic instead.
+
+PREMIUM SOURCE OF TRUTH:
+Use access_levels as the app-facing permission source.
+
+PREMIUM ACTIVE WHEN:
+- plan_type indicates premium (or vip)
+- and access_until is still valid
+- or vip access is explicitly granted
+
+SOFT MONETIZATION RULES:
+The product should first deliver value, then gently offer more.
+
+Apply this in a natural way:
+
+A. LUCKY
+- non-premium users get 2 free responses
+- on the 3rd interaction:
+  -> do NOT fully answer
+  -> show a premium CTA:
+     “Continue com o Lucky”
+     “Desbloqueie respostas ilimitadas e mais personalização”
+
+B. ITINERARY REFINEMENT
+- allow itinerary generation normally
+- but deeper ongoing refinement / repeated advanced editing / ongoing concierge-style help can trigger a premium suggestion
+
+IMPORTANT:
+Do NOT make the product feel blocked too early.
+The user must first feel the value.
+
+==================================================
+4. WOW + PREMIUM MUST FEEL NATURAL
+==================================================
+
+The premium moment must feel like:
+- continuation
+- personalization
+- refinement
+- concierge upgrade
+
+It must NOT feel like:
+- random paywall
+- interruption
+- generic subscription popup
+
+Tone:
+- calm
+- premium
+- editorial
+- helpful
+- never robotic
+
+==================================================
+5. USE ONLY REAL DATA
+==================================================
+
+Use real Supabase data and existing backend flows.
+
+Do NOT use mock data.
+Do NOT simulate premium access.
+Do NOT hardcode fake suggestions.
+
+Use existing curated sources when relevant:
+- lucky_list_rio
+- o_que_fazer_rio
+- restaurantes
+- stay_hotels
+- stay_neighborhoods
+- access_levels
+- any existing itinerary context already in the app
+
+==================================================
+6. DO NOT BREAK THE MVP
+==================================================
+
+Keep intact:
+- current bottom navigation
+- current visual direction
+- current itinerary flow
+- current Rio-first MVP structure
+
+Do NOT:
+- redesign screens
+- invent new menus
+- create a generic chatbot
+- create noisy growth hacks
+
+==================================================
+7. REQUIRED OUTPUT
+==================================================
+
+After implementing, confirm ONLY:
+
+1. how “O que fazer agora” determines context
+2. which ranking signals are used
+3. how many items are shown and why
+4. how the premium logic is triggered
+5. how access_levels is checked
+6. how the Lucky paywall appears
+7. confirmation that the rest of the MVP was preserved

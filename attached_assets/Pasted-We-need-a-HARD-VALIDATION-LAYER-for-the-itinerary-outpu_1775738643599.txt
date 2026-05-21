@@ -1,0 +1,107 @@
+We need a HARD VALIDATION LAYER for the itinerary output.
+
+This is now the highest priority.
+
+CRITICAL PRODUCT RULE
+
+The Lucky Trip must NEVER suggest places that are not in Supabase.
+Supabase is the single source of truth.
+
+If the app is currently suggesting anything not present in Supabase, that is a critical product violation.
+
+We also need smarter temporal validation:
+not every restaurante belongs only to almoço/jantar.
+Some places are valid for breakfast or brunch, such as:
+- Empório Jardim
+- João Padeiro
+
+So the validation layer must be strict, but not naive.
+
+CRITICAL RULES
+
+1. Do NOT implement UI changes
+2. Do NOT redesign the screen
+3. Do NOT change map logic
+4. Do NOT add new product features
+5. Focus only on the final itinerary validation layer
+6. Do NOT let any item survive to the final UI if it violates source-of-truth or temporal plausibility
+7. Do NOT invent any place outside Supabase
+
+OBJECTIVE
+
+Design a final validation layer that runs after itinerary assembly and before UI rendering.
+
+This layer must validate:
+
+1. SOURCE-OF-TRUTH INTEGRITY
+- every item in the final itinerary must exist in Supabase
+- every item must have valid id + source_table
+- if an item cannot be resolved to a real Supabase record, it must be flagged
+- no invented / hallucinated / orphan items may remain
+
+2. CATEGORY / TIME PLAUSIBILITY
+Validate item timing using smarter rules:
+- sunset items cannot appear too early
+- theater/show items cannot appear in morning
+- nightlife/bar/samba cannot appear in morning
+- breakfast/brunch places may appear in morning
+- lunch-focused restaurants should appear around almoço
+- dinner-focused restaurants should appear in noite
+- not all restaurantes are equal
+
+3. SPECIAL RESTAURANT EXCEPTIONS
+The layer must support cases like:
+- Empório Jardim → breakfast / brunch valid
+- João Padeiro → breakfast valid
+
+So validation must use:
+- momento_ideal
+- tags
+- especialidade
+- tipo
+- titulo/name
+- any existing structured metadata already available
+
+QUESTIONS TO ANSWER
+
+1. What exact part of the pipeline should run this validation?
+2. What exact checks should run for:
+   - source-of-truth integrity
+   - category validity
+   - temporal plausibility
+3. How should the system classify restaurant subtypes:
+   - breakfast / brunch
+   - almoço
+   - jantar
+   - nightlife / bar
+4. What should happen when validation fails?
+   Options to evaluate:
+   - reassign period
+   - drop item
+   - replace from Supabase only
+   - flag as invalid and fallback safely
+
+5. How do we prevent non-Supabase items from ever reaching the final UI?
+6. What exact files/functions would need to change for the minimal safe implementation?
+7. What must NOT change?
+
+IMPORTANT
+
+This must be deterministic.
+This must not depend on Gemini.
+This must not depend on vague heuristics only.
+This must not invent replacements outside Supabase.
+
+OUTPUT FORMAT
+
+1. exact validation goals
+2. where the validation layer should run
+3. exact validation rules
+4. handling of restaurant exceptions like brunch/breakfast
+5. non-Supabase item prevention strategy
+6. exact files/functions to change
+7. minimal implementation roadmap
+8. what must NOT change
+
+Do NOT implement yet.
+Show the full validation-layer plan first.

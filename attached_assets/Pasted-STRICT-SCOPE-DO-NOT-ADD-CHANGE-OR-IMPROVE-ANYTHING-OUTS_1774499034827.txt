@@ -1,0 +1,113 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Fix ONLY the Home screen content structure and wording.
+Do NOT redesign layout.
+Do NOT change navigation.
+Do NOT change working logic outside what is described.
+
+--------------------------------------------------
+1. REMOVE GENERIC CTA “CONFERIR AGORA”
+--------------------------------------------------
+
+Problem:
+- "conferir agora" is generic and weak
+- repeated across multiple cards
+- breaks premium/editorial tone
+
+Fix:
+- remove "conferir agora" completely
+- replace with more refined, contextual CTA OR remove CTA if unnecessary
+
+Guidelines:
+- avoid generic buttons
+- prefer subtle interaction (tap card)
+- keep it clean and premium
+
+--------------------------------------------------
+2. REMOVE REDUNDANT "DESTAQUES"
+--------------------------------------------------
+
+Problem:
+- "destaques" appears in multiple places
+- hero already acts as featured content
+
+Fix:
+- remove "destaques da semana"
+- do not duplicate the same concept
+
+--------------------------------------------------
+3. INTRODUCE “O QUE FAZER AGORA” (DYNAMIC)
+--------------------------------------------------
+
+Replace the section below the hero with:
+
+"O que fazer agora"
+
+This section must be dynamic and linked to the hero content.
+
+Behavior:
+
+IF hero = Rio de Janeiro
+→ show: "O que fazer agora no Rio de Janeiro"
+
+IF hero = Santorini
+→ show: "O que fazer agora em Santorini"
+
+IF hero changes
+→ section updates accordingly
+
+--------------------------------------------------
+4. CONTENT MUST FOLLOW HERO (CRITICAL)
+--------------------------------------------------
+
+The items shown in “O que fazer agora” must match the current hero destination.
+
+Do NOT show mixed or unrelated content.
+
+The experience must feel:
+- contextual
+- curated
+- intelligent
+- editorial
+
+--------------------------------------------------
+5. TONE AND LANGUAGE
+--------------------------------------------------
+
+Avoid:
+- generic labels
+- repetitive UI terms
+
+Use:
+- calm, editorial language
+- human tone
+- premium simplicity
+
+Examples:
+- "O que fazer agora no Rio"
+- "Experiências em destaque" (only if truly needed, not duplicated)
+- avoid mechanical phrasing
+
+--------------------------------------------------
+6. KEEP EVERYTHING ELSE
+--------------------------------------------------
+
+Do NOT change:
+- layout structure
+- card design
+- navigation
+- bottom nav
+- flows
+
+This is a content + logic refinement only.
+
+--------------------------------------------------
+CONFIRMATION REQUIRED
+--------------------------------------------------
+
+After applying, confirm:
+
+1. where "conferir agora" was removed
+2. where "destaques" was removed
+3. how “O que fazer agora” updates based on hero
+4. how content is now linked to the current destination

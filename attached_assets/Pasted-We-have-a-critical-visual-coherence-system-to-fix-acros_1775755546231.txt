@@ -1,0 +1,192 @@
+We have a critical visual coherence system to fix across the app.
+
+This is NOT just about background images.
+This is about establishing a strict visual hierarchy and single source of truth.
+
+========================================
+HOME — FINAL BEHAVIOR (STRICT RULES)
+========================================
+
+There are TWO layers on Home:
+
+1. MAIN FEATURED HERO CARD (top highlight)
+2. SECONDARY CARDS (below, scrollable content)
+
+ONLY the MAIN FEATURED HERO CARD controls the full-screen background.
+
+----------------------------------------
+SOURCE OF TRUTH
+----------------------------------------
+
+Introduce:
+
+activeFeaturedHeroCard
+
+This object must contain:
+- id
+- destination_slug
+- image (REQUIRED — exact image used in the card)
+- title
+- subtitle
+
+----------------------------------------
+CRITICAL RULE
+----------------------------------------
+
+The Home background MUST be the EXACT SAME IMAGE as the activeFeaturedHeroCard.image.
+
+NOT:
+- not “another image of the same destination”
+- not a destination-based pool
+- not a similar image
+
+ONLY:
+background = activeFeaturedHeroCard.image
+
+If the hero card changes → background changes with it.
+
+Perfect 1:1 visual sync.
+
+----------------------------------------
+SECONDARY CARDS
+----------------------------------------
+
+- Can show ANY destinations (Santorini, Kyoto, etc.)
+- Have their own images
+- Navigate independently
+
+BUT:
+❌ They MUST NOT affect the background
+❌ They MUST NOT change activeFeaturedHeroCard
+
+----------------------------------------
+LOOP BEHAVIOR
+----------------------------------------
+
+- The MAIN FEATURED HERO CARD rotates (editorial-controlled)
+- When it rotates → background updates with it
+- Secondary cards rotate independently (no background impact)
+
+----------------------------------------
+RIO PRIORITY RULE
+----------------------------------------
+
+If Rio content exists:
+
+activeFeaturedHeroCard MUST be Rio
+
+Override any other destination unless:
+- user explicitly selects another destination
+OR
+- Rio content is unavailable
+
+----------------------------------------
+FULL-SCREEN REQUIREMENT
+----------------------------------------
+
+The background image must:
+- fill the entire screen (edge-to-edge)
+- use absolute positioning (StyleSheet.absoluteFill)
+- never appear cropped to half screen
+
+----------------------------------------
+MAP IMAGE RULE
+----------------------------------------
+
+Map images (blue map assets) must NEVER be used as background.
+
+========================================
+DESTINATION PAGE — FINAL BEHAVIOR
+========================================
+
+This is DIFFERENT from Home.
+
+----------------------------------------
+INITIAL STATE
+----------------------------------------
+
+When navigating from Home → Destination page:
+
+- The first background image should match the clicked hero image
+(optional but preferred for continuity)
+
+----------------------------------------
+ROTATING BACKGROUND
+----------------------------------------
+
+After entry, the background must rotate within a pool of that destination.
+
+Rules:
+
+- Use only images of that destination
+- Smooth crossfade only (no zoom, no parallax)
+- Calm, premium motion
+
+----------------------------------------
+TIMING
+----------------------------------------
+
+- Default interval: 12 seconds
+- Allowed range: 12–15 seconds
+- NEVER below 10 seconds
+
+- Crossfade duration: ~1500ms
+
+----------------------------------------
+POOL RULE
+----------------------------------------
+
+- Minimum 2 images required to rotate
+- If less than 2 → keep static image
+
+----------------------------------------
+READABILITY (MANDATORY)
+----------------------------------------
+
+All screens MUST guarantee text readability.
+
+If needed:
+- increase overlay opacity
+- darken gradient
+- adjust text contrast
+
+Buttons and text must ALWAYS be readable.
+
+========================================
+OTHER SCREENS RULES
+========================================
+
+VIAGEM (Roteiro):
+- Use saved items images if user has ≥2 valid images
+- Otherwise fallback to active destination
+
+PERFIL:
+- Use saved images if ≥3
+- Otherwise fallback to editorial pool
+
+LUCKY:
+- Editorial only (no personalization)
+
+DESTINOS:
+- Global editorial pool (multi-destination allowed)
+
+========================================
+ARCHITECTURE TASK
+========================================
+
+Show BEFORE implementing:
+
+1. Where activeFeaturedHeroCard state lives
+2. How it controls:
+   - hero card
+   - full-screen background
+   - navigation
+3. How background = activeFeaturedHeroCard.image (no pool on Home)
+4. How secondary cards stay independent
+5. How rotation works on destination page only
+6. How Rio priority is enforced
+7. Exact components/files to modify
+
+DO NOT IMPLEMENT YET.
+
+Show final architecture first.

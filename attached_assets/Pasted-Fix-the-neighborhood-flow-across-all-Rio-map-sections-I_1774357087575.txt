@@ -1,0 +1,100 @@
+Fix the neighborhood flow across all Rio map sections.
+
+IMPORTANT:
+Do NOT redesign the app.
+Do NOT change bottom navigation.
+Do NOT change the global visual language.
+This is a flow + data rendering fix.
+
+-----------------------------------
+GOAL
+-----------------------------------
+
+After the user taps a neighborhood on the map, the app must open the neighborhood page directly.
+
+The map must NOT remain visible inside the neighborhood page.
+
+This rule applies to:
+- Onde ficar
+- Onde comer
+- O que fazer
+- Lucky List
+
+-----------------------------------
+CORRECT FLOW
+-----------------------------------
+
+1. User taps a neighborhood on the map
+2. Open the neighborhood page directly
+3. The neighborhood page must have:
+
+- hero image of the neighborhood at the top
+- neighborhood title
+- short editorial intro
+- button: "Ver X [items]" depending on the section
+- button: "Por dentro do bairro"
+
+4. Below that, show the filtered list for that neighborhood:
+- restaurants in Onde comer
+- hotels in Onde ficar
+- activities in O que fazer
+- curated items in Lucky List
+
+-----------------------------------
+NEIGHBORHOOD HERO IMAGE RULE
+-----------------------------------
+
+The neighborhood page must ALWAYS have a hero image.
+
+Image priority:
+1. neighborhood image from Supabase if available
+2. Google fallback image for the neighborhood if Supabase image is missing
+3. safe fallback image only if both fail
+
+Never open the neighborhood page without a hero image.
+
+-----------------------------------
+BUTTON BEHAVIOR
+-----------------------------------
+
+- "Ver X [items]" = scroll/focus directly to the filtered list for that neighborhood
+- "Por dentro do bairro" = open/reveal richer editorial text about the neighborhood
+
+Use this exact wording:
+- "Por dentro do bairro"
+
+Do NOT use:
+- "Explorar"
+- "Explorar mapa"
+
+-----------------------------------
+IMPORTANT UI RULE
+-----------------------------------
+
+The neighborhood page must NOT show the map again.
+
+The map is only for choosing the neighborhood.
+After entering the neighborhood page, the user should see:
+- hero image
+- editorial content
+- filtered list
+
+No map on this screen.
+
+-----------------------------------
+CONTENT RULE
+-----------------------------------
+
+Use the richer neighborhood text already in Supabase when available.
+Do NOT reduce it to a tiny summary if richer text exists.
+
+-----------------------------------
+OUTPUT
+-----------------------------------
+
+Show exactly:
+1. which files were changed
+2. where the neighborhood hero image comes from
+3. how "Por dentro do bairro" works
+4. how the filtered list is loaded per section
+5. confirmation that the map no longer appears inside the neighborhood page

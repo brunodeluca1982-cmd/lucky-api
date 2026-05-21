@@ -1,0 +1,119 @@
+You are NOT allowed to redesign, rethink, or reinterpret the product.
+
+You are ONLY allowed to fix broken backend logic so the current approved flow works correctly.
+
+CONTEXT:
+An image of the approved product flow is attached.
+This is the SOURCE OF TRUTH for UX, screens, and navigation.
+
+HARD RULES (NON-NEGOTIABLE):
+- DO NOT change any UI
+- DO NOT change layout, spacing, hierarchy, or components
+- DO NOT move screens
+- DO NOT create new flows
+- DO NOT redesign onboarding
+- DO NOT improve UX
+- DO NOT rename things
+- DO NOT add features
+- DO NOT refactor unrelated code
+- DO NOT question the flow
+- DO NOT reinterpret the image
+
+If something looks wrong, IGNORE IT.
+If something feels incomplete, IGNORE IT.
+If something could be improved, IGNORE IT.
+
+ONLY FIX LOGIC.
+
+-----------------------------------
+OBJECTIVE
+-----------------------------------
+
+Make the existing approved flow FUNCTION correctly end-to-end.
+
+The current problem is NOT UI.
+The problem is:
+
+- premium is tied to device_id (wrong)
+- checkout is not linked to a real user
+- webhook cannot identify the user
+- premium state does not persist correctly
+
+-----------------------------------
+WHAT YOU MUST DO
+-----------------------------------
+
+1. AUTH (minimal)
+- Add Supabase Auth support
+- DO NOT create new screens unless absolutely required
+- Trigger login ONLY when user attempts:
+  - save place
+  - create/edit trip
+  - access personal data
+
+2. PREMIUM OWNERSHIP
+- Replace device_id with Supabase user.id
+- device_id must NOT be used for billing or premium access
+
+3. CHECKOUT
+- Require authenticated user
+- Pass user.id into Stripe:
+  - client_reference_id
+  - metadata.user_id
+
+4. WEBHOOK
+- Must use Deno.serve (no legacy imports)
+- Handle events:
+  - checkout.session.completed
+  - customer.subscription.updated
+  - customer.subscription.deleted
+  - invoice.paid
+  - invoice.payment_failed
+
+- Extract user_id from:
+  1. client_reference_id
+  2. metadata.user_id
+
+- Update Supabase tables using user_id
+
+5. PREMIUM STATE
+- Source of truth = Supabase
+- AsyncStorage = cache only
+- App must read premium from Supabase using user.id
+
+6. FLOW PRESERVATION
+- Inspiration must stay open (no login)
+- Understanding must stay open
+- Planning actions require login
+- Premium only blocks deeper organization
+
+-----------------------------------
+DO NOT DO THESE
+-----------------------------------
+
+- Do not change navigation
+- Do not change screen order
+- Do not move paywall triggers visually
+- Do not redesign any component
+- Do not introduce new UX patterns
+
+-----------------------------------
+OUTPUT FORMAT
+-----------------------------------
+
+Return ONLY:
+
+1. Files changed
+2. Exact logic changes (per file)
+3. Confirmation that:
+   - webhook works
+   - checkout includes user.id
+   - premium is tied to Supabase user
+4. Any manual steps required
+
+NO explanations.
+NO suggestions.
+NO improvements.
+NO redesign ideas.
+
+ONLY EXECUTION.

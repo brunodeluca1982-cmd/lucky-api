@@ -1,0 +1,73 @@
+Implement now. This is a root-cause fix, not a patch.
+
+Fix BOTH issues definitively:
+
+ISSUE A
+Logged-out Profile auth screen still shows blue selected/highlighted state in web after interaction.
+
+ISSUE B
+Google login and email auth can leave the next screen broken/uninteractive.
+
+Do not improvise.
+Do not redesign anything.
+Do not touch Stripe.
+Do not change navigation or other tabs.
+
+SCOPE
+- root web HTML / root web styles
+- auth hook
+- logged-out Profile auth screen
+- any auth overlay/backdrop/modal involved
+
+DO EXACTLY THIS
+
+1. GLOBAL WEB ROOT FIX
+- Move the interaction fix to the true web root using app/+html.tsx
+- Apply globally before the app renders:
+  - -webkit-tap-highlight-color: transparent;
+  - -webkit-touch-callout: none;
+- Disable user selection on normal app wrappers/root
+- Keep input, textarea and editable fields selectable/editable
+- Do not rely only on useEffect injection
+
+2. AUTH SCREEN INTERACTIVITY FIX
+- Audit the logged-out Profile auth screen and any auth overlay/backdrop
+- Remove or unmount any invisible full-screen layer that remains after auth attempts
+- Ensure no backdrop continues capturing touches after close, success, or failure
+- Keep buttons and inputs clickable
+
+3. POST-AUTH CLEANUP
+After Google auth OR email auth success/failure/close:
+- blur active element
+- clear any DOM selection/range
+- ensure no visual selected/highlighted state remains
+- ensure the screen remains interactive
+
+4. GOOGLE AUTH WEB FIX
+- On web, use Supabase signInWithOAuth with a real web redirect flow
+- Use redirectTo based on window.location.origin (or the correct current web app origin)
+- Do not use native deep-link style redirect on web
+- Ensure the callback returns to the app cleanly
+
+5. EMAIL AUTH WEB FIX
+- Keep current OTP email flow
+- On web, use emailRedirectTo compatible with the same app origin
+- After submit, screen must remain interactive and usable
+
+6. SAFETY RULES
+- No UI redesign
+- No new features
+- No broad refactor
+- Only fix root cause for these 2 issues
+
+RETURN ONLY:
+1. files changed
+2. exact root-level web fix applied
+3. exact auth-flow fix applied
+4. exact overlay/backdrop fix applied
+5. any manual Supabase Redirect URL step still required
+6. confirmation that:
+   - blue highlight issue is resolved
+   - Google auth returns correctly
+   - email auth returns correctly
+   - screen remains clickable after auth

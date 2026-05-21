@@ -1,0 +1,70 @@
+READ-ONLY TECHNICAL AUDIT. DO NOT IMPLEMENT ANY CHANGES.
+
+Important:
+I am currently changing product flow and design in parallel.
+You must not modify code, functions, environment variables, routes, UI, prompts, or infrastructure.
+This is investigation only.
+
+Goal:
+Audit the current Supabase Edge Function architecture and project secret naming so we can consolidate safely later, without touching the app right now.
+
+Scope:
+Only inspect and map the current technical structure related to:
+- Supabase Edge Functions
+- which app flows call which functions
+- duplicated or overlapping functions
+- environment variable / secret naming
+- which functions are central vs helper vs wrapper vs legacy
+
+Known existing Edge Functions include examples like:
+- generate-itinerary
+- generate-inspiration-trip
+- Lucky Trip AI
+- lucky-concierge
+- instagram_ai
+- google_places
+- google-places
+- place-photos
+- places-photo
+- places-autocomplete
+- places-details
+- distance-matrix
+- geocode-batch
+- enrich-entity-photos
+- stripe-webhook
+
+Known secret duplication patterns may include examples like:
+- SUPABASE_URL / PROJECT_URL
+- SUPABASE_SERVICE_ROLE_KEY / SERVICE_ROLE_KEY / service_role_key
+- SUPABASE_ANON_KEY / supabase_anon_key / EXTERNAL_SUPABASE_ANON_KEY
+
+What I need:
+1. Full map of all Edge Functions and what each one does
+2. Which ones are currently called by the app
+3. Which ones overlap or duplicate each other
+4. Which one appears to be the canonical AI brain today
+5. Which ones are helpers only
+6. Which ones are wrappers only
+7. Which ones look legacy or risky
+8. Full map of secrets / environment variable usage
+9. Duplicated secret names that represent the same concept
+10. Which code paths depend on each secret variant
+11. A future consolidation plan, but NOT implementation
+
+Output format:
+- Edge Function Inventory
+- Active call graph from app to functions
+- Duplicates / overlaps
+- Secret inventory
+- Secret naming conflicts
+- Canonical naming recommendation
+- Minimal-risk consolidation plan for later
+
+Do not change anything.
+Do not clean anything.
+Do not rename anything.
+Do not deploy anything.
+Do not delete anything.
+Do not refactor anything.
+
+This is read-only audit mode only.

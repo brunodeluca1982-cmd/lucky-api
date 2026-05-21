@@ -1,0 +1,177 @@
+MODO DE EXECUÇÃO
+Primeiro investigue o estado atual do código, auth, session persistence, navegação da barra inferior e leitura do plano do usuário.
+Depois implemente.
+Não redesenhe o app do zero.
+Não invente arquitetura nova fora do escopo.
+NÃO TOCAR em Stripe, checkout, webhook, catálogo de planos, prices, products, cobrança, nem em qualquer integração de pagamento que já esteja funcionando.
+REGRA ABSOLUTA: mexer apenas no que estou pedindo abaixo.
+
+OBJETIVO DESTA TASK
+Fechar corretamente os estados de autenticação e a aba PERFIL do MVP do The Lucky Trip, respeitando a arquitetura do produto e a linguagem visual dos anexos.
+
+ARQUITETURA OFICIAL DA BARRA INFERIOR
+Da esquerda para a direita:
+1. Home
+2. Destinos
+3. Viagem
+4. Lucky
+5. Perfil
+
+IMPORTANTE
+- “Viagem” é o hub operacional da viagem.
+- “Perfil” é a área pessoal da conta.
+- Não misturar essas duas áreas.
+
+REGRA DE SESSÃO
+Se o usuário fizer login com sucesso, ele deve permanecer logado automaticamente.
+Ele NÃO deve ver a tela de login novamente a cada vez que tocar em Perfil.
+Ele só deve voltar a ver login se:
+1. clicar explicitamente em “Sair”
+ou
+2. a sessão não existir / estiver inválida / expirada de verdade.
+
+PRIMEIRA TELA DO PERFIL PARA USUÁRIO NÃO LOGADO
+A primeira tela do Perfil para visitante / não autenticado deve ser baseada no anexo 09106CA9-27A5-4D49-862C-71146661E526.jpeg.
+
+Essa tela é a tela de entrada/auth principal do Perfil.
+Ela deve conter:
+- login com e-mail
+- senha
+- botão Entrar
+- login com Google
+- opção “Continuar sem conta”, se já existir essa lógica
+- link “Criar conta”
+- link “Esqueceu a senha?”
+
+IMPORTANTE:
+- A tela div-5.png NÃO é mais a tela inicial do guest.
+- div-5.png deve ser a tela de cadastro aberta quando o usuário tocar em “Criar conta”.
+
+CADASTRO
+Ao tocar em “Criar conta”, abrir a tela baseada no anexo div-5.png.
+
+ESTADOS A IMPLEMENTAR
+O app precisa reconhecer com clareza 3 estados:
+
+A. VISITANTE / NÃO LOGADO
+B. USUÁRIO LOGADO FREE
+C. USUÁRIO LOGADO LUCKY PRO
+
+COMPORTAMENTO DO PERFIL
+
+1. VISITANTE / NÃO LOGADO
+Ao tocar em Perfil, abrir a tela de auth baseada no anexo 09106CA9-27A5-4D49-862C-71146661E526.jpeg.
+
+2. USUÁRIO LOGADO FREE
+Ao tocar em Perfil, abrir a home do Perfil Free, com:
+- cabeçalho com avatar/ícone e nome se existir
+- plano atual = Free
+- CTA claro para virar Lucky Pro
+- entrada para Diário de Viagem
+- entrada para Divisão de Contas
+- conta
+- preferências / configurações
+- ajuda / suporte
+- termos e privacidade
+- sair
+
+3. USUÁRIO LOGADO LUCKY PRO
+Ao tocar em Perfil, abrir a home do Perfil Lucky Pro, com:
+- cabeçalho com avatar/ícone e nome se existir
+- status Lucky Pro
+- card de assinatura / benefícios
+- gerenciar assinatura, se essa lógica já existir
+- Diário de Viagem
+- Divisão de Contas
+- conta
+- preferências / configurações
+- ajuda / suporte
+- termos e privacidade
+- sair
+
+IMPORTANTE SOBRE VIAGEM X PERFIL
+Não mover para Perfil funcionalidades que pertencem a Viagem.
+
+“Viagem” continua sendo onde ficam:
+- criar viagem
+- gerar roteiro
+- colar URL de Instagram/TikTok
+- itinerários em andamento
+- salvos ligados à viagem
+- organização do roteiro
+
+“Perfil” é pessoal e não operacional.
+
+DIÁRIO DE VIAGEM E DIVISÃO DE CONTAS
+Nesta etapa, não precisa implementar a lógica final completa desses módulos.
+Mas eles já precisam existir no Perfil como entradas claras:
+- Diário de Viagem
+- Divisão de Contas
+
+Se já houver rota equivalente, reutilizar.
+Se não houver, criar entrada visual + rota placeholder limpa, sem lógica pesada agora.
+
+BACKGROUND DA TELA DE AUTH
+Remover o mapa de background atualmente usado nessa página.
+NÃO usar mapa.
+Substituir por uma hero background premium do Rio de Janeiro.
+
+REGRAS DO BACKGROUND HERO
+- usar fotos lindas, sofisticadas e aspiracionais do Rio
+- variar automaticamente a imagem a cada 10 segundos
+- usar transição suave / crossfade elegante
+- manter ótima legibilidade do formulário
+- aplicar overlay escuro e/ou blur leve se necessário
+- evitar aparência cafona de slideshow
+- evitar imagens saturadas demais ou visual poluído
+- idealmente usar 3 a 5 imagens fixas e premium
+
+IMPORTANTE:
+Esse comportamento de rotação do hero é APENAS para essa tela de auth do Perfil, não para sair alterando outras telas do app.
+
+UPGRADE / ASSINATURA
+Usar como referência visual:
+- div-1.png = paywall / bloqueio
+- div-2.png = tela de assinatura Lucky Pro
+- div-3.png = tela de boas-vindas pós-assinatura
+
+NÃO mexer na lógica do Stripe.
+Apenas garantir que o estado do usuário seja refletido corretamente na UI.
+
+DIRETRIZES DE UX
+- reduzir carga cognitiva
+- evitar excesso de opções
+- manter clareza
+- respeitar a linguagem premium/editorial do app
+- manter consistência com a barra inferior existente
+- não transformar Perfil em menu genérico feio
+- não transformar Perfil em tela de viagem
+
+DIRETRIZES VISUAIS
+Usar os anexos como referência de:
+- tipografia
+- contraste
+- composição
+- glassmorphism / profundidade
+- botões
+- hierarquia
+- linguagem premium do The Lucky Trip
+
+IMPORTANTE SOBRE O RESULTADO
+Quero que você:
+1. investigue o estado atual
+2. diga exatamente o que vai alterar
+3. implemente só esse escopo
+4. no final, reporte:
+   - como ficou a lógica de sessão
+   - como ficou a entrada do Perfil para guest
+   - como ficou a tela de cadastro
+   - como ficou o Perfil Free
+   - como ficou o Perfil Lucky Pro
+   - como ficou a rotação do hero background
+   - quais arquivos foram alterados
+
+NÃO mexer em outras áreas do app.
+NÃO mexer em Stripe.
+NÃO mexer em geração de roteiro nesta task.
+NÃO mexer em Lucky nesta task.

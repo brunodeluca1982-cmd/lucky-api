@@ -1,0 +1,120 @@
+Implement a definitive global image policy for the app.
+
+IMPORTANT:
+This is not a visual redesign.
+Do NOT change layout, styles, colors, spacing, typography, navigation, or screen structure.
+This is a data/rendering reliability task only.
+
+-----------------------------------
+DEFINITIVE IMAGE POLICY
+-----------------------------------
+
+Every visual entity in the app MUST always render a valid image.
+
+This applies to:
+- neighborhoods
+- restaurants
+- hotels
+- activities
+- lucky list items
+- hero sections
+- cards
+- detail pages
+
+-----------------------------------
+STRICT IMAGE PRIORITY RULE
+-----------------------------------
+
+For every entity, use this exact order:
+
+1. Supabase image
+   - if a valid official image exists in Supabase, use it
+
+2. Google fallback
+   - if Supabase image is null, empty, broken, or missing, resolve a stable Google image for that exact entity
+
+3. Safe fallback placeholder
+   - only if both Supabase and Google fail
+
+NEVER render without image.
+
+-----------------------------------
+CRITICAL PRODUCT RULES
+-----------------------------------
+
+1. Never prioritize Google over a valid Supabase image
+2. Never allow blank hero sections
+3. Never allow blank cards
+4. Never use random images on each render
+5. The same entity must always keep the same resolved image everywhere in the app
+
+Example:
+- Leblon must always show the same image
+- Fasano must always show the same image
+- Lasai must always show the same image
+
+-----------------------------------
+IMPLEMENTATION REQUIREMENTS
+-----------------------------------
+
+Create or enforce ONE global resolver for all images.
+
+Example:
+getImageForEntity(entityType, entityId, entityName, city)
+
+This resolver must:
+- check Supabase first
+- fallback to Google if needed
+- return a safe placeholder only as last resort
+- cache or persist the resolved image so it does not flicker or change between screens
+
+Replace any direct ad-hoc image logic with this resolver.
+
+-----------------------------------
+GOOGLE FALLBACK RULE
+-----------------------------------
+
+If Google is used:
+- the query must be deterministic and specific
+- use entity name + city + category where needed
+- the result must be cached/persisted so it stays stable
+
+Examples:
+- "Lasai Rio de Janeiro restaurant"
+- "Leblon Rio de Janeiro neighborhood"
+- "Hotel Fasano Rio de Janeiro"
+
+-----------------------------------
+VALIDATION RULE
+-----------------------------------
+
+Before finishing, audit the app and verify:
+
+- no visible card is without image
+- no neighborhood page is without hero image
+- no hotel detail is without hero image
+- no restaurant card is blank
+- no activity card is blank
+
+If any item still has no image, do NOT mark the task as complete.
+
+-----------------------------------
+DO NOT
+-----------------------------------
+
+- do NOT redesign any screen
+- do NOT create parallel image logic
+- do NOT hardcode random one-off fixes inside screens
+- do NOT leave image logic scattered
+
+-----------------------------------
+OUTPUT
+-----------------------------------
+
+Show exactly:
+1. which file(s) now define the global image policy
+2. how the resolver works
+3. how Google fallback is triggered
+4. how image stability/caching is enforced
+5. which entities were missing images before
+6. confirmation that no visible card or hero remains without image

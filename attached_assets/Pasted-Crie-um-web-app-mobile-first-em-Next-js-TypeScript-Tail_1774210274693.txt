@@ -1,0 +1,161 @@
+Crie um web app mobile-first em Next.js + TypeScript + Tailwind.
+
+O app deve ser visualmente sofisticado, editorial e premium, inspirado em apps de viagem de alto padrão (não marketplace genérico).
+
+⸻
+
+OBJETIVO
+
+Construir a Home do The Lucky Trip, combinando:
+	•	hero aspiracional (imagem grande com destino)
+	•	conteúdo editorial (curadoria)
+	•	seções modulares (o que fazer, comer, ficar, segredos)
+
+IMPORTANTE:
+Não criar backend ainda.
+Usar dados mockados.
+
+⸻
+
+NAVEGAÇÃO (REGRA FIXA)
+
+Criar um menu inferior fixo com 5 itens:
+	•	Home
+	•	Destinos
+	•	Viagem
+	•	Lucky
+	•	Perfil
+
+Regras:
+	•	sempre visível
+	•	estilo minimalista
+	•	ícones + label
+	•	estado ativo destacado
+	•	design elegante (não infantil, não carregado)
+
+⸻
+
+ESTRUTURA DA HOME
+
+1. HERO PRINCIPAL (CARROSSEL)
+	•	imagem full width (aspecto 16:9 ou maior)
+	•	overlay escuro leve
+	•	badge pequena: “Confira as novidades”
+	•	título grande: nome da cidade (ex: Rio de Janeiro)
+	•	subtítulo: país
+	•	botão CTA: “Conferir agora”
+	•	indicadores de carrossel (bolinhas)
+
+⸻
+
+2. DESTAQUES DO DESTINO
+	•	título da seção: “Destaques do [cidade]”
+	•	subtítulo: “O melhor da cidade, em um só lugar.”
+	•	card grande horizontal:
+	•	imagem
+	•	overlay escuro
+	•	tag localização (ex: Alto da Boa Vista)
+	•	tag categoria (ex: Monumento)
+	•	título (ex: Cristo Redentor)
+
+⸻
+
+3. O QUE FAZER AGORA
+	•	título: “O que fazer agora”
+	•	subtítulo dinâmico: “Tarde no Rio — o melhor para este momento.”
+	•	lista horizontal de cards:
+	•	imagem
+	•	tag localização (Ipanema)
+	•	título (Praia de Ipanema)
+
+⸻
+
+4. ONDE COMER
+	•	título: “Onde comer no Rio”
+	•	subtítulo: “Restaurantes com alma carioca.”
+	•	grid horizontal:
+	•	imagem
+	•	bairro
+	•	categoria (ex: Boteco / Carioca)
+	•	nome do lugar
+
+⸻
+
+5. ONDE FICAR
+	•	título: “Onde ficar no Rio”
+	•	subtítulo: “Hotéis com personalidade carioca.”
+	•	cards:
+	•	imagem
+	•	localização
+	•	tipo (Luxo, Conforto, Boutique)
+
+⸻
+
+6. SEGREDOS QUE POUCOS CONHECEM
+	•	título: “Segredos que poucos conhecem”
+	•	subtítulo: “Descobertas escolhidas a dedo por especialistas.”
+	•	cards:
+	•	imagem
+	•	localização
+	•	título
+	•	pequena descrição
+
+⸻
+
+ESTILO VISUAL
+	•	fundo claro (bege/cinza quente)
+	•	tipografia elegante (mistura de serif + sans)
+	•	muito espaçamento (respiração visual)
+	•	cantos arredondados (16px+)
+	•	sombras suaves
+	•	aparência premium editorial (tipo revista + app)
+
+⸻
+
+COMPONENTES (CRIAR REUTILIZÁVEIS)
+	•	HeroCarousel
+	•	SectionHeader
+	•	PlaceCard
+	•	HorizontalScroll
+	•	BottomNavigation
+	•	Tag (localização/categoria)
+	•	CTAButton
+
+⸻
+
+DADOS MOCKADOS
+
+Criar arrays mockados para:
+	•	destinos
+	•	lugares
+	•	restaurantes
+	•	hotéis
+	•	segredos
+
+⸻
+
+REGRAS IMPORTANTES
+	•	mobile-first obrigatório
+	•	não usar layout desktop complexo agora
+	•	não implementar backend ainda
+	•	não adicionar features extras fora do escopo
+	•	foco total em UI/UX
+
+⸻
+
+RESULTADO ESPERADO
+
+Uma Home funcional, navegável, com:
+	•	scroll fluido
+	•	visual premium
+	•	componentes organizados
+	•	base pronta para evoluir
+
+⸻
+
+EXTRA (IMPORTANTE)
+
+Não simplificar demais o design.
+Não transformar em lista genérica.
+
+Isso é um produto editorial premium, não um app de busca.

@@ -1,0 +1,85 @@
+STRICT SCOPE — DO NOT ADD, CHANGE OR IMPROVE ANYTHING OUTSIDE THIS REQUEST
+
+Refine the Home screen context logic and hero content.
+
+Do NOT redesign layout.
+Do NOT change navigation.
+Do NOT change working flows.
+
+--------------------------------------------------
+1. HERO MUST BECOME EDITORIAL (NOT ONLY DESTINATIONS)
+--------------------------------------------------
+
+Current issue:
+Hero only shows destinations.
+
+Fix:
+Hero must include mixed editorial content:
+- destinations
+- restaurants
+- experiences
+- “what to do” moments
+
+Examples:
+- “Restaurantes imperdíveis no Rio”
+- “O que fazer hoje em Lisboa”
+- “Experiências únicas em Paris”
+
+Do NOT keep it as only city names.
+
+--------------------------------------------------
+2. “O QUE FAZER AGORA” — CONTEXT LOGIC
+--------------------------------------------------
+
+Implement context priority:
+
+1. IF user location is available:
+→ show “O que fazer agora em [cidade do usuário]”
+
+2. ELSE IF user has active trip:
+→ show “O que fazer agora em [destino da viagem]”
+
+3. ELSE:
+→ show “O que fazer agora” (no city)
+
+--------------------------------------------------
+3. DO NOT LINK TO HERO ROTATION
+--------------------------------------------------
+
+Important:
+The “O que fazer agora” section must NOT change based on hero rotation.
+
+Hero = inspiration
+Section = action
+
+Keep them independent.
+
+--------------------------------------------------
+4. CONTENT CONSISTENCY
+--------------------------------------------------
+
+- content must match the context (city or global)
+- no random mixing of cities
+- must feel curated and intentional
+
+--------------------------------------------------
+5. KEEP EVERYTHING ELSE
+--------------------------------------------------
+
+Do NOT change:
+- layout
+- cards
+- navigation
+- bottom nav
+- flows
+
+--------------------------------------------------
+CONFIRMATION REQUIRED
+--------------------------------------------------
+
+After implementing, confirm:
+
+1. how hero content is now structured
+2. how context is determined (location / trip / fallback)
+3. how “O que fazer agora” behaves in each case
+4. confirmation that it is NOT tied to hero rotation

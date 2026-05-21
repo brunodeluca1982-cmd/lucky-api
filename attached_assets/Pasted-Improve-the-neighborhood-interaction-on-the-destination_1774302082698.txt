@@ -1,0 +1,127 @@
+Improve the neighborhood interaction on the destination map.
+
+The current behavior is not correct.
+The neighborhood content should NOT appear as a block below the map.
+
+Instead, implement a premium floating decision card that appears ON TOP of the map when a neighborhood hotspot is tapped.
+
+⸻
+
+🎯 GOAL
+
+Turn the map into a decision layer.
+	•	Map = orientation
+	•	Card = decision
+	•	List below = consequence
+
+⸻
+
+🧩 REQUIREMENTS
+
+1. KEEP CURRENT MAP
+	•	Do NOT redesign the map
+	•	Do NOT replace the map image
+	•	Keep current hotspots (Leblon, Ipanema, Copacabana, Gávea, Botafogo, Barra)
+
+⸻
+
+2. REMOVE CURRENT BEHAVIOR
+	•	Remove or disable the neighborhood block that appears below the map
+	•	The map interaction must NOT push content down
+
+⸻
+
+3. ADD FLOATING CARD (CRITICAL)
+
+When user taps a hotspot:
+	•	Show a floating card OVER the map (absolute positioned)
+	•	Do NOT affect layout below
+	•	Card must feel premium, clean, iOS-like
+
+⸻
+
+🎨 CARD DESIGN
+	•	Semi-transparent background
+	•	Backdrop blur (glass effect)
+	•	Very soft border (light opacity)
+	•	Large border radius
+	•	Soft shadow (minimal)
+	•	Clean spacing
+	•	Width: ~85–90% of screen
+	•	Position: bottom area of the map (floating)
+
+⚠️ Do NOT use a solid heavy white card
+⚠️ Do NOT make it look like a marketplace UI
+
+⸻
+
+🧾 CARD CONTENT
+
+Use mock data for now.
+
+Structure:
+	•	Neighborhood name (title)
+	•	Short description (1–2 lines)
+	•	Primary button: Ver hotéis
+	•	Secondary button: Por dentro do bairro
+
+⸻
+
+⚡ INTERACTION
+
+On hotspot tap:
+	•	Highlight selected hotspot (subtle glow or scale)
+	•	Show floating card with fade + slight slide animation
+
+When tapping another hotspot:
+	•	Update the SAME card content
+	•	Do NOT fully unmount/remount
+	•	No flicker
+
+When tapping outside:
+	•	Close the card
+	•	Reset hotspot state
+
+⸻
+
+🔗 ACTIONS
+
+“Ver hotéis”
+	•	Filter or update the list below to show hotels for that neighborhood
+
+“Por dentro do bairro”
+	•	Navigate to the neighborhood detail screen (or placeholder route)
+
+⸻
+
+🧠 STATE MANAGEMENT
+	•	Maintain a selectedNeighborhood state
+	•	Card visibility depends on this state
+	•	Do NOT duplicate logic
+	•	Keep it clean and predictable
+
+⸻
+
+⚠️ IMPORTANT RULES
+	•	Do NOT connect to Supabase yet
+	•	Do NOT change unrelated files
+	•	Do NOT redesign other parts of the screen
+	•	Do NOT introduce heavy UI elements
+	•	Keep everything minimal and fast
+
+⸻
+
+🎯 FINAL RESULT EXPECTED
+	•	Map feels interactive and premium
+	•	User taps → instantly understands the neighborhood
+	•	Card helps decision, not just navigation
+	•	UI feels like a high-end travel product, not a generic app
+
+⸻
+
+📦 OUTPUT
+
+Show exactly which files were changed and explain briefly:
+	•	where the floating card was implemented
+	•	how the state is handled
+	•	how hotspot interaction updates the card

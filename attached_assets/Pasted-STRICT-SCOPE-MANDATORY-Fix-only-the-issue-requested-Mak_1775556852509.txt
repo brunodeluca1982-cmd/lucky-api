@@ -1,0 +1,100 @@
+STRICT SCOPE (MANDATORY):
+- Fix only the issue requested
+- Make the smallest possible code change
+- Do not modify unrelated components, screens, queries, styles, navigation, or loading flows
+- Do not introduce new UI changes unless absolutely required for this exact feature
+- If another change seems necessary, explain it first instead of silently changing extra things
+- Preserve all currently working behavior
+
+FEATURE: Carolina itinerary items must open the real place entity page
+
+GOAL
+The 7-day Carolina Dieckmann itinerary is already rendering correctly from Supabase.
+Now each clickable itinerary item must open its corresponding entity page, not a generic placeholder screen.
+
+CURRENT BUG
+- itinerary items are clickable
+- but they do not open the real matching place entity
+- they fall into a generic “coming soon” page
+
+MANDATORY DATA SOURCE
+Use only:
+1. public.friend_guides
+2. public.friend_guide_days
+3. public.friend_guide_itinerary_items
+4. public.friend_guide_places
+
+ENTITY RULE
+Each itinerary row must map to one real entity via:
+- friend_guide_itinerary_items.place_id -> friend_guide_places.id
+
+DO NOT use:
+- title text matching
+- place name matching
+- fallback placeholder logic
+- generic destination placeholder pages for existing itinerary places
+
+ROUTING REQUIREMENT
+Implement a true dynamic entity route for the place detail screen.
+Use the real place id in navigation.
+
+EXPECTED FLOW
+1. User opens Carolina guide
+2. User taps one itinerary item
+3. App navigates using that item's real place_id
+4. Entity page loads the matching row from public.friend_guide_places
+5. Render the real place detail page
+
+IMPLEMENTATION REQUIREMENTS
+1. Keep the Carolina itinerary screen as is, but change the click handler:
+   - pass place_id
+   - route to the real place detail page
+
+2. Build/use a real place detail screen powered by friend_guide_places
+   - fetch by id
+   - no generic “coming soon” screen for valid places
+
+3. Visual direction for the entity page
+   - follow the attached visual reference for the place entity page
+   - ignore the bottom menu shown in the reference
+   - use the app’s existing premium visual language
+   - hero image at top
+   - glass / translucent editorial content area
+   - show:
+     - place name
+     - category/subcategory if available
+     - bairro
+     - meu_olhar / description
+     - CTA buttons if available:
+       - Google Maps
+       - Instagram
+       - Website / Booking / Reserve when present
+
+4. If the place has no photo_url
+   - use existing safe image fallback logic only for that same entity
+   - do not show the wrong image
+   - do not redirect to placeholder because of missing image
+
+5. If a valid place_id exists
+   - never show the generic placeholder page
+
+6. Keep scope tight
+   - do not redesign the full Carolina guide
+   - do not change the itinerary structure
+   - do not touch unrelated tabs
+   - fix only the entity navigation + real detail page rendering
+
+ATTACHED REFERENCES
+- one screenshot shows the current Carolina itinerary screen
+- one screenshot shows the incorrect placeholder screen
+- one screenshot shows how the itinerary style should feel
+- one screenshot shows the desired style for the entity page
+Use those references only for implementation direction.
+
+DELIVERABLE
+At the end, tell me:
+- which route/file now handles the real place entity page
+- which click handler/file was changed
+- which Supabase query now loads the entity by place_id
+- confirmation that Carolina itinerary items now open the correct entity page
+- confirmation that the generic placeholder no longer appears for valid itinerary places

@@ -1,0 +1,112 @@
+The source-of-truth validation changes are accepted.
+
+Now we need one final protective layer:
+
+FINAL SANITY CHECK LAYER
+
+This is now the highest priority before any further UI/product work.
+
+OBJECTIVE
+
+Even after all current engine fixes, the app must NEVER allow obviously wrong itinerary output to reach the final UI.
+
+We need a final deterministic guard layer that runs after itinerary assembly and after validateAndFix, and before the response is returned to the UI.
+
+CRITICAL RULES
+
+1. Do NOT redesign the engine
+2. Do NOT touch UI in this step
+3. Do NOT touch map logic
+4. Do NOT introduce Gemini into this responsibility
+5. Do NOT weaken the source-of-truth rule
+6. This must be deterministic
+7. This layer must only validate / correct / safely fallback
+8. Do NOT invent places outside Supabase
+9. Do NOT allow silent bad output to reach the UI
+
+WHAT THIS LAYER MUST PROTECT AGAINST
+
+1. Invalid source-of-truth output
+- item not found in Supabase registry
+- invalid id + source_table combination
+- orphan item that survived unexpectedly
+
+2. Temporal absurdities
+- breakfast / brunch item outside manha
+- lunch-focused restaurant outside almoco
+- dinner-focused restaurant outside noite
+- nightlife / bar / samba in manha
+- theater / show in manha
+- sunset item too early
+- sunrise item too late
+- noite item with implausible early time
+
+3. Structural bad output
+- day with zero real items after drops
+- period with impossible composition
+- route becomes incoherent after validation drops
+- saved item is dropped and no safe replacement logic exists
+
+4. Asset mismatch / trust issues
+- photo clearly mismatched to item record
+- enriched fields missing when the source record exists
+- output object inconsistent with resolved Supabase record
+
+TASK
+
+Design the MINIMAL SAFE final sanity check layer.
+
+I need you to answer:
+
+1. Where exactly should this layer run?
+   - after validateAndFix?
+   - before response serialization?
+   - another safer insertion point?
+
+2. What exact checks should it run?
+   Divide into:
+   - source integrity checks
+   - temporal plausibility checks
+   - structural integrity checks
+   - enrichment consistency checks
+
+3. What should happen when a check fails?
+   Evaluate, case by case:
+   - drop item
+   - reassign period
+   - restore from valid Supabase record
+   - refill from valid pool
+   - keep but flag
+   - fail safe
+
+4. How do we avoid dangerous side effects?
+   Examples:
+   - dropping an item leaves the day empty
+   - dropping an item breaks a saved-user intention
+   - fixing one item creates another contradiction
+
+5. What exact files/functions should change for the smallest safe implementation?
+
+6. What should NOT change?
+
+IMPORTANT
+
+This is NOT a new intelligence layer.
+This is NOT a new recommendation layer.
+This is a final protective layer to prevent obviously wrong output from ever reaching the app.
+
+I want the SMALLEST SAFE implementation.
+
+OUTPUT FORMAT
+
+1. why the current pipeline still needs a final sanity check
+2. exact insertion point
+3. exact checks to run
+4. failure-handling rules
+5. safeguards against overcorrection
+6. exact files/functions to change
+7. minimal implementation roadmap
+8. what must NOT change
+
+Do NOT implement yet.
+Show the full sanity-check plan first.

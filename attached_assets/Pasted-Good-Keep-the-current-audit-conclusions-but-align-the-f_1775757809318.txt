@@ -1,0 +1,58 @@
+Good. Keep the current audit conclusions, but align the future direction with these product rules:
+
+1. Gemini must be the single primary model across the AI layer.
+Use Gemini for both itinerary generation and conversational concierge. OpenAI should not remain as an active parallel brain unless there is a deliberate, tested fallback strategy. The product should have one editorial intelligence standard.
+
+2. Supabase remains the mandatory source of truth for the product.
+All recommendations, places, hotels, restaurants, neighborhoods, saved items, editorial metadata, and user memory must come from Supabase tables first.
+The AI must never invent places outside Supabase for core itinerary or core recommendation logic.
+
+3. Web/entity-page lookup is allowed only as a controlled secondary layer for volatile information.
+Gemini may consult:
+- the official page of an entity
+- trusted public sources on the web
+only to enrich real-time or changeable facts such as:
+- programming / schedule
+- opening hours
+- temporary closure
+- temporary event info
+- reservation status signals
+- current seasonal context
+
+This web lookup must never replace Supabase as the editorial source of truth.
+It should only enrich a place that already exists in Supabase.
+
+4. Personalization must be based primarily on first-party product memory, not random web browsing.
+The feeling that “the app knows the user” should come mainly from:
+- saved places
+- previous chats
+- travel style
+- pace
+- budget
+- family / couple / solo context
+- location clustering patterns
+- past itinerary choices
+all grounded in Supabase.
+
+5. Required architecture direction:
+- generate-itinerary and lucky-concierge should eventually share the same recommendation/editorial core
+- the shared core must apply hard validity filters before Gemini reasoning
+- Gemini should choose among valid candidates, not over the whole internet
+- same time-of-day logic, place-validity logic, and geography logic for chat and itinerary
+
+6. Real-time enrichment rules:
+When Gemini uses the official page of an entity or real-time web data, return provenance in the response pipeline internally.
+At minimum, mark whether the final answer used:
+- Supabase only
+- Supabase + official entity page
+- Supabase + grounded web lookup
+
+7. Next technical planning step:
+Do not implement broad rewrites now.
+Instead, prepare a proposal for how generate-itinerary and lucky-concierge can share:
+- hard filters
+- ranking/scoring rules
+- Supabase-first retrieval
+- optional real-time enrichment via official URL or grounded web search for volatile facts only
+
+This is the target direction.

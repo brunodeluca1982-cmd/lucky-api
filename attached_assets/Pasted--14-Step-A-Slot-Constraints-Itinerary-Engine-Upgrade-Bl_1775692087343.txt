@@ -1,0 +1,215 @@
+#14 - Step A — Slot Constraints
+
+Itinerary Engine Upgrade, Block 6
+
+Scope
+
+One function modified: buildFullDraft() in supabase/functions/generate-itinerary/index.ts
+One helper modified: sortByProximity() in the same file
+No other files changed. No other steps included.
+
+This step adds real capacity limits to tarde and noite (which currently have none), and enforces a sunset-last ordering rule within tarde. Both are pure Step-5 changes. Steps 1-4, 6, and 7 are untouched.
+
+Problem Being Fixed
+
+Problem A1 — No tarde/noite caps
+
+MANHA_CAP exists and is enforced. tarde and noite have no cap.
+
+Current behaviour at lines 938-943:
+
+rests.forEach((r, i) => {
+  const p: PeriodoDia = i === 0 ? "almoco" : "noite";
+  periodMap.get(p)!.push(r); // all rests[1..n] pile uncapped into noite
+});
+
+Current behaviour for tarde at lines 932-935:
+
+if (finalOverflow.length > 0) {
+  periodMap.get("tarde")!.unshift(...finalOverflow); // unlimited overflow from manha
+}
+
+A user who saves 5 restaurants in Ipanema gets: almoco: 1, noite: 4 — an itinerary with four dinner slots on one day.
+
+A user whose manha overflows heavily gets a tarde with 6+ items — an afternoon with no realistic time to complete them.
+
+Problem A2 — Sunset items are not last within tarde
+
+classifyPeriodo() correctly assigns sunset-tagged items to tarde. But Step 5d (sortByProximity) sorts tarde by travel distance only. A sunset viewpoint at Arpoador (the premium Ipanema sunset experience) can end up first in tarde — at 14:00 — instead of last at 17:30-18:00 where it belongs. Sunset is a time-anchored event: it must always be the final item in the afternoon.
+
+Current sortByProximity at lines 622-638 — no time-of-day awareness, only distance:
+
+function sortByProximity(items: EnrichedPlace[]): EnrichedPlace[] {
+  if (items.length <= 2) return items;
+  const result: EnrichedPlace[] = [items[0]];
+  const remaining = items.slice(1);
+  while (remaining.length > 0) {
+    const last = result[result.length - 1];
+    let bestIdx = 0, bestDist = Infinity;
+    remaining.forEach((item, i) => {
+      const dist = travelMinutes(last.zone, item.zone)
+                 + subZoneCompatibilityPenalty(getSubZone(last.zone), getSubZone(item.zone));
+      if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+    });
+    result.push(remaining[bestIdx]);
+    remaining.splice(bestIdx, 1);
+  }
+  return result;
+}
+
+Exact Code Changes
+
+Change 1 — Add TARDE_CAP and NOITE_CAP constants
+
+Location: Line 886, immediately after the existing MANHA_CAP.
+
+BEFORE (line 886):
+
+const MANHA_CAP: Record<string, number> = { tranquilo: 2, moderado: 2, intenso: 3 };
+
+AFTER:
+
+const MANHA_CAP:  Record<string, number> = { tranquilo: 2, moderado: 2, intenso: 3 };
+const TARDE_CAP:  Record<string, number> = { tranquilo: 2, moderado: 3, intenso: 4 };
+const NOITE_CAP:  Record<string, number> = { tranquilo: 1, moderado: 2, intenso: 2 };
+
+Rationale for cap values:
+
+tarde tranquilo: 2 — a relaxed day has at most 2 afternoon items (e.g. a museum + a viewpoint)
+tarde moderado: 3 — standard day: 3 afternoon activities is realistic
+tarde intenso: 4 — packed day, but 4 is the physical ceiling for a 3h afternoon window
+noite tranquilo: 1 — one dinner only (tranquilo travelers don't do late night)
+noite moderado: 2 — dinner + one bar/nightlife item (the classic Rio evening)
+noite intenso: 2 — same ceiling; 3 evening venues is unrealistic even for intenso
+Change 2 — Enforce caps after Step 5c
+
+Location: After line 943 (end of restaurant assignment block), before line 945 (Step 5d).
+
+BEFORE:
+
+    // ── 5c. Restaurants ───────────────────────────────────────────────────────
+    rests.forEach((r, i) => {
+      const p: PeriodoDia = i === 0 ? "almoco" : "noite";
+      if (!periodMap.has(p)) periodMap.set(p, []);
+      periodMap.get(p)!.push(r);
+    });
+    // ── 5d. Within-period proximity sequencing ─────────────────────────────────
+
+AFTER:
+
+    // ── 5c. Restaurants ───────────────────────────────────────────────────────
+    rests.forEach((r, i) => {
+      const p: PeriodoDia = i === 0 ? "almoco" : "noite";
+      if (!periodMap.has(p)) periodMap.set(p, []);
+      periodMap.get(p)!.push(r);
+    });
+    // ── 5c-cap. Enforce tarde and noite slot caps ──────────────────────────────
+    // Excess items are dropped — they have no valid fallback slot in the same day.
+    // In practice this only fires when the complement pool produces too many
+    // same-zone items (e.g. user saved 4 Ipanema restaurants for a 1-day trip).
+    const tardeCap = TARDE_CAP[vibe] ?? 3;
+    const noiteCap = NOITE_CAP[vibe] ?? 2;
+    const tardeItems = periodMap.get("tarde");
+    if (tardeItems && tardeItems.length > tardeCap) {
+      periodMap.set("tarde", tardeItems.slice(0, tardeCap));
+    }
+    const noiteItems = periodMap.get("noite");
+    if (noiteItems && noiteItems.length > noiteCap) {
+      periodMap.set("noite", noiteItems.slice(0, noiteCap));
+    }
+    // ── 5d. Within-period proximity sequencing ─────────────────────────────────
+
+Change 3 — Sunset-last rule in sortByProximity
+
+Location: sortByProximity (lines 622-638) receives a new optional periodo parameter. When periodo === "tarde", any items whose momento_ideal contains "sunset" are moved to the end of the result, after proximity sorting completes.
+
+BEFORE signature:
+
+function sortByProximity(items: EnrichedPlace[]): EnrichedPlace[] {
+
+AFTER signature:
+
+function sortByProximity(items: EnrichedPlace[], periodo?: PeriodoDia): EnrichedPlace[] {
+
+BEFORE body end (after greedy nearest-neighbor loop, before return):
+
+  return result;
+}
+
+AFTER body end:
+
+  // Sunset-last rule: items tagged "sunset" in momento_ideal must appear
+  // at the end of the tarde slot — sunset is a time-anchored event (~17:30–18:30).
+  // This has no effect on any period other than tarde.
+  if (periodo === "tarde") {
+    const sunsetItems = result.filter((p) => p.momento_ideal.includes("sunset"));
+    const otherItems  = result.filter((p) => !p.momento_ideal.includes("sunset"));
+    return [...otherItems, ...sunsetItems];
+  }
+  return result;
+}
+
+Call-site update in buildFullDraft Step 5d — pass periodo through:
+
+BEFORE (lines 950-952):
+
+    for (const [periodo, items] of periodMap.entries()) {
+      periodMap.set(periodo, sortByProximity(items));
+    }
+
+AFTER:
+
+    for (const [periodo, items] of periodMap.entries()) {
+      periodMap.set(periodo, sortByProximity(items, periodo));
+    }
+
+Regression Analysis
+
+What cannot regress:
+
+Steps 1-4: untouched — enrichment, complement, classification, clustering, scoring are identical
+Step 5a (period assignment): untouched
+Step 5b (manha load balancing): untouched — manha cap unchanged, overflow to tarde unchanged
+Step 5c (restaurant assignment): logic unchanged — almoco=first, noite=rest; cap applied AFTER
+Step 5d (proximity sequencing): same algorithm; only the tarde period gains a sunset post-sort
+Steps 6-7: untouched — Gemini receives same shaped data, validation runs same logic
+Output schema: DiaRoteiro[] shape is identical — no new fields, no removed fields
+What changes (intentionally):
+
+A day that previously had tarde: 5 items now has tarde: ≤ 3 items (moderado)
+A day that previously had noite: 4 restaurants now has noite: ≤ 2 (moderado)
+A tarde period with a sunset item will have that item moved to last position
+Edge case safety:
+
+Scenario	Before	After	Safe?
+0 tarde items	no tarde block	no tarde block	✓ identical
+1 tarde item	shown	shown	✓ identical
+2 tarde items (moderado)	both shown	both shown	✓ identical
+3 tarde items (moderado)	all shown	all shown	✓ identical
+4 tarde items (moderado)	all shown	3 shown, 1 dropped	intentional
+0 noite items	no noite block	no noite block	✓ identical
+1 noite item	shown	shown	✓ identical
+sunset item in tarde alone	shows first	shows first	✓ identical (only 1 item)
+sunset + 2 other items in tarde	sunset at proximity order	sunset last	intentional
+sortByProximity called for manha	unchanged (no periodo param effect)	unchanged	✓ identical
+sortByProximity called for noite	unchanged	unchanged	✓ identical
+Backward compatibility:
+
+The buildFullDraft function signature does not change
+The sortByProximity new parameter is optional (periodo?) — all existing call sites without the param continue to work identically (the sunset-last path never fires when periodo is absent)
+No type changes, no interface changes, no external API changes
+Files Changed
+
+File	Function	Lines affected
+supabase/functions/generate-itinerary/index.ts	constants block	~886 (+2 lines)
+supabase/functions/generate-itinerary/index.ts	sortByProximity()	~622 (signature +1 char, body +7 lines)
+supabase/functions/generate-itinerary/index.ts	buildFullDraft() — Step 5c-cap	~943 (+12 lines)
+supabase/functions/generate-itinerary/index.ts	buildFullDraft() — Step 5d callsite	~951 (+0 lines, 1 arg added)
+Total net new lines: ~21. No deletions. No other files.
+
+What Step A does NOT include (reserved for later steps)
+
+Preference scoring surviving into clustering → Step B
+Complement content preference filtering → Step C (distance/selection factor)
+Hotel zone Day 1 anchor → Step D
+Richer Gemini compact representation → Step E
