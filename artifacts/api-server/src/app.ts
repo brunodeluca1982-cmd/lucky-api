@@ -36,7 +36,7 @@ app.use(cors());
 app.post(
   "/api/stripe/webhook",
   express.raw({ type: "application/json" }),
-  async (req, res) => {
+  async (req: express.Request, res: express.Response): Promise<void> => {
     const sig = req.headers["stripe-signature"] as string;
 
     if (!sig) {
