@@ -41,7 +41,7 @@ app.post(
 
     if (!sig) {
       logger.warn("Stripe webhook received without signature header");
-      return res.status(400).json({ error: "Missing stripe-signature header" });
+      res.status(400).json({ error: "Missing stripe-signature header" });
     }
 
     // Load webhook secret from DB (managed webhook secret stored in stripe._managed_webhooks)
@@ -53,7 +53,7 @@ app.post(
         "set STRIPE_WEBHOOK_SECRET env var or ensure the managed webhook is registered"
       );
       // Return 200 to avoid Stripe retrying; log for manual investigation
-      return res.json({ received: true, warning: "no_webhook_secret" });
+      res.json({ received: true, warning: "no_webhook_secret" });
     }
 
     // 1. Verify signature + parse event
@@ -63,7 +63,7 @@ app.post(
       event = stripe.webhooks.constructEvent(req.body as Buffer, sig, webhookSecret);
     } catch (err: any) {
       logger.error({ err }, "Stripe webhook signature verification failed");
-      return res.status(400).json({ error: `Webhook signature error: ${err.message}` });
+      res.status(400).json({ error: `Webhook signature error: ${err.message}` });
     }
 
     // 2. Respond 200 immediately — Stripe requires a fast response
