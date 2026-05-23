@@ -441,8 +441,8 @@ const s = StyleSheet.create({
   },
   profilePhoto: {
     width: PROFILE_SIZE,
-    height: PROFILE_SIZE * 1.35,
-    borderRadius: 10,
+    height: PROFILE_SIZE,
+    borderRadius: PROFILE_SIZE / 2,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.18)",
   },
