@@ -9,7 +9,7 @@
  * Connection:  conn_stripe_01KNKTKSCKP3EG11BDVT8JQDA7
  */
 
-import Stripe from "stripe";
+import Stripe = require("stripe");
 import { StripeSync } from "stripe-replit-sync";
 import { logger } from "./lib/logger.js";
 
@@ -97,9 +97,9 @@ async function getCredentials(): Promise<{ publishableKey: string; secretKey: st
  * Returns a fresh, authenticated Stripe client.
  * WARNING: Never cache this client. Call on every request.
  */
-export async function getUncachableStripeClient(): Promise<InstanceType<typeof Stripe>> {
+export async function getUncachableStripeClient() {
   const { secretKey } = await getCredentials();
-  return new Stripe(secretKey, { apiVersion: "2025-06-30.basil" });
+  return new (Stripe as any)(secretKey, { apiVersion: "2025-06-30.basil" });
 }
 
 export async function getStripePublishableKey(): Promise<string> {
