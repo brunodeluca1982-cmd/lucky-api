@@ -54,6 +54,7 @@ function requireAuth(
     const user = await getUserFromRequest(req);
     if (!user) return res.status(401).json({ error: "Unauthorized" });
     await handler(Object.assign(req, { user }), res);
+    return;
   };
 }
 
@@ -189,7 +190,7 @@ router.post(
       let customerId  = sbSub?.stripe_customer_id ?? replitSub?.stripe_customer_id ?? null;
 
       if (!customerId) {
-        const customer = await stripeService.createCustomer(req.user.email ?? "", req.user.id);
+        const customer = await stripeService.createCustomer(req.user.email ?? undefined, req.user.id);
         customerId = customer.id;
         await storage.upsertUserSubscription(req.user.id, { stripe_customer_id: customerId });
         await storage.upsertSupabaseSubscription(req.user.id, { stripe_customer_id: customerId }).catch(() => {});
@@ -205,28 +206,7 @@ router.post(
           priceId,
           successUrl,
           cancelUrl,
-          req.user.email,
-        );
-      } catch (stripeErr: any) {
-        const isNoSuchCustomer =
-          stripeErr?.code === "resource_missing" &&
-          stripeErr?.message?.toLowerCase().includes("no such customer");
-
-        if (!isNoSuchCustomer) throw stripeErr;
-
-        logger.warn({ userId: req.user.id, oldCustomerId: customerId },
-          "Stripe customer not found in current environment — creating fresh customer");
-
-        const freshCustomer = await stripeService.createCustomer(req.user.email ?? "", req.user.id);
-        customerId = freshCustomer.id;
-        await storage.upsertUserSubscription(req.user.id, { stripe_customer_id: customerId });
-
-        session = await stripeService.createCheckoutSession(
-          customerId,
-          priceId,
-          successUrl,
-          cancelUrl,
-          req.user.email,
+          req.user.email ?? undefined,
         );
       }
 
