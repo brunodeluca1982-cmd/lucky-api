@@ -28,8 +28,6 @@ import { logger } from "../lib/logger.js";
 
 const router = Router();
 
-// ── Supabase auth helper ──────────────────────────────────────────────────────
-
 async function getUserFromRequest(req: Request): Promise<{ id: string; email?: string } | null> {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith("Bearer ")) return null;
@@ -44,7 +42,7 @@ async function getUserFromRequest(req: Request): Promise<{ id: string; email?: s
   });
   const { data, error } = await supabase.auth.getUser(token);
   if (error || !data.user) return null;
-  return { id: data.user.id, email: data.user.email };
+  return { id: data.user.id, email: data.user.email ?? undefined };
 }
 
 function requireAuth(
@@ -52,18 +50,13 @@ function requireAuth(
 ) {
   return async (req: Request, res: Response) => {
     const user = await getUserFromRequest(req);
-    if (!user) return res.status(401).json({ error: "Unauthorized" });
+    if (!user) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
     await handler(Object.assign(req, { user }), res);
-    return;
   };
 }
-
-// ── Price resolution ──────────────────────────────────────────────────────────
-// Priority:
-//   1. Explicit price_... ID (passed directly by caller)
-//   2. Plan-specific env var: STRIPE_PRICE_ID_ANNUAL / MONTHLY / WEEKLY
-//   3. DB lookup by billing interval (year/month/week) — reflects Stripe catalogue
-//   4. STRIPE_PRICE_ID env var (single catch-all fallback for unknown plans)
 
 const PLAN_TO_INTERVAL: Record<string, string> = {
   annual:  "year",
@@ -71,30 +64,24 @@ const PLAN_TO_INTERVAL: Record<string, string> = {
   weekly:  "week",
 };
 
-async function resolvePriceId(planOrPriceId: string): Promise<string | null> {
-  // Direct price ID — use as-is
+async function resolvePriceId(planOrPriceId: string): Promise<string | undefined> {
   if (planOrPriceId.startsWith("price_")) return planOrPriceId;
 
-  // Priority 1: plan-specific env var (STRIPE_PRICE_ID_ANNUAL / MONTHLY / WEEKLY)
   const envKey = `STRIPE_PRICE_ID_${planOrPriceId.toUpperCase()}`;
   const envVal = process.env[envKey];
   if (envVal) return envVal;
 
-  // Priority 2: DB lookup by billing interval (most reliable — reflects actual Stripe catalogue)
   const interval = PLAN_TO_INTERVAL[planOrPriceId];
   if (interval) {
     const price = await storage.getPriceByInterval(interval);
     if (price?.id) return price.id;
   }
 
-  // Priority 3: single STRIPE_PRICE_ID env var (catch-all fallback for unknown plans)
   const singlePriceId = process.env["STRIPE_PRICE_ID"];
   if (singlePriceId) return singlePriceId;
 
-  return null;
+  return undefined;
 }
-
-// ── GET /api/stripe/publishable-key ──────────────────────────────────────────
 
 router.get("/publishable-key", async (_req, res) => {
   try {
@@ -105,8 +92,6 @@ router.get("/publishable-key", async (_req, res) => {
     res.status(500).json({ error: "Failed to get publishable key" });
   }
 });
-
-// ── GET /api/stripe/products ──────────────────────────────────────────────────
 
 router.get("/products", async (_req, res) => {
   try {
@@ -141,8 +126,6 @@ router.get("/products", async (_req, res) => {
   }
 });
 
-// ── POST /api/stripe/checkout ─────────────────────────────────────────────────
-
 router.post(
   "/checkout",
   requireAuth(async (req, res) => {
@@ -154,23 +137,20 @@ router.post(
         cancel_url?:  string;
       };
 
-      // Resolve price ID
       const planOrId = plan ?? rawPriceId ?? "monthly";
       const priceId = await resolvePriceId(planOrId);
 
       if (!priceId) {
-        return res.status(400).json({
+        res.status(400).json({
           error:
             `No active Stripe price found for plan "${planOrId}". ` +
             "Set the STRIPE_PRICE_ID env var with your live price ID.",
-        }) as any;
+        });
+        return;
       }
 
-      // Build success / cancel URLs — always use an absolute HTTPS base.
-      // The client may send a relative URL if EXPO_PUBLIC_APP_ORIGIN is not set;
-      // in that case, fall back to the server's known domain so Stripe can redirect correctly.
       const serverOrigin =
-        process.env["APP_ORIGIN"] ||
+        process.env["APP_ORIGIN"] ??
         (process.env["REPLIT_DOMAINS"]
           ? `https://${process.env["REPLIT_DOMAINS"]!.split(",")[0]}`
           : "https://example.com");
@@ -184,7 +164,6 @@ router.post(
         ? cancel_url!
         : `${serverOrigin}/subscription`;
 
-      // Find or create Stripe customer — check Supabase first, then Replit DB fallback
       const sbSub    = await storage.getSupabaseSubscription(req.user.id);
       const replitSub = sbSub?.stripe_customer_id ? null : await storage.getUserSubscription(req.user.id);
       let customerId  = sbSub?.stripe_customer_id ?? replitSub?.stripe_customer_id ?? null;
@@ -197,8 +176,6 @@ router.post(
         logger.info({ userId: req.user.id, customerId }, "Stripe customer created");
       }
 
-      // Create checkout session — if the stored customer doesn't exist in the current Stripe
-      // environment (e.g. test → live switch), create a fresh customer and retry once.
       let session: Awaited<ReturnType<typeof stripeService.createCheckoutSession>>;
       try {
         session = await stripeService.createCheckoutSession(
@@ -212,13 +189,15 @@ router.post(
         logger.info({ userId: req.user.id, sessionId: session.id, priceId }, "Checkout session created");
         res.json({ url: session.url, session_id: session.id });
       } catch (err: any) {
-      logger.error({ err }, "POST /checkout failed");
-      res.status(500).json({ error: err.message ?? "Failed to create checkout session" });
+        logger.error({ err }, "POST /checkout failed");
+        res.status(500).json({ error: err.message ?? "Failed to create checkout session" });
+      }
+    } catch (err: any) {
+      logger.error({ err }, "POST /checkout outer catch");
+      res.status(500).json({ error: "Internal server error" });
     }
   })
 );
-
-// ── GET /api/stripe/verify-session ───────────────────────────────────────────
 
 router.get(
   "/verify-session",
@@ -226,7 +205,8 @@ router.get(
     try {
       const sessionId = req.query.session_id as string;
       if (!sessionId) {
-        return res.status(400).json({ error: "session_id query param required" }) as any;
+        res.status(400).json({ error: "session_id query param required" });
+        return;
       }
 
       const stripe  = await getUncachableStripeClient();
@@ -234,16 +214,15 @@ router.get(
         expand: ["subscription"],
       });
 
-      // Accept "paid" OR "no_payment_required" (100% coupon), only when session is complete
       const isComplete  = session.status === "complete";
       const isPaymentOk = session.payment_status === "paid"
         || session.payment_status === "no_payment_required";
       if (!isComplete || !isPaymentOk) {
-        return res.json({ confirmed: false, payment_status: session.payment_status }) as any;
+        res.json({ confirmed: false, payment_status: session.payment_status });
+        return;
       }
 
       const customerId = session.customer as string;
-      // Check Supabase first, then fall back to Replit DB
       const sbSubByCust = await storage.getSupabaseSubscriptionByCustomerId(customerId);
       let sub = sbSubByCust ?? await storage.getSubscriptionByCustomerId(customerId);
       if (!sub) sub = await storage.getUserSubscription(req.user.id);
@@ -254,7 +233,6 @@ router.get(
           : (session.subscription as any);
 
         if (stripeSubscription) {
-          // Guard: current_period_end can be 0 or null for no_payment_required sessions
           const rawEnd      = stripeSubscription.current_period_end;
           const periodEndMs = (rawEnd && rawEnd > 0) ? rawEnd * 1000 : null;
           const interval    = stripeSubscription.items.data[0]?.price?.recurring?.interval;
@@ -263,13 +241,13 @@ router.get(
             stripe_customer_id:     customerId,
             stripe_subscription_id: stripeSubscription.id,
             subscription_status:    stripeSubscription.status,
-            plan_type:              interval ?? null,
+            plan_type:              interval ?? undefined,
           });
 
           await storage.provisionPremiumInSupabase(
             req.user.id,
             periodEndMs,
-            interval,
+            interval ?? undefined,
             {
               customerId,
               subscriptionId: stripeSubscription.id,
@@ -292,24 +270,22 @@ router.get(
   })
 );
 
-// ── GET /api/stripe/subscription ─────────────────────────────────────────────
-
 router.get(
   "/subscription",
   requireAuth(async (req, res) => {
     try {
-      // Supabase-first, then Replit DB fallback
       const sbSub = await storage.getSupabaseSubscription(req.user.id);
       const sub   = sbSub?.stripe_subscription_id ? sbSub : await storage.getUserSubscription(req.user.id);
       if (!sub?.stripe_subscription_id) {
-        return res.json({ subscription: null }) as any;
+        res.json({ subscription: null });
+        return;
       }
 
       const stripeSub = await storage.getSubscriptionFromStripe(sub.stripe_subscription_id);
       res.json({
         subscription: {
           ...sub,
-          stripe_data: stripeSub ?? null,
+          stripe_data: stripeSub ?? undefined,
         },
       });
     } catch (err: any) {
@@ -319,20 +295,15 @@ router.get(
   })
 );
 
-// ── GET /api/stripe/sync-subscription ────────────────────────────────────────
-// Healing endpoint: queries Stripe for the user's customer subscriptions and
-// provisions premium in Supabase if an active subscription is found.
-// Safe to call on every app foreground — idempotent.
-
 router.get(
   "/sync-subscription",
   requireAuth(async (req, res) => {
     try {
-      // Supabase-first, then Replit DB fallback
       const sbSub   = await storage.getSupabaseSubscription(req.user.id);
       const sub     = sbSub?.stripe_customer_id ? sbSub : await storage.getUserSubscription(req.user.id);
       if (!sub?.stripe_customer_id) {
-        return res.json({ synced: false, reason: "no_customer" }) as any;
+        res.json({ synced: false, reason: "no_customer" });
+        return;
       }
 
       const stripe = await getUncachableStripeClient();
@@ -344,7 +315,6 @@ router.get(
 
       const activeSub = subscriptions.data[0];
       if (!activeSub) {
-        // Also check trialing
         const trialSubs = await stripe.subscriptions.list({
           customer: sub.stripe_customer_id,
           status:   "trialing",
@@ -352,9 +322,9 @@ router.get(
         });
         const trialSub = trialSubs.data[0];
         if (!trialSub) {
-          return res.json({ synced: false, reason: "no_active_subscription" }) as any;
+          res.json({ synced: false, reason: "no_active_subscription" });
+          return;
         }
-        // Provision from trialing subscription
         const _trialEnd   = trialSub.current_period_end;
         const periodEndMs = (_trialEnd && _trialEnd > 0) ? _trialEnd * 1000 : null;
         const interval    = trialSub.items.data[0]?.price?.recurring?.interval;
@@ -362,18 +332,18 @@ router.get(
           stripe_customer_id:     sub.stripe_customer_id,
           stripe_subscription_id: trialSub.id,
           subscription_status:    trialSub.status,
-          plan_type:              interval ?? null,
+          plan_type:              interval ?? undefined,
         });
-        await storage.provisionPremiumInSupabase(req.user.id, periodEndMs, interval, {
+        await storage.provisionPremiumInSupabase(req.user.id, periodEndMs, interval ?? undefined, {
           customerId:     sub.stripe_customer_id,
           subscriptionId: trialSub.id,
           status:         trialSub.status,
         });
         logger.info({ userId: req.user.id, subId: trialSub.id }, "Premium synced (trialing)");
-        return res.json({ synced: true, status: trialSub.status }) as any;
+        res.json({ synced: true, status: trialSub.status });
+        return;
       }
 
-      // Provision from active subscription
       const _activeEnd  = activeSub.current_period_end;
       const periodEndMs = (_activeEnd && _activeEnd > 0) ? _activeEnd * 1000 : null;
       const interval    = activeSub.items.data[0]?.price?.recurring?.interval;
@@ -382,10 +352,10 @@ router.get(
         stripe_customer_id:     sub.stripe_customer_id,
         stripe_subscription_id: activeSub.id,
         subscription_status:    activeSub.status,
-        plan_type:              interval ?? null,
+        plan_type:              interval ?? undefined,
       });
 
-      await storage.provisionPremiumInSupabase(req.user.id, periodEndMs, interval, {
+      await storage.provisionPremiumInSupabase(req.user.id, periodEndMs, interval ?? undefined, {
         customerId:     sub.stripe_customer_id,
         subscriptionId: activeSub.id,
         status:         activeSub.status,
@@ -400,21 +370,19 @@ router.get(
   })
 );
 
-// ── POST /api/stripe/portal ───────────────────────────────────────────────────
-
 router.post(
   "/portal",
   requireAuth(async (req, res) => {
     try {
-      // Supabase-first, then Replit DB fallback
       const sbSub = await storage.getSupabaseSubscription(req.user.id);
       const sub   = sbSub?.stripe_customer_id ? sbSub : await storage.getUserSubscription(req.user.id);
       if (!sub?.stripe_customer_id) {
-        return res.status(400).json({ error: "No Stripe customer found for this user" }) as any;
+        res.status(400).json({ error: "No Stripe customer found for this user" });
+        return;
       }
 
       const appOrigin =
-        process.env["APP_ORIGIN"] ||
+        process.env["APP_ORIGIN"] ??
         (process.env["REPLIT_DOMAINS"]
           ? `https://${process.env["REPLIT_DOMAINS"]!.split(",")[0]}`
           : "https://example.com");
