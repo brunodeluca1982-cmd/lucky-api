@@ -166,7 +166,7 @@ router.post(
 
       const sbSub    = await storage.getSupabaseSubscription(req.user.id);
       const replitSub = sbSub?.stripe_customer_id ? null : await storage.getUserSubscription(req.user.id);
-      let customerId  = sbSub?.stripe_customer_id ?? replitSub?.stripe_customer_id ?? undefined;
+      let customerId: string = sbSub?.stripe_customer_id ?? replitSub?.stripe_customer_id ?? '';
 
       if (!customerId) {
         const email = req.user.email ?? '';
@@ -181,7 +181,7 @@ router.post(
       try {
         const email = req.user.email ?? '';
         session = await stripeService.createCheckoutSession(
-          customerId!,
+          customerId,
           priceId,
           successUrl,
           cancelUrl,
