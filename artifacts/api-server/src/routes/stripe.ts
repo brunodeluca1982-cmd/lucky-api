@@ -181,7 +181,7 @@ router.post(
       try {
         const email = req.user.email ?? '';
         session = await stripeService.createCheckoutSession(
-          customerId,
+          customerId!,
           priceId,
           successUrl,
           cancelUrl,
