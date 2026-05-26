@@ -166,10 +166,11 @@ router.post(
 
       const sbSub    = await storage.getSupabaseSubscription(req.user.id);
       const replitSub = sbSub?.stripe_customer_id ? null : await storage.getUserSubscription(req.user.id);
-      let customerId  = sbSub?.stripe_customer_id ?? replitSub?.stripe_customer_id ?? null;
+      let customerId  = sbSub?.stripe_customer_id ?? replitSub?.stripe_customer_id ?? undefined;
 
       if (!customerId) {
-        const customer = await stripeService.createCustomer(req.user.email ?? undefined, req.user.id);
+        const email = req.user.email ?? '';
+        const customer = await stripeService.createCustomer(email, req.user.id);
         customerId = customer.id;
         await storage.upsertUserSubscription(req.user.id, { stripe_customer_id: customerId });
         await storage.upsertSupabaseSubscription(req.user.id, { stripe_customer_id: customerId }).catch(() => {});
@@ -178,12 +179,13 @@ router.post(
 
       let session: Awaited<ReturnType<typeof stripeService.createCheckoutSession>>;
       try {
+        const email = req.user.email ?? '';
         session = await stripeService.createCheckoutSession(
           customerId,
           priceId,
           successUrl,
           cancelUrl,
-          req.user.email ?? undefined,
+          email,
         );
 
         logger.info({ userId: req.user.id, sessionId: session.id, priceId }, "Checkout session created");
