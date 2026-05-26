@@ -208,11 +208,10 @@ router.post(
           cancelUrl,
           req.user.email ?? undefined,
         );
-      }
 
-      logger.info({ userId: req.user.id, sessionId: session.id, priceId }, "Checkout session created");
-      res.json({ url: session.url, session_id: session.id });
-    } catch (err: any) {
+        logger.info({ userId: req.user.id, sessionId: session.id, priceId }, "Checkout session created");
+        res.json({ url: session.url, session_id: session.id });
+      } catch (err: any) {
       logger.error({ err }, "POST /checkout failed");
       res.status(500).json({ error: err.message ?? "Failed to create checkout session" });
     }
