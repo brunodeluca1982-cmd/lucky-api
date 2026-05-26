@@ -421,8 +421,7 @@ const s = StyleSheet.create({
   },
   cardPhoto: {
     width: PHOTO_W,
-    alignSelf: "stretch",
-    minHeight: 190,
+    height: 190,
   },
   cardBody: {
     flex: 1,

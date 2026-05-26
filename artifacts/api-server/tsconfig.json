@@ -1,12 +1,15 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "strictNullChecks": false,
+    "strict": false,
+    "skipLibCheck": true,
+    "noEmitOnError": false,
+    "strictPropertyInitialization": false,
     "outDir": "dist",
     "rootDir": "src",
     "types": ["node"],
-    "lib": ["ES2020", "DOM"],
-    "skipLibCheck": true,
-    "noEmitOnError": false
+    "lib": ["ES2020", "DOM"]
   },
   "include": ["src"],
   "references": [
